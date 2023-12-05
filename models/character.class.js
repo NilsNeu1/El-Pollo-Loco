@@ -2,7 +2,7 @@ class Character extends MovableObject {
   
     height = 250;
     width = 250;
-    posY = 180;
+    posY = 10; //180 base value
     speed = 6;
     IMAGES_IDLE = [ 
         'img/2_character_pepe/1_idle/idle/I-1.png',
@@ -63,6 +63,7 @@ class Character extends MovableObject {
         super().loadImage('img/2_character_pepe/2_walk/W-21.png');
         this.loadImages(this.IMAGES_WALKING);
         this.animate();
+        this.applyGravity();
     }
 
 
@@ -75,7 +76,7 @@ class Character extends MovableObject {
                     this.otherDirection = false;
                 }
 
-                if(this.world.keyboard.LEFT && this.posX > 0) {   
+                if(this.world.keyboard.LEFT && this.posX > 100) {   
                     this.posX -= this.speed;
                     this.otherDirection = true;
                 }
