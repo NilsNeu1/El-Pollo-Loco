@@ -87,6 +87,12 @@ class Character extends MovableObject {
                 }
                 this.world.camera_x = -this.posX + 100;
 
+                
+                if(this.world.keyboard.UP){
+                    this.speedY = 5;
+                    // console.log('speed is', this.speedY)
+                }
+
         }, 1000/60)
         
         setInterval ( () => {
