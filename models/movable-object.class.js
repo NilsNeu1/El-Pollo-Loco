@@ -39,13 +39,11 @@ class MovableObject {
     }
 
     moveRight() {
-        console.log('move right');
+        this.posX += this.speed;
     }
 
     moveLeft(){
-        setInterval(() => {
-            this.posX -= this.speed;
-        }, 1000/ 144); // milisekunden interval/ Framerate
+        this.posX -= this.speed;
     }
 
     playAnimation(images){
@@ -53,6 +51,10 @@ class MovableObject {
         let path = images[i];
         this.img = this.imageCache[path];
         this.currentImage++;
+    }
+
+    jump(){
+        this.speedY = 8;
     }
 
 

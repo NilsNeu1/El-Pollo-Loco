@@ -54,11 +54,15 @@ camera_x = 0;
         }
         this.ctx.drawImage(MO.img, MO.posX, MO.posY, MO.width, MO.height);
 
+
+
         if(MO.otherDirection){
             MO.posX = MO.posX * -1;
             this.ctx.restore();
         }
 
     }
+
+    
 
 }

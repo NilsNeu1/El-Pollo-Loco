@@ -77,22 +77,27 @@ class Character extends MovableObject {
 
         setInterval( () => {
             if(this.world.keyboard.RIGHT && this.posX < this.world.level.level_end_X) {   
-                    this.posX += this.speed;
                     this.otherDirection = false;
+                    this.moveRight();
+                // hier sound einfügen  this.walksound.play(); oder ähnlich
                 }
 
-                if(this.world.keyboard.LEFT && this.posX > 100) {   
-                    this.posX -= this.speed;
-                    this.otherDirection = true;
+                if(this.world.keyboard.LEFT && this.posX > 100) {
+                    this.otherDirection = true;  
+                    this.moveLeft();  
                 }
+                
                 this.world.camera_x = -this.posX + 100;
 
                 
-                if(this.world.keyboard.UP){
-                    this.speedY = 5;
-                    // console.log('speed is', this.speedY)
-                }
 
+                if(this.world.keyboard.UP && !this.isAboveGround()){
+                    this.jump();
+                }
+                
+
+
+                
         }, 1000/60)
         
         setInterval ( () => {
@@ -108,8 +113,6 @@ class Character extends MovableObject {
         
     }
 
-    jump(){
-        
-    }
+    
 
 }
