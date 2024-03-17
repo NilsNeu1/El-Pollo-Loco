@@ -29,6 +29,18 @@ class MovableObject {
         this.img.src = path;
     }
 
+    draw(ctx){
+        ctx.drawImage(this.img, this.posX, this.posY, this.width, this.height);
+    }
+
+    drawHitbox(ctx){
+        ctx.beginPath();
+        ctx.lineWidth = "2";
+        ctx.strokeStyle = "yellow";
+        ctx.rect(this.posX, this.posY, this.width, this.height);
+        ctx.stroke();
+    }
+
     loadImages(array){
         array.forEach((path) => {
             
@@ -57,6 +69,7 @@ class MovableObject {
         this.speedY = 8;
     }
 
+    
 
 
 }

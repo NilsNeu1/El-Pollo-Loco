@@ -47,21 +47,31 @@ camera_x = 0;
 
     addToMap(MO){
         if(MO.otherDirection) { //spiegelt den das MO 
-            this.ctx.save();
-            this.ctx.translate(MO.width, 0);
-            this.ctx.scale (-1, 1);
-            MO.posX = MO.posX * -1;
+            this.flipImage(MO);
         }
-        this.ctx.drawImage(MO.img, MO.posX, MO.posY, MO.width, MO.height);
+        MO.draw(this.ctx);
+        MO.drawHitbox(this.ctx);
 
-
+        
+        
 
         if(MO.otherDirection){
-            MO.posX = MO.posX * -1;
-            this.ctx.restore();
+            this.flipImageBack(MO)
         }
 
     }
+
+    flipImage(MO){
+        this.ctx.save();
+        this.ctx.translate(MO.width, 0);
+        this.ctx.scale (-1, 1);
+        MO.posX = MO.posX * -1;
+}
+
+    flipImageBack(MO){
+        MO.posX = MO.posX * -1;
+        this.ctx.restore();
+}
 
     
 
