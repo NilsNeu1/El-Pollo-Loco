@@ -54,7 +54,7 @@ class Character extends MovableObject {
         'img/2_character_pepe/5_dead/D-54.png',
         'img/2_character_pepe/5_dead/D-55.png',
         'img/2_character_pepe/5_dead/D-56.png',
-        'img/2_character_pepe/5_dead/D-57.png',
+        'img/2_character_pepe/5_dead/D-57.png'
 ];
     currentImage = 0;
     world;
@@ -87,26 +87,32 @@ class Character extends MovableObject {
                     this.moveLeft();  
                 }
                 
-                this.world.camera_x = -this.posX + 100;
-
                 
-
+                
+                
                 if(this.world.keyboard.UP && !this.isAboveGround()){
                     this.jump();
                 }
                 
-
-
                 
+                this.world.camera_x = -this.posX + 100;
         }, 1000/60)
         
+
         setInterval ( () => {
 
-            if(this.isAboveGround()){
-                this.playAnimation(this.IMAGES_JUMP)
-            } else {}
+            if (this.isHurt()) {
+                this.playAnimation(this.IMAGES_HURT)
+            }
 
-            if(this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {   
+            else if (this.isDead()) {
+                this.playAnimation(this.IMAGES_DEAD)
+            }
+
+            else if(this.isAboveGround()){
+                this.playAnimation(this.IMAGES_JUMP)
+
+            } else if(this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {   
                 this.playAnimation(this.IMAGES_WALKING)
     }
         }, 1000/12);

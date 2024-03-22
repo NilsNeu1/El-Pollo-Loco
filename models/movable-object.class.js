@@ -1,14 +1,10 @@
-class MovableObject {
-    posX = 100;
-    posY = 350;
+class MovableObject extends DrawableObject {
     speed = 0.05;
     speedY = 1;
-    height = 75;
-    width = 100;
-    img;
-    imageCache = {};
     otherDirection = false;
     acceleration = 0.2;
+    health = 1500;
+    lastHit = 0;
     offset = {
         top: 0,
         left: 0,
@@ -30,14 +26,9 @@ class MovableObject {
         return this.posY < 180;
     }
 
-    loadImage(path) {
-        this.img = new Image(); // this.img = doc.get element by id "img"
-        this.img.src = path;
-    }
 
-    draw(ctx){
-        ctx.drawImage(this.img, this.posX, this.posY, this.width, this.height);
-    }
+
+    
 
     drawHitbox(ctx){
         if (this instanceof Character || this instanceof Chicken) {
@@ -50,14 +41,7 @@ class MovableObject {
         }
     }
 
-    loadImages(array){
-        array.forEach((path) => {
-            
-            let img = new Image();
-            img.src = path;
-            this.imageCache[path] = img;
-        });
-    }
+  
 
     moveRight() {
         this.posX += this.speed;
@@ -68,7 +52,7 @@ class MovableObject {
     }
 
     playAnimation(images){
-        let i = this.currentImage %  this.IMAGES_WALKING.length;
+        let i = this.currentImage % images.length;
         let path = images[i];
         this.img = this.imageCache[path];
         this.currentImage++;
@@ -78,7 +62,6 @@ class MovableObject {
         this.speedY = 8;
     }
 
-    // Bessere Formel zur Kollisionsberechnung (Genauer)
     isColliding(MO) {
         return (
           this.posX + this.width - this.offset.right >= MO.posX + MO.offset.left &&
@@ -86,6 +69,25 @@ class MovableObject {
           this.posY + this.height - this.offset.bottom >= MO.posY + MO.offset.top &&
           this.posY + this.offset.top < MO.posY + MO.height - MO.offset.bottom
         );
+      }
+
+      hit(){
+        this.health -= 5;
+        if (this.health < 0) {
+            this.health = 0;
+        } else {
+            this.lastHit = new Date().getTime();
+        }
+      }
+
+      isHurt(){
+        let timePassed = new Date().getTime() - this.lastHit;
+        timePassed = timePassed / 1000;
+        return timePassed < 0.5;
+      }
+
+      isDead(){
+        return this.health == 0;
       }
 
 }
