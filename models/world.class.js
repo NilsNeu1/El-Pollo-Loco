@@ -6,6 +6,7 @@ canvas;
 ctx;
 keyboard;
 camera_x = 0;
+HUD = new HUD();
 
 // um die Variablen aus dieser datei nutzen zu können muss "this." davor gesetzt werden. 
 
@@ -42,6 +43,7 @@ camera_x = 0;
         this.addObjectToMap(this.level.clouds);
         this.addObjectToMap(this.level.enemies);
         this.addToMap(this.character);
+        this.addToMap(this.HUD);
 
         this.ctx.translate(-this.camera_x, 0); // macht das Translate wieder Rückgängig
 

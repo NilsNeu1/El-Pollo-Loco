@@ -3,7 +3,7 @@ class MovableObject extends DrawableObject {
     speedY = 1;
     otherDirection = false;
     acceleration = 0.2;
-    health = 1500;
+    health = 500;
     lastHit = 0;
     offset = {
         top: 0,
@@ -26,22 +26,6 @@ class MovableObject extends DrawableObject {
         return this.posY < 180;
     }
 
-
-
-    
-
-    drawHitbox(ctx){
-        if (this instanceof Character || this instanceof Chicken) {
-            
-            ctx.beginPath();
-            ctx.lineWidth = "2";
-            ctx.strokeStyle = "yellow";
-            ctx.rect(this.posX, this.posY, this.width, this.height);
-            ctx.stroke();
-        }
-    }
-
-  
 
     moveRight() {
         this.posX += this.speed;
