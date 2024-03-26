@@ -28,6 +28,7 @@ HUD = new HUD();
             this.level.enemies.forEach((enemy) => {
                 if( this.character.isColliding(enemy) ) {
                     this.character.hit();
+                    this.HUD.setPercentage(this.character.health);
                     console.log('you got', this.character.health, 'health left')
                 }
             });
@@ -43,7 +44,12 @@ HUD = new HUD();
         this.addObjectToMap(this.level.clouds);
         this.addObjectToMap(this.level.enemies);
         this.addToMap(this.character);
+
+        //--------------------fixierte objecte-------------------- //
+        this.ctx.translate(-this.camera_x, 0)
         this.addToMap(this.HUD);
+        this.ctx.translate(this.camera_x, 0)
+        //--------------------fixierte objecte-------------------- //
 
         this.ctx.translate(-this.camera_x, 0); // macht das Translate wieder Rückgängig
 

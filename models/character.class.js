@@ -96,6 +96,7 @@ class Character extends MovableObject {
                 
                 
                 this.world.camera_x = -this.posX + 100;
+                
         }, 1000/60)
         
 

@@ -60,7 +60,11 @@ class HUD extends DrawableObject {
         } else if (this.percentage > 0){
             return 0;
         }
+    }
 
-
+    test(){
+        if (moveRight()) {
+            return Character.posX
+        }
     }
 }
