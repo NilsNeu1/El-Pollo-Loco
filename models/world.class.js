@@ -7,6 +7,7 @@ ctx;
 keyboard;
 camera_x = 0;
 HUD = new HUD();
+trowable =[];
 
 // um die Variablen aus dieser datei nutzen zu können muss "this." davor gesetzt werden. 
 
@@ -16,11 +17,25 @@ HUD = new HUD();
         this.keyboard = keyboard;
         this.draw();
         this.setWorld();
-        this.checkCollisions();
+        this.start();
     }
 
     setWorld(){
         this.character.world = this;
+    }
+
+    start(){
+        setInterval(() => {
+            this.checkCollisions();
+            this.checkThrowObject();
+        }, 200);
+    }
+
+    checkThrowObject(){
+        if (this.keyboard.THROW) {
+            let bottle = new ThrowableObject(this.character.posX + 100, this.character.posY + 100);
+            this.trowable.push(bottle);
+        }
     }
 
     checkCollisions(){
@@ -44,6 +59,7 @@ HUD = new HUD();
         this.addObjectToMap(this.level.clouds);
         this.addObjectToMap(this.level.enemies);
         this.addToMap(this.character);
+        this.addObjectToMap(this.trowable);
 
         //--------------------fixierte objecte-------------------- //
         this.ctx.translate(-this.camera_x, 0)

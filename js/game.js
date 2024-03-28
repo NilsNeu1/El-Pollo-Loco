@@ -24,7 +24,7 @@ document.addEventListener('keydown', (event )=>{ // alternative keypress
      }
 
      if(event.keyCode == 32) { // Space
-        keyboard.LEFT = true
+        keyboard.THROW = true
      }
 
      if(event.keyCode == 13) { // Enter
@@ -47,7 +47,7 @@ document.addEventListener('keyup', (event )=>{ // alternative keypress
     }
 
     if(event.keyCode == 32) { // Space
-       keyboard.LEFT = false
+       keyboard.THROW = false
     }
 
     if(event.keyCode == 13) { // Enter

@@ -3,7 +3,7 @@ class MovableObject extends DrawableObject {
     speedY = 1;
     otherDirection = false;
     acceleration = 0.2;
-    health = 100;
+    health = 1000;
     lastHit = 0;
     offset = {
         top: 0,
@@ -23,7 +23,13 @@ class MovableObject extends DrawableObject {
     }
 
     isAboveGround(){
-        return this.posY < 180;
+
+        if (this instanceof ThrowableObject) {
+          return true;
+        } 
+        else {
+          return this.posY < 180;
+        }
     }
 
 
