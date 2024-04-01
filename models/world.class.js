@@ -6,7 +6,10 @@ canvas;
 ctx;
 keyboard;
 camera_x = 0;
-HUD = new HUD();
+healthBar = new HealthBar();
+salsaBar = new SalsaBar();
+availableBottles;
+coinBar = new CoinBar();
 trowable =[];
 
 // um die Variablen aus dieser datei nutzen zu können muss "this." davor gesetzt werden. 
@@ -15,9 +18,11 @@ trowable =[];
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas; // (Canvas links) greift auf das globale canvas zu. = canvas importiert das globale canvas in diese function.
         this.keyboard = keyboard;
+        this.availableBottles = 5;
         this.draw();
         this.setWorld();
         this.start();
+        this.coinBar.availableBottles = this.salsaBar.availableBottles;
     }
 
     setWorld(){
@@ -43,7 +48,7 @@ trowable =[];
             this.level.enemies.forEach((enemy) => {
                 if( this.character.isColliding(enemy) ) {
                     this.character.hit();
-                    this.HUD.setPercentage(this.character.health);
+                    this.healthBar.setPercentage(this.character.health);
                     console.log('you got', this.character.health, 'health left')
                 }
             });
@@ -63,7 +68,9 @@ trowable =[];
 
         //--------------------fixierte objecte-------------------- //
         this.ctx.translate(-this.camera_x, 0)
-        this.addToMap(this.HUD);
+        this.addToMap(this.healthBar);
+        this.addToMap(this.salsaBar);
+        this.addToMap(this.coinBar);
         this.ctx.translate(this.camera_x, 0)
         //--------------------fixierte objecte-------------------- //
 

@@ -1,4 +1,4 @@
-class HUD extends DrawableObject {
+class HealthBar extends DrawableObject {
 
     IMAGES_HEALTH = [
         'img/7_statusbars/1_statusbar/2_statusbar_health/orange/0.png',
@@ -9,31 +9,11 @@ class HUD extends DrawableObject {
         'img/7_statusbars/1_statusbar/2_statusbar_health/green/100.png'
     ];
 
-    IMAGES_COIN = [
-        'img/7_statusbars/1_statusbar/1_statusbar_coin/blue/0.png',
-        'img/7_statusbars/1_statusbar/1_statusbar_coin/blue/20.png',
-        'img/7_statusbars/1_statusbar/1_statusbar_coin/blue/40.png',
-        'img/7_statusbars/1_statusbar/1_statusbar_coin/blue/60.png',
-        'img/7_statusbars/1_statusbar/1_statusbar_coin/blue/80.png',
-        'img/7_statusbars/1_statusbar/1_statusbar_coin/blue/100.png'
-    ];
-
-    IMAGES_THROWABLE = [
-        'img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/0.png',
-        'img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/20.png',
-        'img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/40.png',
-        'img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/60.png',
-        'img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/80.png',
-        'img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/100.png'
-    ];
-
     percentage = 100;
 
     constructor(){
         super(); // muss genutzt werden, um die methoden der Mutterklasse nutzen zu können.
         this.loadImages(this.IMAGES_HEALTH);
-        this.loadImages(this.IMAGES_COIN);
-        this.loadImages(this.IMAGES_THROWABLE);
         this.setPercentage(100);
         this.posX = 10;
         this.posY = 10;
@@ -62,9 +42,5 @@ class HUD extends DrawableObject {
         }
     }
 
-    test(){
-        if (moveRight()) {
-            return Character.posX
-        }
-    }
+    
 }
