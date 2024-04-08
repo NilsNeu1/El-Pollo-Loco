@@ -22,7 +22,6 @@ trowable =[];
         this.draw();
         this.setWorld();
         this.start();
-        this.coinBar.availableBottles = this.salsaBar.availableBottles;
     }
 
     setWorld(){
@@ -67,11 +66,9 @@ trowable =[];
         this.addObjectToMap(this.trowable);
 
         //--------------------fixierte objecte-------------------- //
-        this.ctx.translate(-this.camera_x, 0)
-        this.addToMap(this.healthBar);
-        this.addToMap(this.salsaBar);
-        this.addToMap(this.coinBar);
-        this.ctx.translate(this.camera_x, 0)
+        this.ctx.translate(-this.camera_x, 0);
+        this.staticObjects(this.ctx);
+        this.ctx.translate(this.camera_x, 0);
         //--------------------fixierte objecte-------------------- //
 
         this.ctx.translate(-this.camera_x, 0); // macht das Translate wieder Rückgängig
@@ -93,16 +90,22 @@ trowable =[];
             this.flipImage(MO);
         }
         MO.draw(this.ctx);
-        MO.drawHitbox(this.ctx);
-
-        
-        
+        MO.drawHitbox(this.ctx);   
 
         if(MO.otherDirection){
             this.flipImageBack(MO)
         }
 
     }
+
+    staticObjects(ctx){
+        this.addToMap(this.healthBar);
+        this.addToMap(this.salsaBar);
+        this.salsaBar.drawCounter(this.ctx);
+        this.coinBar.drawCounter(this.ctx);
+        this.addToMap(this.coinBar);
+}
+
 
     flipImage(MO){
         this.ctx.save();
