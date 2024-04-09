@@ -8,9 +8,9 @@ keyboard;
 camera_x = 0;
 healthBar = new HealthBar();
 salsaBar = new SalsaBar();
-availableBottles;
 coinBar = new CoinBar();
 trowable =[];
+availableBottles = this.salsaBar.availableBottles;
 
 // um die Variablen aus dieser datei nutzen zu können muss "this." davor gesetzt werden. 
 
@@ -18,7 +18,6 @@ trowable =[];
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas; // (Canvas links) greift auf das globale canvas zu. = canvas importiert das globale canvas in diese function.
         this.keyboard = keyboard;
-        this.availableBottles = 5;
         this.draw();
         this.setWorld();
         this.start();
@@ -36,32 +35,37 @@ trowable =[];
     }
 
     checkThrowObject(){
-        if (this.keyboard.THROW) {
+        if (this.keyboard.THROW & this.salsaBar.availableBottles > 0) {
             let bottle = new ThrowableObject(this.character.posX + 100, this.character.posY + 100);
             this.trowable.push(bottle);
+            this.decreaseAvailableBottles();
         }
     }
 
-    checkCollisions(){
+    checkCollisions() {
         setInterval(() => {
             this.level.enemies.forEach((enemy) => {
-                if( this.character.isColliding(enemy) ) {
-                    this.character.hit();
-                    this.healthBar.setPercentage(this.character.health);
-                    console.log('you got', this.character.health, 'health left')
+                if (this.character.isColliding(enemy)) {
+                    if (enemy instanceof Chick || enemy instanceof Chicken || enemy instanceof Endboss) {
+                        this.character.hit();
+                        this.healthBar.setPercentage(this.character.health);
+                        // console.log('you got', this.character.health, 'health left')
+                    }
                 }
             });
         }, 1000);
     }
+    
 
     draw(){ // wird so oft aufgerufen wie für die Grafikkarte möglich
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // cleared das Canvas bevor etwas neues gezeichent wird
         
         this.ctx.translate(this.camera_x, 0); // verschiebt die Kamera nach links
 
-        this.addObjectToMap(this.level.backgroundObjects);
-        this.addObjectToMap(this.level.clouds);
         this.addObjectToMap(this.level.enemies);
+        this.addObjectToMap(this.level.clouds);
+        this.addObjectToMap(this.level.backgroundObjects);
+        this.addObjectToMap(this.level.collectableBottle);
         this.addToMap(this.character);
         this.addObjectToMap(this.trowable);
 
@@ -102,8 +106,8 @@ trowable =[];
         this.addToMap(this.healthBar);
         this.addToMap(this.salsaBar);
         this.salsaBar.drawCounter(this.ctx);
-        this.coinBar.drawCounter(this.ctx);
         this.addToMap(this.coinBar);
+        this.coinBar.drawCounter(this.ctx);
 }
 
 
@@ -118,6 +122,13 @@ trowable =[];
         MO.posX = MO.posX * -1;
         this.ctx.restore();
 }
+
+    decreaseAvailableBottles() {
+        if (this.salsaBar.availableBottles > 0) {
+            this.salsaBar.availableBottles--;
+        }
+        return this.salsaBar.availableBottles;
+    }
 
     
 

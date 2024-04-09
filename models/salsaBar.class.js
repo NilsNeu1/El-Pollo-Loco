@@ -23,4 +23,6 @@ class SalsaBar extends DrawableObject {
         ctx.fillText(this.availableBottles.toString(), this.posX + this.width - 25, this.posY + this.height + this.counterFontSize - 15); // Position und Text des Counters
     }
 
+
+
  }

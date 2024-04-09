@@ -2,6 +2,7 @@ class CoinBar extends DrawableObject {
 
     IMAGE_COIN = 'img/7_statusbars/3_icons/icon_coin.png'
     CollectedCoins = 0;
+    AvailableCoins = 10;
     counterFontSize = 1;
 
 
@@ -20,7 +21,8 @@ class CoinBar extends DrawableObject {
         ctx.fillStyle = 'black'; // Farbe des Texts
         ctx.strokeStyle = 'white';
         ctx.textAlign = 'center'; // Zentrierung des Texts
-        ctx.strokeText(this.CollectedCoins.toString(), this.posX + this.width - 15, this.posY + this.height + this.counterFontSize - 15);
-        ctx.fillText(this.CollectedCoins.toString(), this.posX + this.width - 15, this.posY + this.height + this.counterFontSize - 15); // Position und Text des Counters
+        ctx.strokeText(this.CollectedCoins.toString() + '/' + this.AvailableCoins.toString(), this.posX + this.width - 5, this.posY + this.height + this.counterFontSize - 15);
+        ctx.fillText(this.CollectedCoins.toString() + '/' + this.AvailableCoins.toString(), this.posX + this.width - 5, this.posY + this.height + this.counterFontSize - 15); // Position und Text des Counters
+        
     }
 }
