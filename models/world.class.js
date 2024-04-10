@@ -62,10 +62,10 @@ availableBottles = this.salsaBar.availableBottles;
         
         this.ctx.translate(this.camera_x, 0); // verschiebt die Kamera nach links
 
-        this.addObjectToMap(this.level.enemies);
-        this.addObjectToMap(this.level.clouds);
         this.addObjectToMap(this.level.backgroundObjects);
+        this.addObjectToMap(this.level.clouds);
         this.addObjectToMap(this.level.collectableBottle);
+        this.addObjectToMap(this.level.enemies);
         this.addToMap(this.character);
         this.addObjectToMap(this.trowable);
 
