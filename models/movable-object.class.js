@@ -48,7 +48,8 @@ class MovableObject extends DrawableObject {
 
     isColliding(MO) {
       
-      if (MO instanceof MovableObject && !(MO instanceof BackgroundObject)) {
+
+      if (MO instanceof MovableObject) {
           return (
               this.posX + this.width - this.offset.right >= MO.posX + MO.offset.left &&
               this.posX + this.offset.left < MO.posX + MO.width - MO.offset.right &&
@@ -57,7 +58,15 @@ class MovableObject extends DrawableObject {
           );
       }
       return false;
+      
   }
+
+  isCollecting(col) {
+    if (col instanceof CollectableBottle) {
+        return true 
+    }
+  }
+
   
 
       hit(){

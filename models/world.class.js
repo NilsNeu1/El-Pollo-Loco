@@ -31,6 +31,7 @@ availableBottles = this.salsaBar.availableBottles;
         setInterval(() => {
             this.checkCollisions();
             this.checkThrowObject();
+            this.checkCollections();
         }, 200);
     }
 
@@ -51,6 +52,17 @@ availableBottles = this.salsaBar.availableBottles;
                         this.healthBar.setPercentage(this.character.health);
                         // console.log('you got', this.character.health, 'health left')
                     }
+                }
+            });
+        }, 1000);
+    }
+
+    checkCollections() {
+        setInterval(() => {
+            this.level.collectableBottle.forEach((bottle) => {
+                if (this.character.isCollecting(bottle)) {
+                    this.salsaBar.availableBottles++;
+                   // this.resetIsCollecting();
                 }
             });
         }, 1000);
@@ -128,6 +140,10 @@ availableBottles = this.salsaBar.availableBottles;
             this.salsaBar.availableBottles--;
         }
         return this.salsaBar.availableBottles;
+    }
+
+    resetIsCollecting() {
+        this.character.isCollecting = false;
     }
 
     
