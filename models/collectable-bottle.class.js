@@ -1,4 +1,4 @@
-class CollectableBottle extends DrawableObject{
+class CollectableBottle extends MovableObject{
     
     // IMAGE_BOTTLE = [
     //     'img/6_salsa_bottle/1_salsa_bottle_on_ground.png',
@@ -11,7 +11,7 @@ class CollectableBottle extends DrawableObject{
 constructor(){
 
         super().loadImage('img/6_salsa_bottle/2_salsa_bottle_on_ground.png');
-        this.posX = 200 + Math.random() * 100; 
+        this.posX = 400 + Math.random() * 1000; 
         this.posY = 350;
 
     }

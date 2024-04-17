@@ -59,14 +59,15 @@ availableBottles = this.salsaBar.availableBottles;
 
     checkCollections() {
         setInterval(() => {
-            this.level.collectableBottle.forEach((bottle) => {
-                if (this.character.isCollecting(bottle)) {
+            this.level.collectableBottle.forEach((bottle, index) => {
+                if (this.character.isColliding(bottle)) {
                     this.salsaBar.availableBottles++;
-                   // this.resetIsCollecting();
+                    this.level.collectableBottle.splice(index, 1); // Remove the collided bottle from the array
                 }
             });
         }, 1000);
     }
+    
     
 
     draw(){ // wird so oft aufgerufen wie für die Grafikkarte möglich
@@ -140,10 +141,6 @@ availableBottles = this.salsaBar.availableBottles;
             this.salsaBar.availableBottles--;
         }
         return this.salsaBar.availableBottles;
-    }
-
-    resetIsCollecting() {
-        this.character.isCollecting = false;
     }
 
     
