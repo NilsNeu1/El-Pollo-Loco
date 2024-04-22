@@ -61,12 +61,6 @@ class MovableObject extends DrawableObject {
       
   }
 
-    isCollecting(col) {
-        if (col instanceof CollectableBottle) {
-            return true 
-        }
-    }
-
   
 
       hit(){

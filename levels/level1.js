@@ -34,6 +34,13 @@ const level1 = new Level(
 ],
 
 [
+    new CollectableCoin(),
+    new CollectableCoin(),
+    new CollectableCoin(),
+    new CollectableCoin(),
+],
+
+[
     // new Chick(),
     // new Chick(),
     // new Chick(),
