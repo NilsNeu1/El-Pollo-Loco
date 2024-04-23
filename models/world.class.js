@@ -36,12 +36,13 @@ availableBottles = this.salsaBar.availableBottles;
     }
 
     checkThrowObject(){
-        if (this.keyboard.THROW & this.salsaBar.availableBottles > 0) {
-            let bottle = new ThrowableObject(this.character.posX + 100, this.character.posY + 100);
+        if (this.keyboard.THROW && this.salsaBar.availableBottles > 0) {
+            let bottle = new ThrowableObject(this.character.posX + 100, this.character.posY + 100, this.level);
             this.trowable.push(bottle);
             this.decreaseAvailableBottles();
         }
     }
+    
 
     checkCollisions() {
         setInterval(() => {
@@ -52,6 +53,7 @@ availableBottles = this.salsaBar.availableBottles;
                         this.healthBar.setPercentage(this.character.health);
                         // console.log('you got', this.character.health, 'health left')
                     }
+                    
                 }
             });
         }, 1000);
@@ -65,8 +67,17 @@ availableBottles = this.salsaBar.availableBottles;
                     this.level.collectableBottle.splice(index, 1); // Remove the collided bottle from the array
                 }
             });
+
+            this.level.collectableCoin.forEach((coin, index) => {
+                if (this.character.isColliding(coin)) {
+                    this.coinBar.CollectedCoins++;
+                    this.level.collectableCoin.splice(index, 1); // Remove the collided bottle from the array
+                } 
+            });
+
         }, 1000);
     }
+
     
     
 

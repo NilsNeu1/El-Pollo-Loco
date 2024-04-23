@@ -23,7 +23,7 @@ class ThrowableObject extends MovableObject {
         this.posY = y;
         this.height = 100;
         this.width = 100;
-        this.rotationAngle = 0; // Startwinkel
+        this.level = level1;
         this.throw();
         
     }
@@ -32,16 +32,29 @@ class ThrowableObject extends MovableObject {
         this.speedY = 7;
         this.applyGravity();
 
-        setInterval(() => {
+       let moveInterval = setInterval(() => {
             this.posX += 8;
+            this.level.enemies.forEach(enemy => {
+                if (this.isColliding(enemy)) {
+                    clearInterval(moveInterval);
+                    clearInterval(animateInterval);
+                    this.splash();  // Rufe splash auf, wenn eine Kollision erkannt wird
+                }
+            });
             
 
         }, 10);
 
-        setInterval(() => {
+        let animateInterval = setInterval(() => {
            this.playAnimation(this.IMAGES_ROTATE);
         }, 80);
 
+
+    }
+
+    splash() {
+        this.playAnimation(this.IMAGES_SPLASH);
+        // Optional: weiteren Code hinzufügen, falls nach der Animation zusätzliche Logik benötigt wird.
     }
 
     
