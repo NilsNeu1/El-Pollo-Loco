@@ -30,26 +30,23 @@ class ThrowableObject extends MovableObject {
 
     throw() {
         this.speedY = 7;
-        this.applyGravity();
-
-       let moveInterval = setInterval(() => {
+        this.gravityInterval = this.applyGravity(); // Speichern der Interval-ID von applyGravity
+    
+        let moveInterval = setInterval(() => {
             this.posX += 8;
             this.level.enemies.forEach(enemy => {
                 if (this.isColliding(enemy)) {
                     clearInterval(moveInterval);
                     clearInterval(animateInterval);
-                    this.splash();  // Rufe splash auf, wenn eine Kollision erkannt wird
+                    clearInterval(this.gravityInterval); // Beenden des Schwerkraft-Intervalls
+                    this.splash(); // Aufruf von splash bei einer Kollision
                 }
             });
-            
-
         }, 10);
-
+    
         let animateInterval = setInterval(() => {
-           this.playAnimation(this.IMAGES_ROTATE);
+            this.playAnimation(this.IMAGES_ROTATE);
         }, 80);
-
-
     }
 
     splash() {

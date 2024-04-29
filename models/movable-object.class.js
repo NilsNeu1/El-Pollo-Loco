@@ -7,13 +7,15 @@ class MovableObject extends DrawableObject {
     lastHit = 0;
 
 
-    applyGravity(){
-        setInterval( () => {
-            if(this.isAboveGround() || this.speedY > 0) {
+    applyGravity() {
+        return setInterval(() => {
+            if (this.isAboveGround() || this.speedY > 0) {
                 this.posY -= this.speedY;
-                this.speedY -= this.acceleration;}
-            
-        }, 1000 /144);
+                this.speedY -= this.acceleration;
+            } else {
+                clearInterval(this.gravityInterval); // Optional: Beenden des Intervalls, wenn keine Gravitationswirkung mehr nötig ist
+            }
+        }, 1000 / 144);
     }
 
     isAboveGround(){
