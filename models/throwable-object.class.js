@@ -37,25 +37,27 @@ class ThrowableObject extends MovableObject {
             this.level.enemies.forEach(enemy => {
                 if (this.isColliding(enemy)) {
                     clearInterval(moveInterval);
-                    clearInterval(animateInterval);
+                    clearInterval(rotateInterval);
                     clearInterval(this.gravityInterval); // Beenden des Schwerkraft-Intervalls
                     this.splash(); // Aufruf von splash bei einer Kollision
                 }
             });
         }, 10);
     
-        let animateInterval = setInterval(() => {
+        let rotateInterval = setInterval(() => {
             this.playAnimation(this.IMAGES_ROTATE);
         }, 80);
     }
 
     splash() {
-        this.playAnimation(this.IMAGES_SPLASH);
-        // Optional: weiteren Code hinzufügen, falls nach der Animation zusätzliche Logik benötigt wird.
+        let splashCount = 0;
+        let splashInterval = setInterval(() => {
+            this.playAnimation(this.IMAGES_SPLASH[splashCount]);
+            splashCount++;
+
+            if (splashCount >= this.IMAGES_SPLASH.length) {
+                clearInterval(splashInterval); // Clear the interval
+            }
+        }, 80);
     }
-
-    
-    
-
-
 }
