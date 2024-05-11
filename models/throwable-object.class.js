@@ -40,6 +40,7 @@ class ThrowableObject extends MovableObject {
                     clearInterval(rotateInterval);
                     clearInterval(this.gravityInterval); // Beenden des Schwerkraft-Intervalls
                     this.splash(); // Aufruf von splash bei einer Kollision
+                    
                 }
             });
         }, 10);
@@ -50,13 +51,14 @@ class ThrowableObject extends MovableObject {
     }
 
     splash() {
-        let splashCount = 0;
+        let splashCount = 0; // Track the number of splash animations played
         let splashInterval = setInterval(() => {
-            this.playAnimation(this.IMAGES_SPLASH[splashCount]);
-            splashCount++;
-
             if (splashCount >= this.IMAGES_SPLASH.length) {
-                clearInterval(splashInterval); // Clear the interval
+                clearInterval(splashInterval); // Clear the interval when end of array is reached
+                world.trowable.splice(world.trowable.indexOf(this), 1);
+            } else {
+                this.playAnimation([this.IMAGES_SPLASH[splashCount]]);
+                splashCount++;
             }
         }, 80);
     }

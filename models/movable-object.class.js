@@ -84,4 +84,8 @@ class MovableObject extends DrawableObject {
         return this.health == 0;
       }
 
+      isNotMoving(){
+        return this.speed == 0;
+      }
+
 }

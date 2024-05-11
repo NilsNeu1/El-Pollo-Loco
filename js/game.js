@@ -53,7 +53,7 @@ document.addEventListener('keyup', (event )=>{ // alternative keypress
     if(event.keyCode == 13) { // Enter
        keyboard.THROW = false
     }
-   console.log(event);
+  // console.log(event);
 });
 
 /// ctx.drawImage(character, 20, 20, 50, 150) // 20,20 = Coordinate 50 = Breite 150 = Höhe

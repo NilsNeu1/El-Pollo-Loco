@@ -110,6 +110,10 @@ class Character extends MovableObject {
                 this.playAnimation(this.IMAGES_DEAD)
             }
 
+            else if (this.isNotMoving()) {
+                this.playAnimation(this.IMAGES_IDLE)
+            }
+
             else if(this.isAboveGround()){
                 this.playAnimation(this.IMAGES_JUMP)
 
