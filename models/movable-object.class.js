@@ -5,6 +5,7 @@ class MovableObject extends DrawableObject {
     acceleration = 0.2;
     health = 100;
     lastHit = 0;
+    idleTimer = new Date().getTime();
 
 
     applyGravity() {
@@ -84,8 +85,21 @@ class MovableObject extends DrawableObject {
         return this.health == 0;
       }
 
-      isNotMoving(){
-        return this.speed == 0;
-      }
+      isNotMoving() {
+        return !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.world.keyboard.UP && !this.isAboveGround();
+    }
+
+    fallsAsleep() {
+        let currentTime = new Date().getTime();
+        let asleep = currentTime - this.idleTimer;
+        
+        if (asleep >= 1000 && this.isNotMoving()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    
 
 }
