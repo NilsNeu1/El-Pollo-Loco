@@ -6,6 +6,7 @@ class MovableObject extends DrawableObject {
     health = 100;
     lastHit = 0;
     idleTimer = new Date().getTime();
+    asleep = 0;
 
 
     applyGravity() {
@@ -86,17 +87,39 @@ class MovableObject extends DrawableObject {
       }
 
       isNotMoving() {
-        return !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.world.keyboard.UP && !this.isAboveGround();
-    }
-
-    fallsAsleep() {
-        let currentTime = new Date().getTime();
-        let asleep = currentTime - this.idleTimer;
-        
-        if (asleep >= 1000 && this.isNotMoving()) {
+        if (!this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.world.keyboard.UP && !this.isAboveGround()) {
+          //  console.log('not moving');
             return true;
         } else {
             return false;
+        }
+      }
+    
+
+      fallsAsleep() {
+        let currentTime = new Date().getTime();
+        let asleep = currentTime - this.idleTimer;
+    
+        if (this.isNotMoving() && asleep >= 3000 ) {
+            console.log('not moving since', asleep, 'ms');
+            return true;
+        } else {
+            if (!this.isNotMoving()) {
+                console.log('Character is moving');
+            } else {
+                console.log('Character is idle but not long enough:', asleep, 'ms');
+            }
+            return false;
+        }
+    }
+
+    updateIdleTimer() {
+        if (this.isNotMoving()) {
+            if (!this.idleTimer) {
+                this.idleTimer = new Date().getTime();
+            }
+        } else {
+            this.idleTimer = new Date().getTime(); // Reset timer when character starts moving
         }
     }
     

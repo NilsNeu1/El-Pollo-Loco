@@ -71,6 +71,8 @@ class Character extends MovableObject {
         this.applyGravity();
     }
 
+    
+
 
     animate(){
 
@@ -100,33 +102,30 @@ class Character extends MovableObject {
         }, 1000/60)
         
 
-        setInterval ( () => {
-
+        setInterval(() => {
+            this.updateIdleTimer();
+        
             if (this.isHurt()) {
-                this.playAnimation(this.IMAGES_HURT)
+                this.playAnimation(this.IMAGES_HURT);
+            } else if (this.isDead()) {
+                this.playAnimation(this.IMAGES_DEAD);
+            } else if (this.fallsAsleep()) {
+                this.playAnimation(this.IMAGES_LONGIDLE);
+            } else if (this.isNotMoving()) {
+                this.playAnimation(this.IMAGES_IDLE);
+            } else if (this.isAboveGround()) {
+                this.playAnimation(this.IMAGES_JUMP);
+            } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+                this.playAnimation(this.IMAGES_WALKING);
             }
+        }, 1000 / 12);
 
-            else if (this.isDead()) {
-                this.playAnimation(this.IMAGES_DEAD)
-            }
-
-            else if (this.isNotMoving()) {
-                this.playAnimation(this.IMAGES_IDLE)
-            }
-            
-            else if (this.fallsAsleep()) {
-                this.playAnimation(this.IMAGES_LONGIDLE)
-            }
-
-            else if(this.isAboveGround()){
-                this.playAnimation(this.IMAGES_JUMP)
-
-            } else if(this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {   
-                this.playAnimation(this.IMAGES_WALKING)
-    }
-        }, 1000/12);
+        setInterval(() => {
+            this.fallsAsleep() 
+        }, 1000);
         
     }
+    
 
 
     
