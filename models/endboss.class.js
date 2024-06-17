@@ -4,6 +4,7 @@ height = 450;
 width = 250;
 posY = 20;
 posX = 800;
+attacking = false
 
     IMAGES_WALKING = [
         'img/4_enemie_boss_chicken/1_walk/G1.png',
@@ -39,24 +40,26 @@ posX = 800;
 
     IMAGES_IDLE = [
         'img/4_enemie_boss_chicken/2_alert/G5.png',
+        'img/4_enemie_boss_chicken/2_alert/G5.png',
+        'img/4_enemie_boss_chicken/2_alert/G5.png',
+        'img/4_enemie_boss_chicken/2_alert/G5.png',
+        'img/4_enemie_boss_chicken/2_alert/G5.png',
         'img/4_enemie_boss_chicken/2_alert/G6.png',
-        'img/4_enemie_boss_chicken/2_alert/G7.png',
-        'img/4_enemie_boss_chicken/2_alert/G8.png'];
+        'img/4_enemie_boss_chicken/2_alert/G6.png'];
     imageCache = {};
     currentImage = 0;
 
 
     constructor(){
-        super().loadImage('img/4_enemie_boss_chicken/1_walk/G1.png');
+        super().loadImage('img/4_enemie_boss_chicken/5_dead/G26.png');
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_ALERT);
         this.loadImages(this.IMAGES_ATTACK);
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_DEAD);
         this.animate();
-
-        // this.speed = 0.05 + Math.random() * 0.25;
-        // this.moveLeft();
+        this.moveLeft();
+        this.isDead();       
     }
 
     animate(){
@@ -69,7 +72,18 @@ posX = 800;
             } else if (this.isDead()){
                 this.playAnimation(this.IMAGES_DEAD);
 
-            } 
+            } else if (this.isAlerted()){
+                this.playAnimation(this.IMAGES_ALERT);
+            
+            } else if (this.attacking = true){
+
+            } else if (this.moveLeft()){
+                this.playAnimation(this.IMAGES_WALKING);
+            }
+            
+            else {
+                this.playAnimation(this.IMAGES_IDLE);
+            }
         
         
     
@@ -77,8 +91,14 @@ posX = 800;
     }
 
     isAlerted(){
-        
+        if (this.health >= 100) {
+            this.attacking = true;
+            this.moveLeft();
+        } else {
+            this.attacking = false;
+        }
     }
+
 
     
 }

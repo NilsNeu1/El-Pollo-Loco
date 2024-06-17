@@ -126,14 +126,6 @@ class Character extends MovableObject {
         
     }
 
-    isNotMoving() {
-        if (!this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.world.keyboard.UP && !this.isAboveGround()) {
-         
-            return true;
-        } else {
-            return false;
-        }
-      }
     
 
       fallsAsleep() {

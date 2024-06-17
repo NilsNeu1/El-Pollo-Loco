@@ -15,7 +15,7 @@ class MovableObject extends DrawableObject {
                 this.posY -= this.speedY;
                 this.speedY -= this.acceleration;
             } else {
-                clearInterval(this.gravityInterval); // Optional: Beenden des Intervalls, wenn keine Gravitationswirkung mehr nötig ist
+                clearInterval(this.gravityInterval);
             }
         }, 1000 / 144);
     }
@@ -86,7 +86,14 @@ class MovableObject extends DrawableObject {
         return this.health == 0;
       }
 
-
+      isNotMoving() {
+        if (!this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.world.keyboard.UP && !this.isAboveGround()) {
+         
+            return true;
+        } else {
+            return false;
+        }
+      }
     
     
 
