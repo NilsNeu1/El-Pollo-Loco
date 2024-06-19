@@ -4,7 +4,10 @@ height = 450;
 width = 250;
 posY = 20;
 posX = 800;
+health = 100;
+speed = 1.05;
 attacking = false
+shouldMoveLeft = false;
 
     IMAGES_WALKING = [
         'img/4_enemie_boss_chicken/1_walk/G1.png',
@@ -58,40 +61,38 @@ attacking = false
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_DEAD);
         this.animate();
-        this.moveLeft();
         this.isDead();       
     }
 
     animate(){
-
-        setInterval ( () => {
-
+        setInterval(() => {
             if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
-
-            } else if (this.isDead()){
+            
+            } else if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
-
-            } else if (this.isAlerted()){
+            
+            } else if (this.isAlerted()) {
                 this.playAnimation(this.IMAGES_ALERT);
             
-            } else if (this.attacking = true){
-
-            } else if (this.moveLeft()){
-                this.playAnimation(this.IMAGES_WALKING);
-            }
+            } else if (this.attacking) {
+                this.playAnimation(this.IMAGES_ATTACK);
+                this.moveLeft();  // Move left only when attacking
             
-            else {
+            } else if (this.shouldMoveLeft) { // You might need a condition like this
+                this.playAnimation(this.IMAGES_WALKING);
+                this.moveLeft(); // This would allow moveLeft when necessary
+            
+            } else {
                 this.playAnimation(this.IMAGES_IDLE);
             }
-        
-        
-    
-    }, 1000/ 10);
+        }, 1000 / 8);
     }
+    
+    
 
     isAlerted(){
-        if (this.health >= 100) {
+        if (this.health <= 99) {
             this.attacking = true;
             this.moveLeft();
         } else {
