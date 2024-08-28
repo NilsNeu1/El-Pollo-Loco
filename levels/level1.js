@@ -46,7 +46,7 @@ const level1 = new Level(
     // new Chick(),
     // new Chicken(),
     // new Chicken(),
-    // new Chicken(),
-    new Endboss(),
+     new Chicken(),
+    // new Endboss(),
 ]
 );
