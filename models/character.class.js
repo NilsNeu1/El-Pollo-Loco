@@ -154,6 +154,8 @@ class Character extends MovableObject {
             this.idleTimer = new Date().getTime(); // Reset timer when character starts moving
         }
     }
+
+    
     
 
 

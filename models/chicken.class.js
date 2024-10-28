@@ -33,24 +33,20 @@ class Chicken extends MovableObject {
         }, 1000 / 144);
     
         setInterval(() => {
-            if (this.isCollidingFromAbove(world.Character)) {   // Überprüfen, ob der Spieler von oben auf das Huhn springt
-                this.health -= 5;                            
-                world.Character.speedY = -10;  
-            }
-            console.log(this.health, "from chicken left")
-            
-            if (this.health === 0) {                   
+            if (this.health > 4) {
+                this.playAnimation(this.IMAGES_WALKING);
+            } else {
                 this.playAnimation(this.IMAGES_DEAD);
                 this.deadChicken();
-            } else {
-                this.playAnimation(this.IMAGES_WALKING);
+                console.log('Chicken is dead')
             }
         }, 1000 / 10);
     }
 
-    deadChicken(){
-            this.speed = 0;
-    };
+    deadChicken() {
+        this.speed = 0; // Das Huhn stoppt, wenn es tot ist
+        this.posY =+ 440;
+    }
 
 
 }

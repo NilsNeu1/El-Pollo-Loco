@@ -67,9 +67,10 @@ class MovableObject extends DrawableObject {
 
   isCollidingFromAbove(MO) {
     return (
-        this.isColliding(MO) &&               // Standardkollision
-        this.speedY > 0 &&                    // Charakter fällt nach unten
-        this.posY + this.height <= MO.posY    // Charakter ist oberhalb des Gegners
+        this.isColliding(MO) &&               
+        // this.speedY > 0 &&                    // Charakter fällt nach unten
+        this.posY <= MO.posY    // Charakter ist oberhalb des Gegners
+        
     );
 }
   

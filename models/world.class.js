@@ -49,15 +49,24 @@ availableBottles = this.salsaBar.availableBottles;
             this.level.enemies.forEach((enemy) => {
                 if (this.character.isColliding(enemy)) {
                     if (enemy instanceof Chick || enemy instanceof Chicken || enemy instanceof Endboss) {
-                        this.character.hit();
-                        this.healthBar.setPercentage(this.character.health);
-                        // console.log('you got', this.character.health, 'health left')
+                        if (this.character.isCollidingFromAbove(enemy)) {
+                            enemy.health -= 5;
+                            this.character.jump();
+                            
+                            if (enemy.health <= 5) {
+                                enemy.playAnimation(enemy.IMAGES_DEAD);
+                                enemy.deadChicken(); 
+                            }
+                        } else {
+                            this.character.hit();
+                            this.healthBar.setPercentage(this.character.health);
+                        }
                     }
-                    
                 }
             });
-        }, 1000);
+        }, 1000 / 60); // Kollisionsprüfung alle 60 fps
     }
+
 
     checkCollections() {
         setInterval(() => {
