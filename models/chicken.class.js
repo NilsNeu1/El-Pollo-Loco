@@ -38,15 +38,18 @@ class Chicken extends MovableObject {
             } else {
                 this.playAnimation(this.IMAGES_DEAD);
                 this.deadChicken();
-                console.log('Chicken is dead')
             }
         }, 1000 / 10);
     }
 
     deadChicken() {
-        this.speed = 0; // Das Huhn stoppt, wenn es tot ist
-        this.posY =+ 440;
+        this.speed = 0;
+
+        setInterval(() => {
+            this.posY += 0.5;
+        }, 20);
     }
+    
 
 
 }
