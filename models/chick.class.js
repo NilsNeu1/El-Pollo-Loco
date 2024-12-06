@@ -1,5 +1,6 @@
 class Chick extends MovableObject {
 
+    health = 15;
     height = 50;
     width = 50;
     posY = 380;
@@ -14,21 +15,39 @@ class Chick extends MovableObject {
 
 
     constructor(){
-        super().loadImage('img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
+        super().loadImage('img/3_enemies_chicken/chicken_small/2_dead/dead.png');
         this.loadImages(this.IMAGES_WALKING);
+        this.loadImages(this.IMAGES_DEAD);
         
-        this.posX = 200 + Math.random() * 500; // ändert die geerbte position
+        this.posX = 400 + Math.random() * 500; // ändert die geerbte position
         this.animate();
 
-        this.speed = 0.05 + Math.random() * 0.25;
+        this.speed = 0.505 + Math.random() * 0.25;
         this.moveLeft();
+        this.isCollidingFromAbove();
     }
 
 
     animate(){
 
         setInterval ( () => {
-            this.playAnimation(this.IMAGES_WALKING);
+            this.moveLeft();
         }, 1000/ 10);
+
+            if (this.health > 10) {
+                this.playAnimation(this.IMAGES_WALKING); 
+            } else {
+                this.playAnimation(this.IMAGES_DEAD);
+                this.deadChicken();
+        }
+        
+    }
+
+    deadChicken() {
+        this.speed = 0;
+
+        setInterval(() => {
+            this.posY += 0.55;
+        }, 20);
     }
 }

@@ -28,9 +28,17 @@ class DrawableObject{
         this.img.src = path;
     }
     
-    draw(ctx){
-        ctx.drawImage(this.img, this.posX, this.posY, this.width, this.height);
+    draw(ctx) {
+        if (this.img) {
+            try {
+                ctx.drawImage(this.img, this.posX, this.posY, this.width, this.height);
+            } catch (e) {
+                console.warn('Error drawing image:', e);
+                console.log('Failed to load', this.img.src);
+            }
+        } else {}
     }
+    
 
     drawHitbox(ctx){
         if (this instanceof Character || this instanceof Chicken || this instanceof Endboss) {
