@@ -11,6 +11,7 @@ salsaBar = new SalsaBar();
 coinBar = new CoinBar();
 trowable =[];
 availableBottles = this.salsaBar.availableBottles;
+//bossBar = new BossBar();
 
 // um die Variablen aus dieser datei nutzen zu können muss "this." davor gesetzt werden. 
 
@@ -124,7 +125,7 @@ availableBottles = this.salsaBar.availableBottles;
     }
 
     addToMap(MO){
-        if(MO.otherDirection) { //spiegelt den das MO 
+        if(MO.otherDirection) { //spiegelt das MO um in andere richtungen gehen zu können
             this.flipImage(MO);
         }
         MO.draw(this.ctx);
@@ -142,6 +143,7 @@ availableBottles = this.salsaBar.availableBottles;
         this.salsaBar.drawCounter(this.ctx);
         this.addToMap(this.coinBar);
         this.coinBar.drawCounter(this.ctx);
+    //    this.addToMap(this.bossBar);
 }
 
 
