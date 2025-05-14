@@ -22,12 +22,14 @@
     <script src="models/level.class.js" ></script>
     <script src="models/character.class.js" ></script>
     <script src="models/endboss.class.js" ></script>
+    <script src="levels/level0.js" ></script>
     <script src="levels/level1.js" ></script>
     <script src="js/game.js" ></script>
 
-    <title>Document</title>
+    <title>El Pollo Loco</title>
 </head>
 <body onload="init()">
+    
     
     <h1>El Pollo Loco</h1>
 
@@ -35,5 +37,24 @@
 
     </canvas>
 
+    <div id="controllBox" class="controllBox">
+        
+        <section id="controlls" class="controlls">
+            <!-- <h2>Controls</h2> -->
+            <div class="control-items">
+                <img class="controllImg" src="img/Assets/Pfeiltasten.png" alt=""><p>   Move</p>
+                <img class="controllImg" src="img/Assets/Leertaste.png" alt=""><p>   Throw</p>
+            </div>
+        </section>
+
+        <section class="controlls">
+            <!-- <h2>Settings</h2> -->
+            <div class="control-items">
+                <p>Volume</p>
+                <input type="range" id="volume" name="volume" min="0" max="100" value="50">
+            </div>
+        </section>
+
+    </div>
 </body>
 </html>

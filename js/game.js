@@ -6,8 +6,6 @@ function init(){
     canvas = document.getElementById('canvas');
     world = new World(canvas, keyboard) // World ist ein Object
 
-console.log('My character is', world.character);
-
 }
 
 document.addEventListener('keydown', (event )=>{ // alternative keypress
