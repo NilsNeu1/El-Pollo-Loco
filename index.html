@@ -26,16 +26,21 @@
     <script src="levels/level1.js" ></script>
     <script src="js/game.js" ></script>
 
-    <title>El Pollo Loco</title>
+    <title >El Pollo Loco</title>
+    <link rel="icon" type="image" href="img/4_enemie_boss_chicken/1_walk/G1.png">
 </head>
 <body onload="init()">
     
     
     <h1>El Pollo Loco</h1>
 
-    <canvas id="canvas" height="480" width="720" > 
+    <div id="gameContainer">
+    <canvas id="canvas" height="480" width="720" > </canvas>
+    <div id="start-screen" class="start-screen">
+            <button class="start-game-button" onclick="loadLevel()">Start Demo</button>
+    </div>
+    </div>
 
-    </canvas>
 
     <div id="controllBox" class="controllBox">
         

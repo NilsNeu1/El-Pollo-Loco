@@ -94,3 +94,40 @@ input[type="range"]::-webkit-slider-thumb {
     align-content: center;
     padding-left: 15px;
 }
+
+#gameContainer {
+    position: relative;
+    width: 724px;
+    height: 485px;
+    margin: 0 auto;
+    border: 3px solid #000;
+    border-radius: 7px;
+}
+
+.start-screen {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("img/9_intro_outro_screens/start/startscreen_1.png");
+    background-color: #994409;
+    background-size: contain;
+    background-position: top;
+    background-repeat: no-repeat;
+}
+
+.start-game-button{
+    position: absolute;
+    top: 90%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: transparent;
+    color: #ff9e00;
+    font-size: 24px;
+    padding: 10px 20px;
+    border: solid #b76127 2px;
+    border-radius: 4px;
+    cursor: pointer;
+}

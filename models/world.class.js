@@ -1,7 +1,7 @@
 class World {
 
 character = new Character();  // erstellt einen neuen charackter in der Welt // Character erbt variablen u eigenschaften von movable object
-level = level1;
+level = level0;
 canvas;
 ctx;
 keyboard;
@@ -94,8 +94,10 @@ availableBottles = this.salsaBar.availableBottles;
     draw(){ // wird so oft aufgerufen wie für die Grafikkarte möglich
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // cleared das Canvas bevor etwas neues gezeichent wird
         
-        this.ctx.translate(this.camera_x, 0); // verschiebt die Kamera nach links
-
+        
+        if(this.level !=level0){
+            this.ctx.translate(this.camera_x, 0); // verschiebt die Kamera nach links
+            
         this.addObjectToMap(this.level.backgroundObjects);
         this.addObjectToMap(this.level.clouds);
         this.addObjectToMap(this.level.collectableBottle);
@@ -103,14 +105,15 @@ availableBottles = this.salsaBar.availableBottles;
         this.addObjectToMap(this.level.enemies);
         this.addToMap(this.character);
         this.addObjectToMap(this.trowable);
-
+    
         //--------------------fixierte objecte-------------------- //
         this.ctx.translate(-this.camera_x, 0);
         this.staticObjects(this.ctx);
         this.ctx.translate(this.camera_x, 0);
         //--------------------fixierte objecte-------------------- //
-
         this.ctx.translate(-this.camera_x, 0); // macht das Translate wieder Rückgängig
+        }else
+            {this.addObjectToMap(this.level.backgroundObjects);} // das einzige objekt, dass immer geladen werden muss0
 
         let self = this; // function kennt "this" nicht mehr und muss daswegen ausßerhalb neu definiert werden.
         requestAnimationFrame(function(){ // == requestAnimationFrame(this.draw)
@@ -166,8 +169,5 @@ availableBottles = this.salsaBar.availableBottles;
         return this.salsaBar.availableBottles;
     }
 
-    
-
-    
 
 }

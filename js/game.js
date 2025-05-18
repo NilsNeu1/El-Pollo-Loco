@@ -8,6 +8,13 @@ function init(){
 
 }
 
+   function loadLevel(){
+      document.getElementById('canvas').style.display = 'block';
+      document.getElementById('start-screen').style.display = 'none';
+      world.level = level1;
+      console.log("Level 1 loaded");
+    }
+
 document.addEventListener('keydown', (event )=>{ // alternative keypress
      if(event.keyCode == 39) { //Arrow Right
         keyboard.RIGHT = true
@@ -53,5 +60,5 @@ document.addEventListener('keyup', (event )=>{ // alternative keypress
     }
   // console.log(event);
 });
-
+ 
 /// ctx.drawImage(character, 20, 20, 50, 150) // 20,20 = Coordinate 50 = Breite 150 = Höhe
