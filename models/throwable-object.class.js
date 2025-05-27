@@ -15,7 +15,7 @@ class ThrowableObject extends MovableObject {
         'img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png',
     ]
 
-    constructor(x, y){
+    constructor(x, y, level){
         super().loadImage('img/6_salsa_bottle/salsa_bottle.png');
         this.loadImages(this.IMAGES_ROTATE);
         this.loadImages(this.IMAGES_SPLASH);
@@ -23,7 +23,7 @@ class ThrowableObject extends MovableObject {
         this.posY = y;
         this.height = 100;
         this.width = 100;
-        this.level = level1;
+        this.level = level; // das jeweilige level wird hier von World.js importiert.
         this.throw();
         
     }

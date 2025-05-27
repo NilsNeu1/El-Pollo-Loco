@@ -8,12 +8,27 @@ function init(){
 
 }
 
-   function loadLevel(){
-      document.getElementById('canvas').style.display = 'block';
-      document.getElementById('start-screen').style.display = 'none';
-      world.level = level1;
-      console.log("Level 1 loaded");
+ function loadLevel(levelNumber) {
+    document.getElementById('canvas').style.display = 'block';
+    document.getElementById('overlay-menu').style.display = 'none';
+
+    switch (levelNumber) {
+        case 0:
+            world.level = level0;
+            console.log("Level 0 geladen");
+            break;
+        case 1:
+            world.level = createLevel1();
+            console.log("Level 1 geladen");
+            break;
+        case 2:
+            world.level = level2;
+            console.log("Level 2 geladen");
+            break;
+        default:
+            console.log("Ungültige Levelnummer: " + levelNumber);
     }
+}
 
 document.addEventListener('keydown', (event )=>{ // alternative keypress
      if(event.keyCode == 39) { //Arrow Right
