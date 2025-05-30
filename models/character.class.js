@@ -74,32 +74,26 @@ class Character extends MovableObject {
     
 
 
-    animate(){
-
-
-        setInterval( () => {
-            if(this.world.keyboard.RIGHT && this.posX < this.world.level.level_end_X) {   
+ animate() {
+        setInterval(() => {
+            if (!this.world.gamePaused) { // Prüfen, ob das Spiel pausiert ist
+                if (this.world.keyboard.RIGHT && this.posX < this.world.level.level_end_X) {   
                     this.otherDirection = false;
                     this.moveRight();
-                // hier sound einfügen  this.walksound.play(); oder ähnlich
                 }
 
-                if(this.world.keyboard.LEFT && this.posX > 100) {
+                if (this.world.keyboard.LEFT && this.posX > 100) {
                     this.otherDirection = true;  
                     this.moveLeft();  
                 }
-                
-                
-                
-                
-                if(this.world.keyboard.UP && !this.isAboveGround()){
+
+                if (this.world.keyboard.UP && !this.isAboveGround()) {
                     this.jump();
                 }
-                
-                
+
                 this.world.camera_x = -this.posX + 100;
-                
-        }, 1000/60)
+            }
+        }, 1000/60);
         
 
         setInterval(() => {
@@ -155,10 +149,9 @@ class Character extends MovableObject {
         }
     }
 
-    
-    
-
-
-    
-
+    stopCharacter() {
+        if (this.world.gamePaused == true){
+            
+        }
+    }
 }

@@ -11,7 +11,8 @@ salsaBar = new SalsaBar();
 coinBar = new CoinBar();
 trowable =[];
 availableBottles = this.salsaBar.availableBottles;
-//bossBar = new BossBar();
+intervalIDs = [];
+gamePaused = false;
 
 // um die Variablen aus dieser datei nutzen zu können muss "this." davor gesetzt werden. 
 
@@ -19,6 +20,8 @@ availableBottles = this.salsaBar.availableBottles;
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas; // (Canvas links) greift auf das globale canvas zu. = canvas importiert das globale canvas in diese function.
         this.keyboard = keyboard;
+        this.intervalIDs;
+        this.gamePaused = false;
         this.draw();
         this.setWorld();
         this.start();
@@ -28,13 +31,29 @@ availableBottles = this.salsaBar.availableBottles;
         this.character.world = this;
     }
 
+    customeInterval(callback, interval) {
+        let id = setInterval(callback, interval);
+        this.intervalIDs.push(id);
+
+    }
+
+    clearAllIntervals() {
+    this.intervalIDs.forEach(id => clearInterval(id));
+    this.intervalIDs = []; // Liste der gespeicherten Intervalle leeren
+    this.gamePaused = true;
+}
+
+
     start(){
-        setInterval(() => {
+        this.customeInterval(() => {
             this.checkCollisions();
             this.checkThrowObject();
             this.checkCollections();
         }, 200);
     }
+
+
+
 
     checkThrowObject(){
         if (this.keyboard.THROW && this.salsaBar.availableBottles > 0) {
@@ -46,7 +65,7 @@ availableBottles = this.salsaBar.availableBottles;
     
 
     checkCollisions() {
-        setInterval(() => {
+        this.customeInterval(() => {
             this.level.enemies.forEach((enemy) => {
                 if (this.character.isColliding(enemy)) {
                     if (enemy instanceof Chick || enemy instanceof Chicken || enemy instanceof Endboss) {
@@ -70,7 +89,7 @@ availableBottles = this.salsaBar.availableBottles;
 
 
     checkCollections() {
-        setInterval(() => {
+        this.customeInterval(() => {
             this.level.collectableBottle.forEach((bottle, index) => {
                 if (this.character.isColliding(bottle)) {
                     this.salsaBar.availableBottles++;
@@ -167,6 +186,10 @@ availableBottles = this.salsaBar.availableBottles;
             this.salsaBar.availableBottles--;
         }
         return this.salsaBar.availableBottles;
+    }
+
+    test(){
+        console.log("test")
     }
 
 
