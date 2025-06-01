@@ -7,7 +7,18 @@ class MovableObject extends DrawableObject {
     lastHit = 0;
     idleTimer = new Date().getTime();
     asleep = 0;
+    intervalIDs = [];
 
+
+    customeInterval(callback, interval) {
+        let id = setInterval(callback, interval);
+        this.intervalIDs.push(id);
+    }
+
+    clearAllIntervals() {
+        this.intervalIDs.forEach(id => clearInterval(id));
+        this.intervalIDs = []; // Liste der gespeicherten Intervalle leeren
+    }
 
     applyGravity() {
         return setInterval(() => {

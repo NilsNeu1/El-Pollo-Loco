@@ -28,11 +28,11 @@ class Chicken extends MovableObject {
 
 
     animate() {
-        setInterval(() => {
+        this.customeInterval(() => {
             this.moveLeft();
         }, 1000 / 144);
     
-        setInterval(() => {
+        this.customeInterval(() => {
             if (this.health > 4) {
                 this.playAnimation(this.IMAGES_WALKING);
             } else {
@@ -45,7 +45,7 @@ class Chicken extends MovableObject {
     deadChicken() {
         this.speed = 0;
 
-        setInterval(() => {
+        this.customeInterval(() => {
             this.posY += 0.5;
         }, 20);
     }

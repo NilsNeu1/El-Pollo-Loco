@@ -65,7 +65,7 @@ shouldMoveLeft = false;
     }
 
     animate(){
-        setInterval(() => {
+        this.customeInterval(() => {
             if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
             

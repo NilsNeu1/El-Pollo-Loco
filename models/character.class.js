@@ -75,7 +75,7 @@ class Character extends MovableObject {
 
 
  animate() {
-        setInterval(() => {
+        this.customeInterval(() => {
             if (!this.world.gamePaused) { // Prüfen, ob das Spiel pausiert ist
                 if (this.world.keyboard.RIGHT && this.posX < this.world.level.level_end_X) {   
                     this.otherDirection = false;
@@ -96,9 +96,10 @@ class Character extends MovableObject {
         }, 1000/60);
         
 
-        setInterval(() => {
+        this.customeInterval(() => {
             this.updateIdleTimer();
         
+            if (!this.world.gamePaused){
             if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
             } else if (this.isDead()) {
@@ -112,9 +113,11 @@ class Character extends MovableObject {
             } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
                 this.playAnimation(this.IMAGES_WALKING);
             }
+            }
+
         }, 1000 / 12);
 
-        setInterval(() => {
+        this.customeInterval(() => {
             this.fallsAsleep() 
         }, 1000);
         
@@ -149,9 +152,4 @@ class Character extends MovableObject {
         }
     }
 
-    stopCharacter() {
-        if (this.world.gamePaused == true){
-            
-        }
-    }
 }
