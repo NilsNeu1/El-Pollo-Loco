@@ -4,6 +4,7 @@ class Character extends MovableObject {
     width = 250;
     posY = 10; //180 base value
     speed = 6;
+    health = 60000
     IMAGES_IDLE = [ 
         'img/2_character_pepe/1_idle/idle/I-1.png',
         'img/2_character_pepe/1_idle/idle/I-2.png',
@@ -57,7 +58,6 @@ class Character extends MovableObject {
         'img/2_character_pepe/5_dead/D-57.png'
 ];
     currentImage = 0;
-    world;
 
     constructor(){
         super().loadImage('img/2_character_pepe/2_walk/W-21.png');

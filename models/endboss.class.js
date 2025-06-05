@@ -61,11 +61,12 @@ shouldMoveLeft = false;
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_DEAD);
         this.animate();
-        this.isDead();       
+        this.isDead();      
     }
 
     animate(){
         this.customeInterval(() => {
+            if (!this.world.gamePaused) {
             if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
             
@@ -86,6 +87,7 @@ shouldMoveLeft = false;
             } else {
                 this.playAnimation(this.IMAGES_IDLE);
             }
+        }
         }, 1000 / 8);
     }
     

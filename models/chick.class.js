@@ -12,36 +12,32 @@ class Chick extends MovableObject {
         'img/3_enemies_chicken/chicken_small/2_dead/dead.png'];
     imageCache = {};
     currentImage = 0;
-    world;
 
 
     constructor(){
         super().loadImage('img/3_enemies_chicken/chicken_small/2_dead/dead.png');
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_DEAD);
-        
         this.posX = 600 + Math.random() * 3100; // ändert die geerbte position
         this.animate();
-
         this.speed = 0.505 + Math.random() * 0.25;
         this.moveLeft();
         this.isCollidingFromAbove();
     }
 
 
-    animate(){
-
+    animate() {
         this.customeInterval(() => {
-            this.moveLeft();
-        }, 1000/ 10);
-
-            if (this.health > 10) {
-                this.playAnimation(this.IMAGES_WALKING); 
-            } else {
-                this.playAnimation(this.IMAGES_DEAD);
-                this.deadChicken();
-        }
-        
+            if (!this.world.gamePaused) {
+                this.moveLeft();
+                if (this.health > 10) {
+                    this.playAnimation(this.IMAGES_WALKING); 
+                } else {
+                    this.playAnimation(this.IMAGES_DEAD);
+                    this.deadChicken();
+                }
+            }
+        }, 1000 / 10);
     }
 
     deadChicken() {
@@ -51,5 +47,8 @@ class Chick extends MovableObject {
             this.posY += 0.55;
         }, 20);
     }
+
+    
+
 }
 

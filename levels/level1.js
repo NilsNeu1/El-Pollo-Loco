@@ -67,4 +67,7 @@ let level1 = new Level(
 ]
 );
 
+world.level = level1;
+world.setWorld();
+
 return level1;}

@@ -190,9 +190,10 @@ class World {
         return this.salsaBar.availableBottles;
     }
 
-    test() {
-        console.log("test")
-    }
+    debug() {
+        console.log('gamePaused:', this.gamePaused);
+        console.log('Enemies in Level:', this.level.enemies);
 
+    }
 
 }
