@@ -55,8 +55,17 @@ class World {
         this.gamePaused = false;
     }
 
-
-
+togglePause() {
+    if (!this.gamePaused) {
+        this.clearAllIntervals();
+        document.getElementById('overlay-menu').style.display = 'block';
+        document.getElementById('canvas').style.display = 'none';
+    } else {
+        this.start();
+        document.getElementById('overlay-menu').style.display = 'none';
+        document.getElementById('canvas').style.display = 'block';
+    }
+}
 
     checkThrowObject() {
         if (this.keyboard.THROW && this.salsaBar.availableBottles > 0) {

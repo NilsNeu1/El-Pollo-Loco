@@ -3,5 +3,6 @@ LEFT = false;
 RIGHT = false;
 UP = false;
 THROW = false;    
+PAUSE = false;
 }
 

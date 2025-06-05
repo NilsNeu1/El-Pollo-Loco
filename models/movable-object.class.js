@@ -85,19 +85,22 @@ class MovableObject extends DrawableObject {
 
   
 
-      hit(){
+     hit() {
+    if (!this.isHurt()) { // Prevent damage if already in i-frames
         this.health -= 20;
         if (this.health < 0) {
             this.health = 0;
         } else {
             this.lastHit = new Date().getTime();
         }
-      }
+    }
+}
+
 
       isHurt(){
         let timePassed = new Date().getTime() - this.lastHit;
         timePassed = timePassed / 1000;
-        return timePassed < 0.5;
+        return timePassed < 0.5; // <- i.Frame length in seconds
       }
 
       isDead(){
