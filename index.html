@@ -37,8 +37,8 @@
     <div id="gameContainer">
     <canvas id="canvas" height="480" width="720" > </canvas>
     <div id="overlay-menu" class="start-screen">
-            <button class="start-game-button" onclick="loadLevel(1)">Start Demo</button>
-            <button class="resume-game-button" onclick="world.togglePause()">Resume</button>
+            <div ><button id="start-btn" class="start-game-button" onclick="loadLevel(1)">Start Demo</button></div>
+            <div id="resume-btn" style="display: none;"><button  class="resume-game-button" onclick="world.togglePause()">Resume</button></div>
     </div>
     </div>
 

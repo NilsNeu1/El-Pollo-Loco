@@ -58,7 +58,9 @@ class World {
 togglePause() {
     if (!this.gamePaused) {
         this.clearAllIntervals();
-        document.getElementById('overlay-menu').style.display = 'block';
+        document.getElementById('overlay-menu').style.display = 'flex';
+        document.getElementById('start-btn').innerHTML = 'Restart Game';
+        document.getElementById('resume-btn').style.display = 'block';
         document.getElementById('canvas').style.display = 'none';
     } else {
         this.start();
