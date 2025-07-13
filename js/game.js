@@ -19,6 +19,7 @@ function loadLevel(levelNumber) {
          break;
       case 1:
          world.level = createLevel1();
+         world.resetStats(); // Reset character and stats when loading level 1
          console.log("Level 1 geladen");
          break;
       case 2:

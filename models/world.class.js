@@ -45,6 +45,18 @@ class World {
         this.gamePaused = true;
     }
 
+    resetStats(){
+        this.character.health = 100;
+        this.healthBar.setPercentage(this.character.health);
+        this.character.posX = 100;
+        this.character.posY = 180;
+        this.salsaBar.availableBottles = 5;
+        this.CollectedCoins = 0;
+        this.coinBar.CollectedCoins = 0;
+        this.camera_x = 0;
+
+    }
+
 
     start() {
         this.customeInterval(() => {
