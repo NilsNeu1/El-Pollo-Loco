@@ -11,6 +11,7 @@ function init() {
 function loadLevel(levelNumber) {
    document.getElementById('canvas').style.display = 'block';
    document.getElementById('overlay-menu').style.display = 'none';
+   world.initiatedGame = true;
 
    switch (levelNumber) {
       case 0:

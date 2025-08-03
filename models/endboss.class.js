@@ -72,6 +72,7 @@ shouldMoveLeft = false;
             
             } else if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
+                this.world.bossDefeated = true;
             
             } else if (this.isAlerted()) {
                 this.playAnimation(this.IMAGES_ALERT);

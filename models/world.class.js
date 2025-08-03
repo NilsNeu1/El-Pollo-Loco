@@ -12,7 +12,10 @@ class World {
     trowable = [];
     availableBottles = this.salsaBar.availableBottles;
     intervalIDs = [];
+    initiatedGame = false;
     gamePaused = false;
+    gamelost = false;
+    gameWon = false;
 
     // um die Variablen aus dieser datei nutzen zu können muss "this." davor gesetzt werden. 
 
@@ -54,6 +57,8 @@ class World {
         this.CollectedCoins = 0;
         this.coinBar.CollectedCoins = 0;
         this.camera_x = 0;
+        this.gamelost = false;
+        this.bossDefeated = false;
 
     }
 
@@ -63,6 +68,7 @@ class World {
             this.checkCollisions();
             this.checkThrowObject();
             this.checkCollections();
+            this.isGameWon();
         }, 200);
         this.gamePaused = false;
     }
@@ -71,15 +77,45 @@ togglePause() {
     if (!this.gamePaused) {
         this.clearAllIntervals();
         document.getElementById('overlay-menu').style.display = 'flex';
+    //    document.getElementById('overlay-menu').classList.remove('start-screen');
+    //    document.getElementById('overlay-menu').classList.add('pause-screen');
         document.getElementById('start-btn').innerHTML = 'Restart Game';
         document.getElementById('resume-btn').style.display = 'block';
-        document.getElementById('canvas').style.display = 'none';
+        document.getElementById('canvas').style.display = 'block';
     } else {
         this.start();
         document.getElementById('overlay-menu').style.display = 'none';
         document.getElementById('canvas').style.display = 'block';
     }
 }
+
+    isGameLost() {
+        if (this.character.health <= 20) {
+            
+            this.gamelost = true;
+            this.clearAllIntervals();
+            document.getElementById('overlay-menu').style.display = 'flex';
+            document.getElementById('start-btn').innerHTML = 'Try again?';
+            document.getElementById('resume-btn').style.display = 'none';
+            document.getElementById('canvas').style.display = 'block';
+            document.getElementById('overlay-menu').classList.remove('start-screen');
+            document.getElementById('overlay-menu').classList.add('lost-screen');
+            this.resetStats();
+        }
+    }
+
+    isGameWon() {
+        if (this.level.enemies.length === 1 && this.bossDefeated === true) {
+            this.clearAllIntervals();
+            document.getElementById('overlay-menu').style.display = 'flex';
+            document.getElementById('start-btn').innerHTML = 'Play again?';
+            document.getElementById('resume-btn').style.display = 'none';
+            document.getElementById('canvas').style.display = 'block';
+            document.getElementById('overlay-menu').classList.remove('start-screen');
+            document.getElementById('overlay-menu').classList.add('won-screen');
+            this.resetStats();
+        }
+    }
 
     checkThrowObject() {
         if (this.keyboard.THROW && this.salsaBar.availableBottles > 0) {
@@ -92,7 +128,7 @@ togglePause() {
 
     checkCollisions() {
         this.customeInterval(() => {
-            this.level.enemies.forEach((enemy) => {
+            this.level.enemies.forEach((enemy, index) => {
                 if (this.character.isColliding(enemy)) {
                     if (enemy instanceof Chick || enemy instanceof Chicken || enemy instanceof Endboss) {
                         if (this.character.isCollidingFromAbove(enemy)) {
@@ -106,8 +142,13 @@ togglePause() {
                         } else {
                             this.character.hit();
                             this.healthBar.setPercentage(this.character.health);
+                            this.isGameLost();
                         }
                     }
+                }
+                // Remove enemy if health is 0
+                if (enemy.health <= 1 && enemy.posY > 500) {
+                    this.level.enemies.splice(index, 1);
                 }
             });
         }, 1000 / 60); // Kollisionsprüfung alle 60 fps
