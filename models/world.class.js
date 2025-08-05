@@ -260,4 +260,12 @@ togglePause() {
 
     }
 
+    toggleFullscreen() {
+        if (!document.fullscreenElement) {
+            this.canvas.requestFullscreen();
+        } else {
+            document.exitFullscreen();
+        }
+    }
+
 }
