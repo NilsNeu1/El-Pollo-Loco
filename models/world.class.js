@@ -9,6 +9,8 @@ class World {
     healthBar = new HealthBar();
     salsaBar = new SalsaBar();
     coinBar = new CoinBar();
+   // bossBar = new BossBar();
+    gameStateUi = new GameStateUI();
     trowable = [];
     availableBottles = this.salsaBar.availableBottles;
     intervalIDs = [];
@@ -25,6 +27,7 @@ class World {
         this.keyboard = keyboard;
         this.intervalIDs;
         this.gamePaused = false;
+        this.gameStateUi = new GameStateUI();
         this.draw();
         this.setWorld();
         this.start();
@@ -58,6 +61,7 @@ class World {
         this.coinBar.CollectedCoins = 0;
         this.camera_x = 0;
         this.gamelost = false;
+        this.gameWon = false;
         this.bossDefeated = false;
 
     }
@@ -69,50 +73,41 @@ class World {
             this.checkThrowObject();
             this.checkCollections();
             this.isGameWon();
+            this.gameStateUi.setState('none');
         }, 200);
         this.gamePaused = false;
     }
 
-togglePause() {
-    if (!this.gamePaused) {
-        this.clearAllIntervals();
-        document.getElementById('overlay-menu').style.display = 'flex';
-    //    document.getElementById('overlay-menu').classList.remove('start-screen');
-    //    document.getElementById('overlay-menu').classList.add('pause-screen');
-        document.getElementById('start-btn').innerHTML = 'Restart Game';
-        document.getElementById('resume-btn').style.display = 'block';
-        document.getElementById('canvas').style.display = 'block';
-    } else {
-        this.start();
-        document.getElementById('overlay-menu').style.display = 'none';
-        document.getElementById('canvas').style.display = 'block';
+    togglePause() {
+        if (!this.gamePaused) {
+            this.clearAllIntervals();
+            this.gameStateUi.setState('pause');
+            document.getElementById('overlay-menu').style.display = 'flex';
+            document.getElementById('start-btn').innerHTML = 'Restart Game';
+            document.getElementById('resume-btn').style.display = 'block';
+            document.getElementById('canvas').style.display = 'block';
+        } else {
+            this.start();
+            this.gameStateUi.setState('none');
+            document.getElementById('overlay-menu').style.display = 'none';
+            document.getElementById('canvas').style.display = 'block';
+        }
     }
-}
 
     isGameLost() {
         if (this.character.health <= 20) {
-            
             this.gamelost = true;
+            this.gameStateUi.setState('lose');
             this.clearAllIntervals();
-            document.getElementById('overlay-menu').style.display = 'flex';
-            document.getElementById('start-btn').innerHTML = 'Try again?';
-            document.getElementById('resume-btn').style.display = 'none';
-            document.getElementById('canvas').style.display = 'block';
-            document.getElementById('overlay-menu').classList.remove('start-screen');
-            document.getElementById('overlay-menu').classList.add('lost-screen');
             this.resetStats();
         }
     }
 
     isGameWon() {
         if (this.level.enemies.length === 1 && this.bossDefeated === true) {
+            this.gameWon = true;
+            this.gameStateUi.setState('win');
             this.clearAllIntervals();
-            document.getElementById('overlay-menu').style.display = 'flex';
-            document.getElementById('start-btn').innerHTML = 'Play again?';
-            document.getElementById('resume-btn').style.display = 'none';
-            document.getElementById('canvas').style.display = 'block';
-            document.getElementById('overlay-menu').classList.remove('start-screen');
-            document.getElementById('overlay-menu').classList.add('won-screen');
             this.resetStats();
         }
     }
@@ -217,7 +212,7 @@ togglePause() {
             this.flipImage(MO);
         }
         MO.draw(this.ctx);
-        MO.drawHitbox(this.ctx);
+        // MO.drawHitbox(this.ctx);
 
         if (MO.otherDirection) {
             this.flipImageBack(MO)
@@ -231,7 +226,7 @@ togglePause() {
         this.salsaBar.drawCounter(this.ctx);
         this.addToMap(this.coinBar);
         this.coinBar.drawCounter(this.ctx);
-        //    this.addToMap(this.bossBar);
+        this.addToMap(this.gameStateUi); // Always draw, but image depends on state
     }
 
 
@@ -257,6 +252,7 @@ togglePause() {
     debug() {
         console.log('gamePaused:', this.gamePaused);
         console.log('Enemies in Level:', this.level.enemies);
+        MO.drawHitbox(this.ctx);
 
     }
 

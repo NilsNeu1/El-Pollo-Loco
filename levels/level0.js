@@ -3,7 +3,8 @@ const level0 = new Level(
     [], // Keine Wolken im Hauptmenü
     [], // Keine sammelbaren Flaschen
     [], // Keine sammelbaren Münzen
-    []  // Keine Gegner
+    [], // Keine Gegner
+    []  // Keine Game Ui
 );
 
 console.log("Level 0 loaded");
