@@ -16,20 +16,19 @@ class World {
     intervalIDs = [];
     initiatedGame = false;
     gamePaused = false;
-    gamelost = false;
     gameWon = false;
+    bossDefeated = false;
 
     // um die Variablen aus dieser datei nutzen zu können muss "this." davor gesetzt werden. 
 
-    constructor(canvas, keyboard) { // canvas ist die variable die zuvor in game.js definiert wurde
+    constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
-        this.canvas = canvas; // (Canvas links) greift auf das globale canvas zu. = canvas importiert das globale canvas in diese function.
+        this.canvas = canvas;
         this.keyboard = keyboard;
-        this.intervalIDs;
-        this.gamePaused = false;
         this.gameStateUi = new GameStateUI();
-        this.draw();
         this.setWorld();
+        this.gameStateUi.setCanvasAndWorld(canvas, this); // This sets up button clicks once
+        this.draw();
         this.start();
     }
 
@@ -60,8 +59,6 @@ class World {
         this.CollectedCoins = 0;
         this.coinBar.CollectedCoins = 0;
         this.camera_x = 0;
-        this.gamelost = false;
-        this.gameWon = false;
         this.bossDefeated = false;
 
     }
@@ -73,44 +70,42 @@ class World {
             this.checkThrowObject();
             this.checkCollections();
             this.isGameWon();
-            this.gameStateUi.setState('none');
+            this.gameStateUi.setupButtonClicks();
         }, 200);
         this.gamePaused = false;
+        this.gameStateUi.setState('none');
+    }
+
+    restartGame() {
+        this.resetStats();
+        createLevel1();
+
     }
 
     togglePause() {
         if (!this.gamePaused) {
             this.clearAllIntervals();
             this.gameStateUi.setState('pause');
-            document.getElementById('overlay-menu').style.display = 'flex';
-            document.getElementById('start-btn').innerHTML = 'Restart Game';
-            document.getElementById('resume-btn').style.display = 'block';
-            document.getElementById('canvas').style.display = 'block';
         } else {
             this.start();
             this.gameStateUi.setState('none');
-            document.getElementById('overlay-menu').style.display = 'none';
-            document.getElementById('canvas').style.display = 'block';
         }
     }
 
     isGameLost() {
         if (this.character.health <= 20) {
-            this.gamelost = true;
             this.gameStateUi.setState('lose');
             this.clearAllIntervals();
-            this.resetStats();
         }
     }
 
-    isGameWon() {
-        if (this.level.enemies.length === 1 && this.bossDefeated === true) {
-            this.gameWon = true;
-            this.gameStateUi.setState('win');
-            this.clearAllIntervals();
-            this.resetStats();
-        }
+isGameWon() {
+    const boss = this.level.enemies.find(e => e instanceof Endboss);
+    if (boss && boss.health <= 0) {
+        this.gameStateUi.setState('win');
+        this.clearAllIntervals();
     }
+}
 
     checkThrowObject() {
         if (this.keyboard.THROW && this.salsaBar.availableBottles > 0) {
@@ -251,8 +246,9 @@ class World {
 
     debug() {
         console.log('gamePaused:', this.gamePaused);
+        console.log('game state', this.gameStateUi.state);
         console.log('Enemies in Level:', this.level.enemies);
-        MO.drawHitbox(this.ctx);
+        console.log('Boss defeated', this.bossDefeated);
 
     }
 
