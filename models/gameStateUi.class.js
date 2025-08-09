@@ -17,6 +17,16 @@ class GameStateUI extends DrawableObject {
             border: '#b76127',
             color: '#ff9e00'
         },
+         {
+            text: 'Try Again',
+            x: 285,
+            y: 400,
+            width: 150,
+            height: 40,
+            bg: '#994509d6',
+            border: '#b76127',
+            color: '#ff9e00'
+        },
         {
             text: 'Resume',
             x: 390,
@@ -66,7 +76,16 @@ class GameStateUI extends DrawableObject {
     }
 
     drawButtons(ctx) {
-        this.buttonSpecs.forEach(btn => {
+        let buttonsToDraw;
+        if (this.state === 'win' || this.state === 'lose') {
+            buttonsToDraw = this.buttonSpecs.filter(btn => btn.text === 'Try Again');
+        } else if (this.state === 'pause' || this.state === 'none') {
+            buttonsToDraw = this.buttonSpecs.filter(btn => btn.text === 'Resume' || btn.text === 'Restart');
+        } else {
+            buttonsToDraw = [];
+        }
+
+        buttonsToDraw.forEach(btn => {
             ctx.fillStyle = btn.bg;
             ctx.fillRect(btn.x, btn.y, btn.width, btn.height);
 
@@ -107,6 +126,10 @@ class GameStateUI extends DrawableObject {
                     if (btn.text === 'Resume') {
                         this.world.togglePause();
                         console.log('Resume');
+                    }
+                    if (btn.text === 'Try Again') {
+                        this.world.restartGame();
+                        console.log('Tried again');
                     }
                 }
             });
