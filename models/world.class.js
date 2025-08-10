@@ -9,7 +9,7 @@ class World {
     healthBar = new HealthBar();
     salsaBar = new SalsaBar();
     coinBar = new CoinBar();
-   // bossBar = new BossBar();
+    bossBar = new BossBar();
     gameStateUi = new GameStateUI();
     trowable = [];
     availableBottles = this.salsaBar.availableBottles;
@@ -18,6 +18,7 @@ class World {
     gamePaused = false;
     gameWon = false;
     bossDefeated = false;
+    bossAgro = false;
 
     // um die Variablen aus dieser datei nutzen zu können muss "this." davor gesetzt werden. 
 
@@ -50,7 +51,7 @@ class World {
         this.gamePaused = true;
     }
 
-    resetStats(){
+    resetStats() {
         this.character.health = 100;
         this.healthBar.setPercentage(this.character.health);
         this.character.posX = 100;
@@ -59,7 +60,6 @@ class World {
         this.CollectedCoins = 0;
         this.coinBar.CollectedCoins = 0;
         this.camera_x = 0;
-        this.bossDefeated = false;
 
     }
 
@@ -69,6 +69,7 @@ class World {
             this.checkCollisions();
             this.checkThrowObject();
             this.checkCollections();
+            this.checkBossAgro();
             this.isGameWon();
             this.gameStateUi.setupButtonClicks();
         }, 200);
@@ -99,13 +100,24 @@ class World {
         }
     }
 
-isGameWon() {
-    const boss = this.level.enemies.find(e => e instanceof Endboss);
-    if (boss && boss.health <= 0) {
-        this.gameStateUi.setState('win');
-        this.clearAllIntervals();
+    isGameWon() {
+        const boss = this.level.enemies.find(e => e instanceof Endboss);
+        if (boss && boss.health <= 0) {
+            this.bossDefeated = true;
+            this.gameStateUi.setState('win');
+            this.clearAllIntervals();
+        }
     }
-}
+
+    checkBossAgro() {
+        const boss = this.level.enemies.find(e => e instanceof Endboss);
+        if (this.initiatedGame === true && Math.abs(this.character.posX - boss.posX) < 500) {
+            this.bossAgro = true;
+        } else if (this.character.posX < 300) {
+            this.bossAgro = false;
+        }
+    }
+
 
     checkThrowObject() {
         if (this.keyboard.THROW && this.salsaBar.availableBottles > 0) {
@@ -221,6 +233,7 @@ isGameWon() {
         this.salsaBar.drawCounter(this.ctx);
         this.addToMap(this.coinBar);
         this.coinBar.drawCounter(this.ctx);
+        this.addToMap(this.bossBar);
         this.addToMap(this.gameStateUi); // Always draw, but image depends on state
     }
 
@@ -248,7 +261,6 @@ isGameWon() {
         console.log('gamePaused:', this.gamePaused);
         console.log('game state', this.gameStateUi.state);
         console.log('Enemies in Level:', this.level.enemies);
-        console.log('Boss defeated', this.bossDefeated);
 
     }
 

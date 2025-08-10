@@ -1,10 +1,10 @@
 class Character extends MovableObject {
-  
+
     height = 250;
     width = 250;
     posY = 10; //180 base value
     speed = 6;
-    IMAGES_IDLE = [ 
+    IMAGES_IDLE = [
         'img/2_character_pepe/1_idle/idle/I-1.png',
         'img/2_character_pepe/1_idle/idle/I-2.png',
         'img/2_character_pepe/1_idle/idle/I-3.png',
@@ -15,7 +15,7 @@ class Character extends MovableObject {
         'img/2_character_pepe/1_idle/idle/I-8.png',
         'img/2_character_pepe/1_idle/idle/I-9.png',
         'img/2_character_pepe/1_idle/idle/I-10.png'];
-    IMAGES_LONGIDLE = [ 
+    IMAGES_LONGIDLE = [
         'img/2_character_pepe/1_idle/long_idle/I-11.png',
         'img/2_character_pepe/1_idle/long_idle/I-12.png',
         'img/2_character_pepe/1_idle/long_idle/I-13.png',
@@ -55,10 +55,10 @@ class Character extends MovableObject {
         'img/2_character_pepe/5_dead/D-55.png',
         'img/2_character_pepe/5_dead/D-56.png',
         'img/2_character_pepe/5_dead/D-57.png'
-];
+    ];
     currentImage = 0;
 
-    constructor(){
+    constructor() {
         super().loadImage('img/2_character_pepe/2_walk/W-21.png');
         this.loadImages(this.IMAGES_IDLE);
         this.loadImages(this.IMAGES_LONGIDLE);
@@ -70,20 +70,20 @@ class Character extends MovableObject {
         this.applyGravity();
     }
 
-    
 
 
- animate() {
+
+    animate() {
         this.customeInterval(() => {
             if (!this.world.gamePaused) { // Prüfen, ob das Spiel pausiert ist
-                if (this.world.keyboard.RIGHT && this.posX < this.world.level.level_end_X) {   
+                if (this.world.keyboard.RIGHT && this.posX < this.world.level.level_end_X) {
                     this.otherDirection = false;
                     this.moveRight();
                 }
 
                 if (this.world.keyboard.LEFT && this.posX > 100) {
-                    this.otherDirection = true;  
-                    this.moveLeft();  
+                    this.otherDirection = true;
+                    this.moveLeft();
                 }
 
                 if (this.world.keyboard.UP && !this.isAboveGround()) {
@@ -92,54 +92,49 @@ class Character extends MovableObject {
 
                 this.world.camera_x = -this.posX + 100;
             }
-        }, 1000/60);
-        
+        }, 1000 / 60);
+
 
         this.customeInterval(() => {
             this.updateIdleTimer();
-        
-            if (!this.world.gamePaused){
-            if (this.isHurt()) {
-                this.playAnimation(this.IMAGES_HURT);
-            } else if (this.isDead()) {
-                this.playAnimation(this.IMAGES_DEAD);
-            } else if (this.fallsAsleep()) {
-                this.playAnimation(this.IMAGES_LONGIDLE);
-            } else if (this.isNotMoving()) {
-                this.playAnimation(this.IMAGES_IDLE);
-            } else if (this.isAboveGround()) {
-                this.playAnimation(this.IMAGES_JUMP);
-            } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-                this.playAnimation(this.IMAGES_WALKING);
-            }
+
+            if (!this.world.gamePaused) {
+                if (this.isHurt()) {
+                    this.playAnimation(this.IMAGES_HURT);
+                } else if (this.isDead()) {
+                    this.playAnimation(this.IMAGES_DEAD);
+                } else if (this.fallsAsleep()) {
+                    this.playAnimation(this.IMAGES_LONGIDLE);
+                } else if (this.isNotMoving()) {
+                    this.playAnimation(this.IMAGES_IDLE);
+                } else if (this.isAboveGround()) {
+                    this.playAnimation(this.IMAGES_JUMP);
+                } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+                    this.playAnimation(this.IMAGES_WALKING);
+                }
             }
 
         }, 1000 / 12);
 
         this.customeInterval(() => {
-            this.fallsAsleep() 
+            this.fallsAsleep()
         }, 1000);
-        
+
     }
 
-    
 
-      fallsAsleep() {
-        let currentTime = new Date().getTime();
-        let asleep = currentTime - this.idleTimer;
-    
-        if (this.isNotMoving() && asleep >= 3000 ) {
-          //  console.log('not moving since', asleep, 'ms');
+
+    fallsAsleep() {
+        const currentTime = Date.now();
+        const asleepDuration = currentTime - this.idleTimer;
+
+        if (this.isNotMoving() && asleepDuration >= 4000) {
             return true;
-        } else {
-            if (!this.isNotMoving()) {
-            //    console.log('Character is moving');
-            } else {
-            //    console.log('Character is idle but not long enough:', asleep, 'ms');
-            }
-            return false;
         }
+
+        return false;
     }
+
 
     updateIdleTimer() {
         if (this.isNotMoving()) {

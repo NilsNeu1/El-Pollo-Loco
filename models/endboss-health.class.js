@@ -1,12 +1,12 @@
 class BossBar extends DrawableObject {
 
     IMAGES_HEALTH = [
-        'img/7_statusbars/1_statusbar/2_statusbar_health/orange/0.png',
-        'img/7_statusbars/1_statusbar/2_statusbar_health/orange/20.png',
-        'img/7_statusbars/1_statusbar/2_statusbar_health/orange/40.png',
-        'img/7_statusbars/1_statusbar/2_statusbar_health/orange/60.png',
-        'img/7_statusbars/1_statusbar/2_statusbar_health/orange/80.png',
-        'img/7_statusbars/1_statusbar/2_statusbar_health/orange/100.png'
+        'img/7_statusbars/2_statusbar_endboss/blue/blue0.png',
+        'img/7_statusbars/2_statusbar_endboss/blue/blue20.png',
+        'img/7_statusbars/2_statusbar_endboss/blue/blue40.png',
+        'img/7_statusbars/2_statusbar_endboss/blue/blue60.png',
+        'img/7_statusbars/2_statusbar_endboss/blue/blue80.png',
+        'img/7_statusbars/2_statusbar_endboss/blue/blue100.png'
     ];
 
     percentage = 100;
@@ -15,8 +15,8 @@ class BossBar extends DrawableObject {
         super();
         this.loadImages(this.IMAGES_HEALTH);
         this.setPercentage(100);
-        this.posX = 100;
-        this.posY = 10;
+        this.posX = 480;
+        this.posY = 20;
         this.width = 220;
     }
 

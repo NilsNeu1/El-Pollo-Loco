@@ -2,6 +2,7 @@ class GameStateUI extends DrawableObject {
 
     width = 720;
     height = 480;
+    startUi = ['img/9_intro_outro_screens/start/startscreen_1.png'];
     winUi = ['img/9_intro_outro_screens/game-won/You Win A.png'];
     loseUi = ['img/9_intro_outro_screens/game_over/game over.png'];
     state = 'none'; // 'none', 'win', 'lose', 'pause'
@@ -42,9 +43,10 @@ class GameStateUI extends DrawableObject {
     world = null;
 
     constructor(){
-        super().loadImage('img/5_background/layers/4_clouds/1.png');
+        super().loadImage('img/9_intro_outro_screens/start/startscreen_1.png');
         this.loadImages(this.winUi);
         this.loadImages(this.loseUi);
+        this.loadImages(this.startUi);
         this.posX = 0;
         this.posY = 0;
     }
@@ -62,7 +64,7 @@ class GameStateUI extends DrawableObject {
         } else if (state === 'lose') {
             this.img = this.imageCache[this.loseUi];
         } else {
-            this.img = null;
+            this.img = this.imageCache[this.startUi];
         }
     }
 
@@ -103,15 +105,25 @@ class GameStateUI extends DrawableObject {
 
     setupButtonClicks() {
         if (!this.canvas) return;
-        this.canvas.addEventListener('click', (e) => { // fügt ein Eventlistener für jeden cklick hinzu
-            if (!['pause', 'win', 'lose'].includes(this.state)) return; // clicks werden nur bei win, lose oder pause erkannt
-            const rect = this.canvas.getBoundingClientRect(); // get BoundingClientRect gibt die position des canvas im viewport an 
+        this.canvas.addEventListener('click', (e) => {
+            if (!['pause', 'win', 'lose'].includes(this.state)) return;
+            const rect = this.canvas.getBoundingClientRect();
             const scaleX = this.canvas.width / rect.width;
             const scaleY = this.canvas.height / rect.height;
             const mouseX = (e.clientX - rect.left) * scaleX;
             const mouseY = (e.clientY - rect.top) * scaleY;
-            
-            this.buttonSpecs.forEach((btn, idx) => {
+
+            // Only check visible buttons
+            let visibleButtons;
+            if (this.state === 'win' || this.state === 'lose') {
+                visibleButtons = this.buttonSpecs.filter(btn => btn.text === 'Try Again');
+            } else if (this.state === 'pause' || this.state === 'none') {
+                visibleButtons = this.buttonSpecs.filter(btn => btn.text === 'Resume' || btn.text === 'Restart');
+            } else {
+                visibleButtons = [];
+            }
+
+            visibleButtons.forEach((btn) => {
                 if (
                     mouseX >= btn.x &&
                     mouseX <= btn.x + btn.width &&

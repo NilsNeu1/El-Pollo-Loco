@@ -7,6 +7,8 @@ posX = 3600;
 health = 100;
 speed = 1.05;
 attacking = false
+alertSequencePlayed = false;
+
 shouldMoveLeft = false;
 
     IMAGES_WALKING = [
@@ -73,17 +75,18 @@ shouldMoveLeft = false;
             } else if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
                 this.world.bossDefeated = true;
+                console.log('boss dead');
             
             } else if (this.isAlerted()) {
                 this.playAnimation(this.IMAGES_ALERT);
             
             } else if (this.attacking) {
                 this.playAnimation(this.IMAGES_ATTACK);
-                this.moveLeft();  // Move left only when attacking
+                this.moveLeft();
             
-            } else if (this.shouldMoveLeft) { // You might need a condition like this
+            } else if (this.shouldMoveLeft) {
                 this.playAnimation(this.IMAGES_WALKING);
-                this.moveLeft(); // This would allow moveLeft when necessary
+                this.moveLeft();
             
             } else {
                 this.playAnimation(this.IMAGES_IDLE);
@@ -95,7 +98,7 @@ shouldMoveLeft = false;
     
 
     isAlerted(){
-        if (this.health <= 99) {
+        if (world.bossAgro === true) {
             this.attacking = true;
             this.moveLeft();
         } else {
