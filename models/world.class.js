@@ -54,6 +54,7 @@ class World {
     resetStats() {
         this.character.health = 100;
         this.healthBar.setPercentage(this.character.health);
+        this.bossBar.setPercentage(100);
         this.character.posX = 100;
         this.character.posY = 180;
         this.salsaBar.availableBottles = 5;
@@ -94,7 +95,7 @@ class World {
     }
 
     isGameLost() {
-        if (this.character.health <= 20) {
+        if (this.character.health <= 0) {
             this.gameStateUi.setState('lose');
             this.clearAllIntervals();
         }
@@ -111,7 +112,9 @@ class World {
 
     checkBossAgro() {
         const boss = this.level.enemies.find(e => e instanceof Endboss);
-        if (this.initiatedGame === true && Math.abs(this.character.posX - boss.posX) < 500) {
+        let agroRange = (Math.abs(this.character.posX - boss.posX));
+        if (this.initiatedGame === true && agroRange < 500) {
+            this.bossBar.setPercentage(boss.health);
             this.bossAgro = true;
         } else if (this.character.posX < 300) {
             this.bossAgro = false;
@@ -129,6 +132,7 @@ class World {
 
 
     checkCollisions() {
+        const boss = this.level.enemies.find(e => e instanceof Endboss);
         this.customeInterval(() => {
             this.level.enemies.forEach((enemy, index) => {
                 if (this.character.isColliding(enemy)) {
@@ -144,6 +148,7 @@ class World {
                         } else {
                             this.character.hit();
                             this.healthBar.setPercentage(this.character.health);
+                            this.bossBar.setPercentage(boss.health);
                             this.isGameLost();
                         }
                     }
@@ -233,8 +238,10 @@ class World {
         this.salsaBar.drawCounter(this.ctx);
         this.addToMap(this.coinBar);
         this.coinBar.drawCounter(this.ctx);
-        this.addToMap(this.bossBar);
         this.addToMap(this.gameStateUi); // Always draw, but image depends on state
+        if (this.bossAgro === true) {
+        this.addToMap(this.bossBar);
+        }
     }
 
 
