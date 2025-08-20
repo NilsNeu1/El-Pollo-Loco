@@ -5,7 +5,7 @@ class GameStateUI extends DrawableObject {
     startUi = ['img/9_intro_outro_screens/start/startscreen_1.png'];
     winUi = ['img/9_intro_outro_screens/game-won/You Win A.png'];
     loseUi = ['img/9_intro_outro_screens/game_over/game over.png'];
-    state = 'none'; // 'none', 'win', 'lose', 'pause'
+    state = 'menu'; // 'none', 'win', 'lose', 'pause', 'menu'
     imageCache = [];
     buttonSpecs = [
         {
@@ -37,6 +37,17 @@ class GameStateUI extends DrawableObject {
             bg: '#994509d6',
             border: '#b76127',
             color: '#ff9e00'
+        },
+        {
+            text: 'f',
+            img: 'img/Assets/expand.png',
+            x: 685,
+            y: 10,
+            width: 20,
+            height: 20,
+            bg: 'none',
+            border: '#b76127',
+            color: 'black'
         }
     ];
     canvas = null;
@@ -63,16 +74,16 @@ class GameStateUI extends DrawableObject {
             this.img = this.imageCache[this.winUi];
         } else if (state === 'lose') {
             this.img = this.imageCache[this.loseUi];
-        } else {
+        } else if (state === 'menu') {
             this.img = this.imageCache[this.startUi];
         }
     }
 
     draw(ctx) {
-        if (this.state === 'win' || this.state === 'lose') {
+        if (['win', 'lose', 'menu'].includes(this.state)) {
             ctx.drawImage(this.img, this.posX, this.posY, this.width, this.height);
         }
-        if (['pause', 'win', 'lose'].includes(this.state)) {
+        if (['pause', 'win', 'lose', 'menu'].includes(this.state)) {
             this.drawButtons(ctx);
         }
     }
@@ -80,11 +91,11 @@ class GameStateUI extends DrawableObject {
     drawButtons(ctx) {
         let buttonsToDraw;
         if (this.state === 'win' || this.state === 'lose') {
-            buttonsToDraw = this.buttonSpecs.filter(btn => btn.text === 'Try Again');
+            buttonsToDraw = this.buttonSpecs.filter(btn => btn.text === 'Try Again' || btn.text === 'f');
         } else if (this.state === 'pause' || this.state === 'none') {
-            buttonsToDraw = this.buttonSpecs.filter(btn => btn.text === 'Resume' || btn.text === 'Restart');
-        } else {
-            buttonsToDraw = [];
+            buttonsToDraw = this.buttonSpecs.filter(btn => btn.text === 'Resume' || btn.text === 'Restart' || btn.text === 'f');
+        } else if (this.state === 'menu'){
+            buttonsToDraw = this.buttonSpecs.filter(btn => btn.text === 'Try Again');
         }
 
         buttonsToDraw.forEach(btn => {
@@ -106,7 +117,7 @@ class GameStateUI extends DrawableObject {
     setupButtonClicks() {
         if (!this.canvas) return;
         this.canvas.addEventListener('click', (e) => {
-            if (!['pause', 'win', 'lose'].includes(this.state)) return;
+            if (!['pause', 'win', 'lose', 'menu'].includes(this.state)) return;
             const rect = this.canvas.getBoundingClientRect();
             const scaleX = this.canvas.width / rect.width;
             const scaleY = this.canvas.height / rect.height;
@@ -115,7 +126,7 @@ class GameStateUI extends DrawableObject {
 
             // Only check visible buttons
             let visibleButtons;
-            if (this.state === 'win' || this.state === 'lose') {
+            if (this.state === 'win' || this.state === 'lose' || this.state === 'menu') {
                 visibleButtons = this.buttonSpecs.filter(btn => btn.text === 'Try Again');
             } else if (this.state === 'pause' || this.state === 'none') {
                 visibleButtons = this.buttonSpecs.filter(btn => btn.text === 'Resume' || btn.text === 'Restart');
