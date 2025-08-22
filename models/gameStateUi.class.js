@@ -9,9 +9,10 @@ class GameStateUI extends DrawableObject {
     imageCache = [];
     buttonSpecs = [
         {
+            id: 'restart-btn',
             text: 'Restart',
             x: 180,
-            y: 400,
+            y: 420,
             width: 150,
             height: 40,
             bg: '#994509d6',
@@ -19,9 +20,10 @@ class GameStateUI extends DrawableObject {
             color: '#ff9e00'
         },
          {
+            id: 'load-level-btn',
             text: 'Try Again',
             x: 285,
-            y: 400,
+            y: 420,
             width: 150,
             height: 40,
             bg: '#994509d6',
@@ -29,9 +31,10 @@ class GameStateUI extends DrawableObject {
             color: '#ff9e00'
         },
         {
+            id: 'resume-btn',
             text: 'Resume',
             x: 390,
-            y: 400,
+            y: 420,
             width: 150,
             height: 40,
             bg: '#994509d6',
@@ -39,6 +42,7 @@ class GameStateUI extends DrawableObject {
             color: '#ff9e00'
         },
         {
+            id: 'fullscreen-btn',
             text: 'f',
             img: 'img/Assets/expand.png',
             x: 685,
@@ -90,12 +94,18 @@ class GameStateUI extends DrawableObject {
 
     drawButtons(ctx) {
         let buttonsToDraw;
+        const loadLevelBtn = this.buttonSpecs.find(btn => btn.id === 'load-level-btn');
+
         if (this.state === 'win' || this.state === 'lose') {
-            buttonsToDraw = this.buttonSpecs.filter(btn => btn.text === 'Try Again' || btn.text === 'f');
+            buttonsToDraw = this.buttonSpecs.filter(btn => btn.id === 'load-level-btn' || btn.id === 'fullscreen-btn');
+            loadLevelBtn.text ='Try Again';
+            loadLevelBtn.y = 400;
         } else if (this.state === 'pause' || this.state === 'none') {
-            buttonsToDraw = this.buttonSpecs.filter(btn => btn.text === 'Resume' || btn.text === 'Restart' || btn.text === 'f');
+            buttonsToDraw = this.buttonSpecs.filter(btn => btn.id === 'resume-btn' || btn.id === 'restart-btn' || btn.id === 'fullscreen-btn');
         } else if (this.state === 'menu'){
-            buttonsToDraw = this.buttonSpecs.filter(btn => btn.text === 'Try Again');
+            buttonsToDraw = this.buttonSpecs.filter(btn => btn.id === 'load-level-btn');
+            loadLevelBtn.text ='Play Demo';
+            loadLevelBtn.y = 420;
         }
 
         buttonsToDraw.forEach(btn => {
@@ -127,9 +137,9 @@ class GameStateUI extends DrawableObject {
             // Only check visible buttons
             let visibleButtons;
             if (this.state === 'win' || this.state === 'lose' || this.state === 'menu') {
-                visibleButtons = this.buttonSpecs.filter(btn => btn.text === 'Try Again');
+                visibleButtons = this.buttonSpecs.filter(btn => btn.id === 'load-level-btn');
             } else if (this.state === 'pause' || this.state === 'none') {
-                visibleButtons = this.buttonSpecs.filter(btn => btn.text === 'Resume' || btn.text === 'Restart');
+                visibleButtons = this.buttonSpecs.filter(btn => btn.id === 'resume-btn' || btn.id === 'restart-btn');
             } else {
                 visibleButtons = [];
             }
@@ -141,16 +151,16 @@ class GameStateUI extends DrawableObject {
                     mouseY >= btn.y &&
                     mouseY <= btn.y + btn.height
                 ) {
-                    if (btn.text === 'Restart') {
+                    if (btn.id === 'restart-btn') {
                         this.setState('none');
                         this.world.restartGame();
                         console.log('Restart');
                     }
-                    if (btn.text === 'Resume') {
+                    if (btn.id === 'resume-btn') {
                         this.world.togglePause();
                         console.log('Resume');
                     }
-                    if (btn.text === 'Try Again') {
+                    if (btn.id === 'load-level-btn') {
                         this.world.restartGame();
                         console.log('Tried again');
                     }
