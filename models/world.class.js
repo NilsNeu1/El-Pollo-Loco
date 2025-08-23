@@ -66,6 +66,7 @@ class World {
 
 
     start() {
+        this.initiatedGame = true;
         this.customeInterval(() => {
             this.checkCollisions();
             this.checkThrowObject();

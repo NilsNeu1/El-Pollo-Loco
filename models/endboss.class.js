@@ -66,43 +66,49 @@ shouldMoveLeft = false;
         this.isDead();      
     }
 
-    animate(){
-        this.customeInterval(() => {
-            if (!this.world.gamePaused) {
+animate() {
+    let i = 0;
+    let w = 4;
+    
+    this.customeInterval(() => {
+        if (!this.world.gamePaused) {
             if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
-            
+
             } else if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
                 this.world.bossDefeated = true;
                 console.log('boss dead');
-            
-            } else if (this.isAlerted()) {
+
+            } else if (i < 16 && this.isAlerted()) {
                 this.playAnimation(this.IMAGES_ALERT);
-            
-            } else if (this.attacking) {
+                i++;
+
+            } else if (i >= 16 && w < 4) {
                 this.playAnimation(this.IMAGES_ATTACK);
-                this.moveLeft();
-            
+                i++;
+
             } else if (this.shouldMoveLeft) {
-                this.playAnimation(this.IMAGES_WALKING);
                 this.moveLeft();
-            
+                this.playAnimation(this.IMAGES_WALKING);
+
             } else {
                 this.playAnimation(this.IMAGES_IDLE);
             }
         }
-        }, 1000 / 8);
-    }
+    }, 1000 / 8);
+}
+
     
     
 
     isAlerted(){
-        if (world.bossAgro === true) {
+        if (this.world.bossAgro === true) {
             this.attacking = true;
-            this.moveLeft();
+            return true;
         } else {
             this.attacking = false;
+            return false;
         }
     }
 
