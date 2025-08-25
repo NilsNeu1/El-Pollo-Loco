@@ -69,7 +69,7 @@ shouldMoveLeft = false;
 animate() {
     let i = 0;
     let w = 4;
-    
+
     this.customeInterval(() => {
         if (!this.world.gamePaused) {
             if (this.isHurt()) {
@@ -86,9 +86,9 @@ animate() {
 
             } else if (i >= 16 && w < 4) {
                 this.playAnimation(this.IMAGES_ATTACK);
-                i++;
+                
 
-            } else if (this.shouldMoveLeft) {
+            } else if (w >= 4 && this.isAlerted()) {
                 this.moveLeft();
                 this.playAnimation(this.IMAGES_WALKING);
 
