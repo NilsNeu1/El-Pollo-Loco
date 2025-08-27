@@ -240,8 +240,8 @@ class World {
         this.addToMap(this.coinBar);
         this.coinBar.drawCounter(this.ctx);
         this.addToMap(this.gameStateUi); // Always draw, but image depends on state
-        if (this.bossAgro === true) {
-        this.addToMap(this.bossBar);
+        if (this.bossAgro === true && this.gameStateUi.state !== 'menu') {
+            this.addToMap(this.bossBar);
         }
     }
 

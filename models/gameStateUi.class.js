@@ -52,6 +52,18 @@ class GameStateUI extends DrawableObject {
             bg: 'none',
             border: '#b76127',
             color: 'black'
+        },
+        {
+            id: 'to-menu-btn',
+            text: 'To Menu',
+            img: '',
+            x: 390,
+            y: 420,
+            width: 150,
+            height: 40,
+            bg: '#994509d6',
+            border: '#b76127',
+            color: '#ff9e00'
         }
     ];
     canvas = null;
@@ -97,15 +109,17 @@ class GameStateUI extends DrawableObject {
         const loadLevelBtn = this.buttonSpecs.find(btn => btn.id === 'load-level-btn');
 
         if (this.state === 'win' || this.state === 'lose') {
-            buttonsToDraw = this.buttonSpecs.filter(btn => btn.id === 'load-level-btn' || btn.id === 'fullscreen-btn');
+            buttonsToDraw = this.buttonSpecs.filter(btn => btn.id === 'load-level-btn' || btn.id === 'fullscreen-btn' || btn.id === 'to-menu-btn');
             loadLevelBtn.text ='Try Again';
-            loadLevelBtn.y = 400;
+            loadLevelBtn.y = 420;
+            loadLevelBtn.x = 180;
         } else if (this.state === 'pause' || this.state === 'none') {
             buttonsToDraw = this.buttonSpecs.filter(btn => btn.id === 'resume-btn' || btn.id === 'restart-btn' || btn.id === 'fullscreen-btn');
         } else if (this.state === 'menu'){
             buttonsToDraw = this.buttonSpecs.filter(btn => btn.id === 'load-level-btn');
             loadLevelBtn.text ='Play Demo';
             loadLevelBtn.y = 420;
+            loadLevelBtn.x = 285;
         }
 
         buttonsToDraw.forEach(btn => {
@@ -137,7 +151,7 @@ class GameStateUI extends DrawableObject {
             // Only check visible buttons
             let visibleButtons;
             if (this.state === 'win' || this.state === 'lose' || this.state === 'menu') {
-                visibleButtons = this.buttonSpecs.filter(btn => btn.id === 'load-level-btn');
+                visibleButtons = this.buttonSpecs.filter(btn => btn.id === 'load-level-btn' || btn.id === 'to-menu-btn');
             } else if (this.state === 'pause' || this.state === 'none') {
                 visibleButtons = this.buttonSpecs.filter(btn => btn.id === 'resume-btn' || btn.id === 'restart-btn');
             } else {
@@ -163,6 +177,11 @@ class GameStateUI extends DrawableObject {
                     if (btn.id === 'load-level-btn') {
                         this.world.restartGame();
                         console.log('Tried again');
+                    }
+                     if (btn.id === 'to-menu-btn') {
+                        this.world.level = createLevel1();
+                        this.world.clearAllIntervals();
+                        this.setState('menu');
                     }
                 }
             });
