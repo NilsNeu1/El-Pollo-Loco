@@ -68,6 +68,7 @@ class GameStateUI extends DrawableObject {
     ];
     canvas = null;
     world = null;
+    buttonImageCache = {};
 
     constructor(){
         super().loadImage('img/9_intro_outro_screens/start/startscreen_1.png');
@@ -76,6 +77,15 @@ class GameStateUI extends DrawableObject {
         this.loadImages(this.startUi);
         this.posX = 0;
         this.posY = 0;
+
+        // Preload button images
+        this.buttonSpecs.forEach(btn => {
+            if (btn.img) {
+                const img = new Image();
+                img.src = btn.img;
+                this.buttonImageCache[btn.id] = img;
+            }
+        });
     }
 
     setCanvasAndWorld(canvas, world) {
@@ -104,39 +114,71 @@ class GameStateUI extends DrawableObject {
         }
     }
 
-    drawButtons(ctx) {
-        let buttonsToDraw;
-        const loadLevelBtn = this.buttonSpecs.find(btn => btn.id === 'load-level-btn');
+drawButtons(ctx) {
+    const buttonsToDraw = this.getButtonsToDraw();
+    this.renderButtons(ctx, buttonsToDraw);
+}
 
-        if (this.state === 'win' || this.state === 'lose') {
-            buttonsToDraw = this.buttonSpecs.filter(btn => btn.id === 'load-level-btn' || btn.id === 'fullscreen-btn' || btn.id === 'to-menu-btn');
-            loadLevelBtn.text ='Try Again';
-            loadLevelBtn.y = 420;
-            loadLevelBtn.x = 180;
-        } else if (this.state === 'pause' || this.state === 'none') {
-            buttonsToDraw = this.buttonSpecs.filter(btn => btn.id === 'resume-btn' || btn.id === 'restart-btn' || btn.id === 'fullscreen-btn');
-        } else if (this.state === 'menu'){
+getButtonsToDraw() {
+    const loadLevelBtn = this.buttonSpecs.find(btn => btn.id === 'load-level-btn');
+    let buttonsToDraw;
+
+    switch (this.state) {
+        case 'win':
+        case 'lose':
+            buttonsToDraw = this.buttonSpecs.filter(btn =>
+                ['load-level-btn', 'fullscreen-btn', 'to-menu-btn'].includes(btn.id)
+            );
+            Object.assign(loadLevelBtn, {
+                text: 'Try Again',
+                y: 420,
+                x: 180
+            });
+            break;
+
+        case 'pause':
+        case 'none':
+            buttonsToDraw = this.buttonSpecs.filter(btn =>
+                ['resume-btn', 'restart-btn', 'fullscreen-btn'].includes(btn.id)
+            );
+            break;
+
+        case 'menu':
             buttonsToDraw = this.buttonSpecs.filter(btn => btn.id === 'load-level-btn');
-            loadLevelBtn.text ='Play Demo';
-            loadLevelBtn.y = 420;
-            loadLevelBtn.x = 285;
+            Object.assign(loadLevelBtn, {
+                text: 'Play Demo',
+                y: 420,
+                x: 285
+            });
+            break;
+    }
+
+    return buttonsToDraw;
+}
+
+renderButtons(ctx, buttonsToDraw) {
+    buttonsToDraw.forEach(btn => {
+        ctx.fillStyle = btn.bg;
+        if (btn.bg !== 'none') {
+            ctx.fillRect(btn.x, btn.y, btn.width, btn.height);
         }
 
-        buttonsToDraw.forEach(btn => {
-            ctx.fillStyle = btn.bg;
-            ctx.fillRect(btn.x, btn.y, btn.width, btn.height);
+        ctx.strokeStyle = btn.border;
+        ctx.lineWidth = 3;
+        ctx.strokeRect(btn.x, btn.y, btn.width, btn.height);
 
-            ctx.strokeStyle = btn.border;
-            ctx.lineWidth = 3;
-            ctx.strokeRect(btn.x, btn.y, btn.width, btn.height);
+        if (btn.img && this.buttonImageCache[btn.id]?.complete) {
+            ctx.drawImage(this.buttonImageCache[btn.id], btn.x, btn.y, btn.width, btn.height);
+        }
 
-            ctx.fillStyle = btn.color;
-            ctx.font = 'bold 24px Arial';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(btn.text, btn.x + btn.width / 2, btn.y + btn.height / 2);
-        });
-    }
+        ctx.fillStyle = btn.color;
+        ctx.font = 'bold 24px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(btn.text, btn.x + btn.width / 2, btn.y + btn.height / 2);
+    });
+}
+
 
     setupButtonClicks() {
         if (!this.canvas) return;
