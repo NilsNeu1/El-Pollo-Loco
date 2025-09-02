@@ -43,13 +43,13 @@ class GameStateUI extends DrawableObject {
         },
         {
             id: 'fullscreen-btn',
-            text: 'f',
+            text: '',
             img: 'img/Assets/expand.png',
             x: 685,
             y: 10,
             width: 20,
             height: 20,
-            bg: 'none',
+            bg: '#994509d6',
             border: '#b76127',
             color: 'black'
         },
@@ -193,9 +193,9 @@ renderButtons(ctx, buttonsToDraw) {
             // Only check visible buttons
             let visibleButtons;
             if (this.state === 'win' || this.state === 'lose' || this.state === 'menu') {
-                visibleButtons = this.buttonSpecs.filter(btn => btn.id === 'load-level-btn' || btn.id === 'to-menu-btn');
+                visibleButtons = this.buttonSpecs.filter(btn => btn.id === 'load-level-btn' || btn.id === 'to-menu-btn' || btn.id === 'fullscreen-btn');
             } else if (this.state === 'pause' || this.state === 'none') {
-                visibleButtons = this.buttonSpecs.filter(btn => btn.id === 'resume-btn' || btn.id === 'restart-btn');
+                visibleButtons = this.buttonSpecs.filter(btn => btn.id === 'resume-btn' || btn.id === 'restart-btn' || btn.id === 'fullscreen-btn');
             } else {
                 visibleButtons = [];
             }
@@ -224,6 +224,10 @@ renderButtons(ctx, buttonsToDraw) {
                         this.world.level = createLevel1();
                         this.world.clearAllIntervals();
                         this.setState('menu');
+                    }
+                    if (btn.id === 'fullscreen-btn') {
+                        this.world.toggleFullscreen();
+                        console.log('Fullscreen Toggle');
                     }
                 }
             });
