@@ -11,6 +11,7 @@ class World {
     coinBar = new CoinBar();
     bossBar = new BossBar();
     gameStateUi = new GameStateUI();
+    mobileUi = new MobileButtons();
     trowable = [];
     availableBottles = this.salsaBar.availableBottles;
     intervalIDs = [];
@@ -29,6 +30,7 @@ class World {
         this.gameStateUi = new GameStateUI();
         this.setWorld();
         this.gameStateUi.setCanvasAndWorld(canvas, this); // This sets up button clicks once
+        this.mobileUi.setCanvasAndWorld(canvas, this); // This sets up button clicks once
         this.draw();
         this.start();
     }
@@ -240,6 +242,7 @@ class World {
         this.addToMap(this.coinBar);
         this.coinBar.drawCounter(this.ctx);
         this.addToMap(this.gameStateUi); // Always draw, but image depends on state
+        this.addToMap(this.mobileUi);
         if (this.bossAgro === true && this.gameStateUi.state !== 'menu') {
             this.addToMap(this.bossBar);
         }

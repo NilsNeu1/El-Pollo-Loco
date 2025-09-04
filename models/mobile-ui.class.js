@@ -2,42 +2,42 @@ class MobileButtons extends DrawableObject {
     buttonSpecs = [
         {
             id: 'left-btn',
-            img: 'img/placeholder_left.png',
-            x: 200,
-            y: 440,
+            img: '',
+            x: 40,
+            y: 400,
             action: 'moveLeft'
         },
         {
             id: 'right-btn',
-            img: 'img/placeholder_right.png',
-            x: 240,
-            y: 440,
+            img: '',
+            x: 110,
+            y: 400,
             action: 'moveRight'
         },
         {
             id: 'jump-btn',
-            img: 'img/placeholder_jump.png',
-            x: 280,
-            y: 440,
+            img: '',
+            x: 580,
+            y: 400,
             action: 'jump'
         },
         {
             id: 'attack-btn',
-            img: 'img/placeholder_attack.png',
-            x: 320,
-            y: 440,
+            img: '',
+            x: 650,
+            y: 400,
             action: 'attack'
         },
         {
             id: 'pause-btn',
-            img: 'img/placeholder_pause.png',
-            x: 360,
-            y: 440,
+            img: '',
+            x: 650,
+            y: 30,
             action: 'pause'
         }
     ];
-    width = 20;
-    height = 20;
+    width = 40;
+    height = 40;
     canvas = null;
     world = null;
     imageCache = {};
@@ -52,7 +52,7 @@ class MobileButtons extends DrawableObject {
     setCanvasAndWorld(canvas, world) {
         this.canvas = canvas;
         this.world = world;
-        this.setupButtonClicks();
+        this.setupButtonTouches();
     }
 
     loadImage(src) {
@@ -84,9 +84,10 @@ class MobileButtons extends DrawableObject {
     }
 
 setupButtonTouches() {
-    let activeButton = null;
+    //let activeButton = null;
 
     this.canvas.addEventListener('touchstart', (e) => {
+        console.log('touch event');
         const touch = e.touches[0];
         const rect = this.canvas.getBoundingClientRect();
         const scaleX = this.canvas.width / rect.width;
@@ -115,18 +116,23 @@ setupButtonTouches() {
         switch (action) {
             case 'moveLeft':
                 this.world.character.moveLeft();
+                console.log('mobile left')
                 break;
             case 'moveRight':
                 this.world.character.moveRight();
+                console.log('mobile right')
                 break;
             case 'jump':
                 this.world.character.jump();
+                console.log('mobile jump')
                 break;
             case 'attack':
                 this.world.character.attack();
+                console.log('mobile attack')
                 break;
             case 'pause':
                 this.world.togglePause();
+                console.log('mobile pause')
                 break;
         }
     }
