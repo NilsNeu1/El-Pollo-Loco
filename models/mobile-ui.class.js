@@ -84,10 +84,9 @@ class MobileButtons extends DrawableObject {
     }
 
 setupButtonTouches() {
-    //let activeButton = null;
+    let activeButton = null;
 
     this.canvas.addEventListener('touchstart', (e) => {
-        console.log('touch event');
         const touch = e.touches[0];
         const rect = this.canvas.getBoundingClientRect();
         const scaleX = this.canvas.width / rect.width;
@@ -100,40 +99,43 @@ setupButtonTouches() {
             const centerY = btn.y + this.height / 2;
             const dist = Math.sqrt((touchX - centerX) ** 2 + (touchY - centerY) ** 2);
             if (dist <= this.width / 2) {
-                this.handleButtonAction(btn.action);
+                activeButton = btn.action;
+                this.handleButtonAction(activeButton, true); // Taste aktivieren
+                console.log('mobile ' + activeButton);
             }
         });
     });
 
     this.canvas.addEventListener('touchend', () => {
-        // 
+        if (activeButton) {
+            this.handleButtonAction(activeButton, false); // Taste deaktivieren
+            activeButton = null;
+        }
     });
 }
 
 
-    handleButtonAction(action) {
-        if (!this.world) return;
-        switch (action) {
-            case 'moveLeft':
-                this.world.character.moveLeft();
-                console.log('mobile left')
-                break;
-            case 'moveRight':
-                this.world.character.moveRight();
-                console.log('mobile right')
-                break;
-            case 'jump':
-                this.world.character.jump();
-                console.log('mobile jump')
-                break;
-            case 'attack':
-                this.world.character.attack();
-                console.log('mobile attack')
-                break;
-            case 'pause':
-                this.world.togglePause();
-                console.log('mobile pause')
-                break;
-        }
+
+handleButtonAction(action, isPressed) {
+    if (!this.world || !this.world.keyboard) return;
+
+    switch (action) {
+        case 'moveLeft':
+            this.world.keyboard.LEFT = isPressed;
+            break;
+        case 'moveRight':
+            this.world.keyboard.RIGHT = isPressed;
+            break;
+        case 'jump':
+            if (isPressed) this.world.character.jump();
+            break;
+        case 'attack':
+            this.world.keyboard.THROW();
+            break;
+        case 'pause':
+            this.world.togglePause();
+            break;
     }
+}
+
 }
