@@ -78,4 +78,8 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
+document.addEventListener('contextmenu', event => event.preventDefault());
+document.addEventListener('dbclick', event => event.preventDefault());
+document.addEventListener('fullscreenchange', event => event.preventDefault());
+
 /// ctx.drawImage(character, 20, 20, 50, 150) // 20,20 = Coordinate 50 = Breite 150 = Höhe

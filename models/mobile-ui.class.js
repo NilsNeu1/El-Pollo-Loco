@@ -107,7 +107,7 @@ setupButtonTouches() {
     });
 
     this.canvas.addEventListener('touchend', () => {
-        if (activeButton) {
+        if (activeButton && activeButton !== 'pause') {
             this.handleButtonAction(activeButton, false); // Taste deaktivieren
             activeButton = null;
         }
@@ -130,7 +130,7 @@ handleButtonAction(action, isPressed) {
             if (isPressed) this.world.character.jump();
             break;
         case 'attack':
-            this.world.keyboard.THROW();
+            this.world.keyboard.THROW = isPressed;
             break;
         case 'pause':
             this.world.togglePause();
