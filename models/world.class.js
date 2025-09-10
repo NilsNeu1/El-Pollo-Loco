@@ -243,6 +243,9 @@ class World {
         this.coinBar.drawCounter(this.ctx);
         this.addToMap(this.gameStateUi); // Always draw, but image depends on state
         this.addToMap(this.mobileUi);
+        // if (this.smallDisplayUi()) {
+        //     this.addToMap(this.mobileUi);
+        // }
         if (this.bossAgro === true && this.gameStateUi.state !== 'menu') {
             this.addToMap(this.bossBar);
         }
@@ -281,6 +284,19 @@ class World {
         } else {
             document.exitFullscreen();
         }
+    }
+
+    smallDisplayUi() {
+        window.addEventListener('resize', () => {
+            if (window.innerWidth < 760) {
+                this.addToMap(this.mobileUi);
+            }
+        });
+        window.addEventListener('load', () => {
+            if (window.innerWidth < 760) {
+                this.addToMap(this.mobileUi);
+            }
+        });
     }
 
 }

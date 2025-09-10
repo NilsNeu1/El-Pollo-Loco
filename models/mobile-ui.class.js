@@ -2,35 +2,37 @@ class MobileButtons extends DrawableObject {
     buttonSpecs = [
         {
             id: 'left-btn',
-            img: '',
+            img: 'img/Assets/mobile_buttons/left.png',
             x: 40,
             y: 400,
             action: 'moveLeft'
         },
         {
             id: 'right-btn',
-            img: '',
+            img: 'img/Assets/mobile_buttons/left.png',
             x: 110,
             y: 400,
-            action: 'moveRight'
+            action: 'moveRight',
+            rotation: Math.PI / 1
         },
         {
             id: 'jump-btn',
-            img: '',
+            img: 'img/Assets/mobile_buttons/left.png',
             x: 580,
             y: 400,
-            action: 'jump'
+            action: 'jump',
+            rotation: Math.PI / 2
         },
         {
             id: 'attack-btn',
-            img: '',
+            img: 'img/Assets/mobile_buttons/bottle.png',
             x: 650,
             y: 400,
             action: 'attack'
         },
         {
             id: 'pause-btn',
-            img: '',
+            img: 'img/Assets/mobile_buttons/pause.png',
             x: 650,
             y: 30,
             action: 'pause'
@@ -61,27 +63,38 @@ class MobileButtons extends DrawableObject {
         this.imageCache[src] = img;
     }
 
-    draw(ctx) {
-        this.buttonSpecs.forEach(btn => {
-            ctx.save();
-            ctx.beginPath();
-            ctx.arc(btn.x + this.width / 2, btn.y + this.height / 2, this.width / 2, 0, 2 * Math.PI);
-            ctx.closePath();
-            ctx.fillStyle = '#fff';
-            ctx.globalAlpha = 0.7;
-            ctx.fill();
-            ctx.strokeStyle = '#b76127';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-            ctx.globalAlpha = 1.0;
-            // zeichnet die bilder erst wenn sie fertig geladen sind (complete)
-            const img = this.imageCache[btn.img];
-            if (img && img.complete) {
-                ctx.drawImage(img, btn.x, btn.y, this.width, this.height);
-            }
-            ctx.restore();
-        });
-    }
+draw(ctx) {
+    this.buttonSpecs.forEach(btn => {
+        ctx.save();
+
+        // Center of the button
+        const centerX = btn.x + this.width / 2;
+        const centerY = btn.y + this.height / 2;
+
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, this.width / 2, 0, 2 * Math.PI);
+        ctx.closePath();
+        ctx.fillStyle = '#fff';
+        ctx.globalAlpha = 0.7;
+        ctx.fill();
+        ctx.strokeStyle = '#b76127';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.globalAlpha = 1.0;
+
+        const img = this.imageCache[btn.img];
+        if (img && img.complete) {
+            const rotation = btn.rotation || 0;
+
+            ctx.translate(centerX, centerY);
+            ctx.rotate(rotation);
+            ctx.drawImage(img, -this.width / 2, -this.height / 2, this.width, this.height);
+        }
+
+        ctx.restore();
+    });
+}
+
 
 setupButtonTouches() {
     let activeButton = null;
