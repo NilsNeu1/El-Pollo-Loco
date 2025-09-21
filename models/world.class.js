@@ -75,6 +75,7 @@ class World {
             this.checkCollections();
             this.checkBossAgro();
             this.isGameWon();
+            this.smallDisplayUi();
             this.gameStateUi.setupButtonClicks();
         }, 200);
         this.gamePaused = false;
@@ -242,10 +243,10 @@ class World {
         this.addToMap(this.coinBar);
         this.coinBar.drawCounter(this.ctx);
         this.addToMap(this.gameStateUi); // Always draw, but image depends on state
-        this.addToMap(this.mobileUi);
-        // if (this.smallDisplayUi()) {
-        //     this.addToMap(this.mobileUi);
-        // }
+        // this.addToMap(this.mobileUi);
+        if (this.smallDisplayUi()) {
+            this.addToMap(this.mobileUi);
+        }
         if (this.bossAgro === true && this.gameStateUi.state !== 'menu') {
             this.addToMap(this.bossBar);
         }
@@ -287,16 +288,17 @@ class World {
     }
 
     smallDisplayUi() {
-        window.addEventListener('resize', () => {
-            if (window.innerWidth < 760) {
-                this.addToMap(this.mobileUi);
-            }
-        });
-        window.addEventListener('load', () => {
-            if (window.innerWidth < 760) {
-                this.addToMap(this.mobileUi);
-            }
-        });
+        return window.innerWidth < 760;
+        // window.addEventListener('resize', () => {
+        //     if (window.innerWidth < 760) {
+        //         this.addToMap(this.mobileUi);
+        //     }
+        // });
+        // window.addEventListener('load', () => {
+        //     if (window.innerWidth < 760) {
+        //         this.addToMap(this.mobileUi);
+        //     }
+        // });
     }
 
 }
