@@ -243,7 +243,6 @@ class World {
         this.addToMap(this.coinBar);
         this.coinBar.drawCounter(this.ctx);
         this.addToMap(this.gameStateUi); // Always draw, but image depends on state
-        // this.addToMap(this.mobileUi);
         if (this.smallDisplayUi()) {
             this.addToMap(this.mobileUi);
         }
@@ -289,16 +288,6 @@ class World {
 
     smallDisplayUi() {
         return window.innerWidth < 760;
-        // window.addEventListener('resize', () => {
-        //     if (window.innerWidth < 760) {
-        //         this.addToMap(this.mobileUi);
-        //     }
-        // });
-        // window.addEventListener('load', () => {
-        //     if (window.innerWidth < 760) {
-        //         this.addToMap(this.mobileUi);
-        //     }
-        // });
     }
 
 }
