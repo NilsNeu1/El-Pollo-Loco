@@ -68,6 +68,7 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_DEAD);
         this.animate();
         this.applyGravity();
+     //   this.soundManager = new SoundManager();
     }
 
 
@@ -101,6 +102,7 @@ class Character extends MovableObject {
             if (!this.world.gamePaused) {
                 if (this.isHurt()) {
                     this.playAnimation(this.IMAGES_HURT);
+                    this.soundManager.playSound('hit');
                 } else if (this.isDead()) {
                     this.playAnimation(this.IMAGES_DEAD);
                 } else if (this.fallsAsleep()) {
