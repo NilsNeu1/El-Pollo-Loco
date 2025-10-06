@@ -25,6 +25,7 @@ class ThrowableObject extends MovableObject {
         this.width = 100;
         this.level = level; // das jeweilige level wird hier von World.js importiert.
         this.throw();
+        this.soundManager = new SoundManager();
         
     }
 
@@ -40,6 +41,7 @@ class ThrowableObject extends MovableObject {
                     clearInterval(rotateInterval);
                     clearInterval(this.gravityInterval); // Beenden des Schwerkraft-Intervalls
                     this.splash(); // Aufruf von splash bei einer Kollision
+                    this.soundManager.playSound('brokenBottle');
                     enemy.hit();
                     
                 }

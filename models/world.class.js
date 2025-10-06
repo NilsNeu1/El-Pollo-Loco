@@ -12,6 +12,7 @@ class World {
     bossBar = new BossBar();
     gameStateUi = new GameStateUI();
     mobileUi = new MobileButtons();
+    soundManager = new SoundManager();
     trowable = [];
     availableBottles = this.salsaBar.availableBottles;
     intervalIDs = [];
@@ -102,6 +103,7 @@ class World {
         if (this.character.health <= 0) {
             this.gameStateUi.setState('lose');
             this.clearAllIntervals();
+            this.soundManager.playSound('gameOver');
         }
     }
 
@@ -111,6 +113,7 @@ class World {
             this.bossDefeated = true;
             this.gameStateUi.setState('win');
             this.clearAllIntervals();
+            this.soundManager.playSound('gameWon');
         }
     }
 
@@ -172,6 +175,7 @@ class World {
                 if (this.character.isColliding(bottle)) {
                     this.salsaBar.availableBottles++;
                     this.level.collectableBottle.splice(index, 1); // Remove the collided bottle from the array
+                    this.soundManager.playSound('collectBottle');
                 }
             });
 
@@ -179,6 +183,7 @@ class World {
                 if (this.character.isColliding(coin)) {
                     this.coinBar.CollectedCoins++;
                     this.level.collectableCoin.splice(index, 1); // Remove the collided bottle from the array
+                    this.soundManager.playSound('collectCoin');
                 }
             });
 

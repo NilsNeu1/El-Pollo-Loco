@@ -57,6 +57,7 @@ class Character extends MovableObject {
         'img/2_character_pepe/5_dead/D-57.png'
     ];
     currentImage = 0;
+    lastHurtSoundTime = 0;
 
     constructor() {
         super().loadImage('img/2_character_pepe/2_walk/W-21.png');
@@ -68,7 +69,7 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_DEAD);
         this.animate();
         this.applyGravity();
-     //   this.soundManager = new SoundManager();
+        this.soundManager = new SoundManager();
     }
 
 
