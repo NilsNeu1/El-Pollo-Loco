@@ -25,7 +25,7 @@ class ThrowableObject extends MovableObject {
         this.width = 100;
         this.level = level; // das jeweilige level wird hier von World.js importiert.
         this.throw();
-        this.soundManager = new SoundManager();
+        this.soundManager = world.soundManager;
         
     }
 

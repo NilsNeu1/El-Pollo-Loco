@@ -1,6 +1,7 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
+let soundManager;
 
 function init() {
    canvas = document.getElementById('canvas');
@@ -8,6 +9,8 @@ function init() {
    world.level = createLevel1();
    world.clearAllIntervals();
    world.gameStateUi.setState('menu');
+   soundManager = new SoundManager();
+   soundManager.initSlider();
 }
 
 function loadLevel(levelNumber) {
