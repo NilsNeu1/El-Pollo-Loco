@@ -11,17 +11,19 @@ class SoundManager {
 
     initSounds() {
             this.sounds = {
-            collectCoin: new Audio('audio/effects/coin-collect.wav'),
-            collectBottle: new Audio('audio/effects/bottle-collect.wav'),
-            brokenBottle: new Audio('audio/effects/bottle-break.mp3'),
-            throw: new Audio(''),
-            hit: new Audio('audio/effects/pepe-hit.wav'),
-            jump: new Audio(''),
-            chickenDead: new Audio('audio/effects/chicken-dead.wav'),
+            collectCoin: new Audio('audio/effects/coin-collect.wav'), // done
+            collectBottle: new Audio('audio/effects/bottle-collect.wav'), // done
+            brokenBottle: new Audio('audio/effects/bottle-break.mp3'), // done
+            throw: new Audio('audio/effects/throw.mp3'), // done
+            hit: new Audio('audio/effects/pepe-hit.wav'), // done
+            jump: new Audio('audio/effects/jump.mp3'), // done
+            chickenDead: new Audio(''),
+            chickDead: new Audio('audio/effects/enemies/chicken/chick-sound.mp3'),
+            bossAgro: new Audio('audio/effects/enemies/boss/boss-entry.mp3'), 
             bossChickenDead: new Audio(''),
             backgroundMusic: new Audio(''),
-            gameOver: new Audio('audio/win&lose/level-lose.wav'),
-            gameWon: new Audio('audio/win&lose/level-win.wav'),
+            gameOver: new Audio('audio/win&lose/level-lose.wav'), // done
+            gameWon: new Audio('audio/win&lose/level-win.wav'), // done
         };
         this.sounds.backgroundMusic.loop = true;
     }

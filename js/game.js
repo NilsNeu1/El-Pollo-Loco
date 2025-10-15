@@ -47,7 +47,7 @@ document.addEventListener('keydown', (event) => { // alternative keypress
    }
 
    if (event.keyCode == 38 || event.keyCode == 87) { // Arrow Up or W
-      keyboard.UP = true
+      keyboard.UP = true;
    }
 
    if (event.keyCode == 32 || event.keyCode == 13) { // Space or Enter

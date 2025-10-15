@@ -134,6 +134,7 @@ class World {
             let bottle = new ThrowableObject(this.character.posX + 100, this.character.posY + 100, this.level);
             this.trowable.push(bottle);
             this.decreaseAvailableBottles();
+            this.soundManager.playSound('throw');
         }
     }
 

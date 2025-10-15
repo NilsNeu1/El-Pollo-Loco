@@ -90,6 +90,7 @@ class Character extends MovableObject {
 
                 if (this.world.keyboard.UP && !this.isAboveGround()) {
                     this.jump();
+                    this.soundManager.playSound('jump');
                 }
 
                 this.world.camera_x = -this.posX + 100;
@@ -112,6 +113,7 @@ class Character extends MovableObject {
                     this.playAnimation(this.IMAGES_IDLE);
                 } else if (this.isAboveGround()) {
                     this.playAnimation(this.IMAGES_JUMP);
+                    // this.soundManager.playSound('jump');
                 } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
                     this.playAnimation(this.IMAGES_WALKING);
                 }

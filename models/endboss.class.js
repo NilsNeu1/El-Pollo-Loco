@@ -8,6 +8,7 @@ health = 100;
 speed = 1.05;
 attacking = false
 alertSequencePlayed = false;
+soundManager = world.soundManager;
 
 shouldMoveLeft = false;
 
