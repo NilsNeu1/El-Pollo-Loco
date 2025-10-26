@@ -17,11 +17,13 @@ class SoundManager {
             throw: new Audio('audio/effects/throw.mp3'), // done
             hit: new Audio('audio/effects/pepe-hit.wav'), // done
             jump: new Audio('audio/effects/jump.mp3'), // done
+            pepeIdle: new Audio('audio/effects/idle.mp3'),
             chickenDead: new Audio(''),
             chickDead: new Audio('audio/effects/enemies/chicken/chick-sound.mp3'),
-            bossAgro: new Audio('audio/effects/enemies/boss/boss-entry.mp3'), 
+            bossAgro: new Audio('audio/effects/enemies/boss/boss-entry.mp3'), // done
             bossChickenDead: new Audio(''),
-            backgroundMusic: new Audio(''),
+            backgroundMusic: new Audio('audio/songs/game-theme.mp3'), // done
+            menuMusic: new Audio('audio/songs/menu-theme.mp3'),
             gameOver: new Audio('audio/win&lose/level-lose.wav'), // done
             gameWon: new Audio('audio/win&lose/level-win.wav'), // done
         };

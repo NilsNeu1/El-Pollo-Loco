@@ -21,6 +21,7 @@ class World {
     gameWon = false;
     bossDefeated = false;
     bossAgro = false;
+    bossAgroSoundPlayed = false;
 
     // um die Variablen aus dieser datei nutzen zu können muss "this." davor gesetzt werden. 
 
@@ -64,6 +65,9 @@ class World {
         this.CollectedCoins = 0;
         this.coinBar.CollectedCoins = 0;
         this.camera_x = 0;
+        // reset boss agro sound flag so it can play again on a fresh start
+        this.bossAgroSoundPlayed = false;
+        this.bossAgro = false;
 
     }
 
@@ -101,6 +105,10 @@ class World {
 
     isGameLost() {
         if (this.character.health <= 0) {
+            // Stop any background music when the game is lost
+            if (this.soundManager) {
+                this.soundManager.stopSound('backgroundMusic');
+            }
             this.gameStateUi.setState('lose');
             this.clearAllIntervals();
             this.soundManager.playSound('gameOver');
@@ -111,6 +119,10 @@ class World {
         const boss = this.level.enemies.find(e => e instanceof Endboss);
         if (boss && boss.health <= 0) {
             this.bossDefeated = true;
+            // Stop any background music when the game is won
+            if (this.soundManager) {
+                this.soundManager.stopSound('backgroundMusic');
+            }
             this.gameStateUi.setState('win');
             this.clearAllIntervals();
             this.soundManager.playSound('gameWon');
@@ -119,9 +131,14 @@ class World {
 
     checkBossAgro() {
         const boss = this.level.enemies.find(e => e instanceof Endboss);
-        let agroRange = (Math.abs(this.character.posX - boss.posX));
+        if (!boss) return;
+        let agroRange = Math.abs(this.character.posX - boss.posX);
         if (this.initiatedGame === true && agroRange < 500) {
             this.bossBar.setPercentage(boss.health);
+            if (!this.bossAgro && !this.bossAgroSoundPlayed) {
+                this.soundManager.playSound('bossAgro');
+                this.bossAgroSoundPlayed = true;
+            }
             this.bossAgro = true;
         } else if (this.character.posX < 300) {
             this.bossAgro = false;
