@@ -43,7 +43,7 @@ class Chicken extends MovableObject {
                     this.deadChicken();
                 }
             }
-        }, 1000 / 10);
+        }, 1000 / 6);
     }
 
     deadChicken() {

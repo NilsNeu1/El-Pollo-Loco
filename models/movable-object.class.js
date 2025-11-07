@@ -76,12 +76,13 @@ class MovableObject extends DrawableObject {
       
   }
 
-  isCollidingFromAbove(MO) {
-    return (
-        this.isColliding(MO) &&
-        this.posY + this.height - this.offset.bottom <= MO.posY + MO.offset.top + MO.height / 2
-    );
-}
+    isCollidingFromAbove(MO) {
+        return (
+            this.isColliding(MO) &&
+            this.speedY < 0 &&
+            this.posY + this.height - this.offset.bottom <= MO.posY + MO.offset.top + MO.height / 2
+        );
+    }
 
   
 

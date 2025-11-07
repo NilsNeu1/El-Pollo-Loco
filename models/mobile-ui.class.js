@@ -1,4 +1,7 @@
 class MobileButtons extends DrawableObject {
+    rotationOverlay;
+    orientationHandler;
+
     buttonSpecs = [
         {
             id: 'left-btn',
@@ -49,6 +52,28 @@ class MobileButtons extends DrawableObject {
         this.buttonSpecs.forEach(btn => this.loadImage(btn.img));
         this.posX = 0;
         this.posY = 0;
+        this.rotationOverlay = document.getElementById('rotation-overlay');
+        this.setupOrientationHandler();
+    }
+
+    setupOrientationHandler() {
+        this.checkOrientation();
+
+        // event listener for orientation changes
+        this.orientationHandler = () => this.checkOrientation();
+        window.addEventListener('resize', this.orientationHandler);
+        
+        if (window.screen && window.screen.orientation) {
+            window.screen.orientation.addEventListener('change', this.orientationHandler);
+        }
+    }
+
+    checkOrientation() {
+        const isPortrait = window.innerHeight > window.innerWidth;
+        const isSmallDisplay = window.innerWidth < 1370;
+        if (this.rotationOverlay) {
+            this.rotationOverlay.style.display = (isPortrait && isSmallDisplay) ? 'flex' : 'none';
+        }
     }
 
     setCanvasAndWorld(canvas, world) {

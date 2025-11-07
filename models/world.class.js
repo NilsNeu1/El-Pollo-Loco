@@ -22,6 +22,7 @@ class World {
     bossDefeated = false;
     bossAgro = false;
     bossAgroSoundPlayed = false;
+    nextThrowAllowed = 0;
 
     // um die Variablen aus dieser datei nutzen zu können muss "this." davor gesetzt werden. 
 
@@ -40,6 +41,7 @@ class World {
     setWorld() {
         this.character.world = this;
         this.level.enemies.forEach(enemy => enemy.world = this); // Setzt die World-Referenz für Gegner
+        this.salsaBar.world = this;
     }
 
 
@@ -147,44 +149,64 @@ class World {
 
 
     checkThrowObject() {
-        if (this.keyboard.THROW && this.salsaBar.availableBottles > 0) {
+        // Only allow throwing if the THROW key is pressed, bottles are available
+        // and the cooldown period has passed.
+        const now = Date.now();
+        if (this.keyboard.THROW && this.salsaBar.availableBottles > 0 && now >= this.nextThrowAllowed) {
             let bottle = new ThrowableObject(this.character.posX + 100, this.character.posY + 100, this.level);
             this.trowable.push(bottle);
             this.decreaseAvailableBottles();
             this.soundManager.playSound('throw');
+            // set 1 second cooldown
+            this.nextThrowAllowed = now + 1000;
         }
     }
 
 
-    checkCollisions() {
-        const boss = this.level.enemies.find(e => e instanceof Endboss);
-        this.customeInterval(() => {
-            this.level.enemies.forEach((enemy, index) => {
-                if (this.character.isColliding(enemy)) {
-                    if (enemy instanceof Chick || enemy instanceof Chicken || enemy instanceof Endboss) {
-                        if (this.character.isCollidingFromAbove(enemy)) {
-                            enemy.health -= 5;
+checkCollisions() {
+    const boss = this.level.enemies.find(e => e instanceof Endboss);
+    this.customeInterval(() => {
+        this.level.enemies.forEach((enemy, index) => {
+            if (this.character.isColliding(enemy)) {
+                if (enemy instanceof Chick || enemy instanceof Chicken || enemy instanceof Endboss) {
+                    if (this.character.isCollidingFromAbove(enemy)) {
+                        if (!(enemy instanceof Endboss)) {
+                            if (typeof enemy.hit === 'function') {
+                                enemy.hit();
+                            } else {
+                                enemy.health -= 5;
+                            }
                             this.character.jump();
+                            // Give the Character a short i-Frame so they won't be hurt on the next collision
+                            this.character.lastHit = new Date().getTime();
 
                             if (enemy.health <= 5) {
                                 enemy.playAnimation(enemy.IMAGES_DEAD);
                                 enemy.deadChicken();
                             }
                         } else {
-                            this.character.hit();
-                            this.healthBar.setPercentage(this.character.health);
-                            this.bossBar.setPercentage(boss.health);
-                            this.isGameLost();
+                            // For the Endboss: just bounce the character but don't damage them
+                            //this.character.jump();
+                            this.character.lastHit = new Date().getTime();
                         }
+                    } else {
+                        // Charakter bekommt Schaden bei Berührung
+                        this.character.hit();
+                        this.healthBar.setPercentage(this.character.health);
+                        this.bossBar.setPercentage(boss.health);
+                        this.isGameLost();
                     }
                 }
-                // Remove enemy if health is 0
-                if (enemy.health <= 1 && enemy.posY > 500) {
-                    this.level.enemies.splice(index, 1);
-                }
-            });
-        }, 1000 / 60); // Kollisionsprüfung alle 60 fps
-    }
+            }
+
+            // Entferne Gegner, wenn tot und außerhalb des Bildschirms
+            if (enemy.health <= 1 && enemy.posY > 500) {
+                this.level.enemies.splice(index, 1);
+            }
+        });
+    }, 1000 / 60); // Kollisionsprüfung alle 60 fps
+}
+
 
 
     checkCollections() {
@@ -251,7 +273,7 @@ class World {
             this.flipImage(MO);
         }
         MO.draw(this.ctx);
-        // MO.drawHitbox(this.ctx);
+        //MO.drawHitbox(this.ctx);
 
         if (MO.otherDirection) {
             this.flipImageBack(MO)
@@ -310,7 +332,8 @@ class World {
     }
 
     smallDisplayUi() {
-        return window.innerWidth < 760;
+        return window.innerWidth < 1370
+    ;
     }
 
 }
