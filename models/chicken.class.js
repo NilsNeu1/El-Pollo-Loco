@@ -50,7 +50,7 @@ class Chicken extends MovableObject {
         this.speed = 0;
 
         this.customeInterval(() => {
-            this.posY += 0.5;
+            this.posY += 3;
         }, 20);
     }
 

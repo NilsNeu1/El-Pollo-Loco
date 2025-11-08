@@ -44,7 +44,7 @@ class Chick extends MovableObject {
         this.speed = 0;
 
         this.customeInterval(() => {
-            this.posY += 0.55;
+            this.posY += 3;
         }, 20);
     }
 

@@ -5,8 +5,12 @@ class SoundManager {
 
     constructor() {
         this.mute = false;
+        // load saved volume from localStorage (if present)
+        this.loadSavedVolume();
         this.initSlider();
         this.initSounds();
+        // apply volume to any sounds that will be initialized
+        this.setVolume(this.volume);
     }
 
     initSounds() {
@@ -62,16 +66,40 @@ class SoundManager {
                 audio.volume = volume;
             }
         });
+        // persist to localStorage so value survives page refresh
+        this.saveVolume();
     }
 
     initSlider(){
         const volumeSlider = document.getElementById('volume');
         if (!volumeSlider) return;
+        // initialize slider position
+        try { volumeSlider.value = Math.round(this.volume * 100); } catch (e) {}
         volumeSlider.addEventListener('input', ({target}) => {
             const value = Number(target.value) / 100; // Wert als Zahl
             this.setVolume(value);
             console.log('Volume set to', this.volume);
         });
+    }
+
+    loadSavedVolume() {
+        try {
+            const stored = localStorage.getItem('gameVolume');
+            if (stored !== null) {
+                const v = Number(stored);
+                if (!isNaN(v)) this.volume = v;
+            }
+        } catch (e) {
+            // ignore if localStorage unavailable
+        }
+    }
+
+    saveVolume() {
+        try {
+            localStorage.setItem('gameVolume', String(this.volume));
+        } catch (e) {
+            // ignore
+        }
     }
 
 }

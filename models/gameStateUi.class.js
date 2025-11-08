@@ -192,13 +192,20 @@ renderButtons(ctx, buttonsToDraw) {
 
             // Only check visible buttons
             let visibleButtons;
-            if (this.state === 'win' || this.state === 'lose' || this.state === 'menu') {
-                visibleButtons = this.buttonSpecs.filter(btn => btn.id === 'load-level-btn' || btn.id === 'to-menu-btn' || btn.id === 'fullscreen-btn');
+            if (this.state === 'win' || this.state === 'lose') {
+                visibleButtons = this.buttonSpecs.filter(btn =>
+                    ['load-level-btn', 'to-menu-btn', 'fullscreen-btn'].includes(btn.id)
+                );
+            } else if (this.state === 'menu') {
+                visibleButtons = this.buttonSpecs.filter(btn =>
+                    btn.id === 'load-level-btn' // Only Play Demo should be clickable
+                );
             } else if (this.state === 'pause' || this.state === 'none') {
-                visibleButtons = this.buttonSpecs.filter(btn => btn.id === 'resume-btn' || btn.id === 'restart-btn' || btn.id === 'fullscreen-btn');
-            } else {
-                visibleButtons = [];
+                visibleButtons = this.buttonSpecs.filter(btn =>
+                    ['resume-btn', 'restart-btn', 'fullscreen-btn'].includes(btn.id)
+                );
             }
+
 
             visibleButtons.forEach((btn) => {
                 if (

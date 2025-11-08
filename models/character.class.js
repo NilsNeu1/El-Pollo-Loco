@@ -108,7 +108,7 @@ class Character extends MovableObject {
             this.updateIdleTimer();
 
             if (!this.world.gamePaused) {
-                if (this.isHurt()) {
+                if (this.isHurt() && !this.isAboveGround()) {
                     this.playAnimation(this.IMAGES_HURT);
                     this.soundManager.playSound('hit');
                 } else if (this.isDead()) {

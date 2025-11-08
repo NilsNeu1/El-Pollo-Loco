@@ -13,7 +13,7 @@ constructor(){
 
         super().loadImage('img/8_coin/coin_1.png');
         this.posX = 400 + Math.random() * 1500; 
-        this.posY = 150 - Math.random() * 180;
+        this.posY = 150 - Math.random() * 100;
 
     }
 
