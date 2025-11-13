@@ -273,7 +273,7 @@ checkCollisions() {
             this.flipImage(MO);
         }
         MO.draw(this.ctx);
-        //MO.drawHitbox(this.ctx);
+        MO.drawHitbox(this.ctx);
 
         if (MO.otherDirection) {
             this.flipImageBack(MO)

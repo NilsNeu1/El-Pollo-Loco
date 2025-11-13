@@ -40,14 +40,19 @@ class DrawableObject{
     }
     
 
-    drawHitbox(ctx){
-        if (this instanceof Character || this instanceof Chicken || this instanceof Endboss) {
-            
-            ctx.beginPath();
-            ctx.lineWidth = "2";
-            ctx.strokeStyle = "yellow";
-            ctx.rect(this.posX, this.posY, this.width, this.height);
-            ctx.stroke();
-        }
+drawHitbox(ctx) {
+    if (this instanceof Character || this instanceof Chicken || this instanceof Endboss || this instanceof Chick) {
+        const x = this.posX + this.offset.left;
+        const y = this.posY + this.offset.top;
+        const width = this.width - this.offset.left - this.offset.right;
+        const height = this.height - this.offset.top - this.offset.bottom;
+
+        ctx.beginPath();
+        ctx.lineWidth = "2";
+        ctx.strokeStyle = "yellow";
+        ctx.rect(x, y, width, height);
+        ctx.stroke();
     }
+}
+
 }

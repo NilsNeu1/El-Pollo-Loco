@@ -65,6 +65,17 @@ class GameStateUI extends DrawableObject {
             border: '#b76127',
             color: '#ff9e00'
         }
+        ,{
+            id: 'impressum-btn',
+            text: 'Impressum',
+            x: 610,
+            y: 450,
+            width: 120,
+            height: 20,
+            bg: 'transparent',
+            border: 'transparent',
+            color: 'black'
+        }
     ];
     canvas = null;
     world = null;
@@ -144,7 +155,7 @@ getButtonsToDraw() {
             break;
 
         case 'menu':
-            buttonsToDraw = this.buttonSpecs.filter(btn => btn.id === 'load-level-btn');
+            buttonsToDraw = this.buttonSpecs.filter(btn => ['load-level-btn','impressum-btn'].includes(btn.id));
             Object.assign(loadLevelBtn, {
                 text: 'Play Demo',
                 y: 420,
@@ -172,7 +183,7 @@ renderButtons(ctx, buttonsToDraw) {
         }
 
         ctx.fillStyle = btn.color;
-        ctx.font = 'bold 24px Arial';
+        ctx.font = btn.id === 'impressum-btn' ? 'bold 12px Arial' : 'bold 24px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(btn.text, btn.x + btn.width / 2, btn.y + btn.height / 2);
@@ -198,7 +209,7 @@ renderButtons(ctx, buttonsToDraw) {
                 );
             } else if (this.state === 'menu') {
                 visibleButtons = this.buttonSpecs.filter(btn =>
-                    btn.id === 'load-level-btn' // Only Play Demo should be clickable
+                    ['load-level-btn', 'impressum-btn'].includes(btn.id) // Play Demo + Impressum clickable
                 );
             } else if (this.state === 'pause' || this.state === 'none') {
                 visibleButtons = this.buttonSpecs.filter(btn =>
@@ -235,6 +246,11 @@ renderButtons(ctx, buttonsToDraw) {
                     if (btn.id === 'fullscreen-btn') {
                         this.world.toggleFullscreen();
                         console.log('Fullscreen Toggle');
+                    }
+                    if (btn.id === 'impressum-btn') {
+                        // Open a placeholder URL in a new tab
+                        window.open('https://example.com/impressum', '_blank');
+                        console.log('Impressum opened');
                     }
                 }
             });
