@@ -68,6 +68,11 @@ class SoundManager {
         });
         // persist to localStorage so value survives page refresh
         this.saveVolume();
+        // keep HTML volume slider in sync (if present)
+        try {
+            const volumeSlider = document.getElementById('volume');
+            if (volumeSlider) volumeSlider.value = Math.round(this.volume * 100);
+        } catch (e) {}
     }
 
     initSlider(){

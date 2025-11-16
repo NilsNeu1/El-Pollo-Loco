@@ -8,7 +8,7 @@ class Character extends MovableObject {
         top: 80,
         bottom: 10,
         left: 70,
-        right: 70
+        right: 85
     };
     IMAGES_IDLE = [
         'img/2_character_pepe/1_idle/idle/I-1.png',

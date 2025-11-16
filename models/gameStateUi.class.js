@@ -76,6 +76,39 @@ class GameStateUI extends DrawableObject {
             border: 'transparent',
             color: 'black'
         }
+        ,{
+            id: 'volume-up-btn',
+            text: 'Vol +10',
+            x: 10,
+            y: 175,
+            width: 85,
+            height: 40,
+            bg: '#994509d6',
+            border: '#b76127',
+            color: '#ff9e00'
+        }
+        ,{
+            id: 'volume-display-btn',
+            text: '100',
+            x: 10,
+            y: 220,
+            width: 85,
+            height: 40,
+            bg: '#994509d6',
+            border: '#b76127',
+            color: '#ff9e00'
+        }
+        ,{
+            id: 'volume-down-btn',
+            text: 'Vol -10',
+            x: 10,
+            y: 265,
+            width: 85,
+            height: 40,
+            bg: '#994509d6',
+            border: '#b76127',
+            color: '#ff9e00'
+        }
     ];
     canvas = null;
     world = null;
@@ -88,6 +121,7 @@ class GameStateUI extends DrawableObject {
         this.loadImages(this.startUi);
         this.posX = 0;
         this.posY = 0;
+        this._clickHandler = null;
 
         // Preload button images
         this.buttonSpecs.forEach(btn => {
@@ -150,8 +184,13 @@ getButtonsToDraw() {
         case 'pause':
         case 'none':
             buttonsToDraw = this.buttonSpecs.filter(btn =>
-                ['resume-btn', 'restart-btn', 'fullscreen-btn'].includes(btn.id)
+                ['resume-btn', 'restart-btn', 'fullscreen-btn', 'volume-up-btn', 'volume-display-btn', 'volume-down-btn'].includes(btn.id)
             );
+            // Update volume display button with current volume
+            const volumeDisplayBtn = buttonsToDraw.find(btn => btn.id === 'volume-display-btn');
+            if (volumeDisplayBtn && this.world && this.world.soundManager) {
+                volumeDisplayBtn.text = Math.round(this.world.soundManager.volume * 100);
+            }
             break;
 
         case 'menu':
@@ -193,7 +232,14 @@ renderButtons(ctx, buttonsToDraw) {
 
     setupButtonClicks() {
         if (!this.canvas) return;
-        this.canvas.addEventListener('click', (e) => {
+
+        // Remove any previously attached handler to avoid duplicate listeners
+        if (this._clickHandler) {
+            this.canvas.removeEventListener('click', this._clickHandler);
+            this._clickHandler = null;
+        }
+
+        this._clickHandler = (e) => {
             if (!['pause', 'win', 'lose', 'menu'].includes(this.state)) return;
             const rect = this.canvas.getBoundingClientRect();
             const scaleX = this.canvas.width / rect.width;
@@ -213,12 +259,12 @@ renderButtons(ctx, buttonsToDraw) {
                 );
             } else if (this.state === 'pause' || this.state === 'none') {
                 visibleButtons = this.buttonSpecs.filter(btn =>
-                    ['resume-btn', 'restart-btn', 'fullscreen-btn'].includes(btn.id)
+                    ['resume-btn', 'restart-btn', 'fullscreen-btn', 'volume-up-btn', 'volume-display-btn', 'volume-down-btn'].includes(btn.id)
                 );
             }
 
-
-            visibleButtons.forEach((btn) => {
+            // Handle only the first button that matches the click (prevents overlapping buttons firing multiple handlers)
+            for (const btn of visibleButtons) {
                 if (
                     mouseX >= btn.x &&
                     mouseX <= btn.x + btn.width &&
@@ -252,8 +298,24 @@ renderButtons(ctx, buttonsToDraw) {
                         window.open('https://example.com/impressum', '_blank');
                         console.log('Impressum opened');
                     }
+                    if (btn.id === 'volume-up-btn') {
+                        if (this.world && this.world.soundManager) {
+                            this.world.soundManager.setVolume(Math.min(1, this.world.soundManager.volume + 0.1));
+                            console.log('Volume +10');
+                        }
+                    }
+                    if (btn.id === 'volume-down-btn') {
+                        if (this.world && this.world.soundManager) {
+                            this.world.soundManager.setVolume(Math.max(0, this.world.soundManager.volume - 0.1));
+                            console.log('Volume -10');
+                        }
+                    }
+
+                    break; // stop after first matching button
                 }
-            });
-        });
+            }
+        };
+
+        this.canvas.addEventListener('click', this._clickHandler);
     }
 }
