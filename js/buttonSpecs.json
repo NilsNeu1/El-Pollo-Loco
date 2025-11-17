@@ -1,0 +1,104 @@
+
+[
+	{
+		"id": "restart-btn",
+		"text": "Restart",
+		"x": 180,
+		"y": 420,
+		"width": 150,
+		"height": 40,
+		"bg": "#994509d6",
+		"border": "#b76127",
+		"color": "#ff9e00"
+	},
+	{
+		"id": "load-level-btn",
+		"text": "Try Again",
+		"x": 285,
+		"y": 420,
+		"width": 150,
+		"height": 40,
+		"bg": "#994509d6",
+		"border": "#b76127",
+		"color": "#ff9e00"
+	},
+	{
+		"id": "resume-btn",
+		"text": "Resume",
+		"x": 390,
+		"y": 420,
+		"width": 150,
+		"height": 40,
+		"bg": "#994509d6",
+		"border": "#b76127",
+		"color": "#ff9e00"
+	},
+	{
+		"id": "fullscreen-btn",
+		"text": "",
+		"img": "img/Assets/expand.png",
+		"x": 685,
+		"y": 10,
+		"width": 20,
+		"height": 20,
+		"bg": "#994509d6",
+		"border": "#b76127",
+		"color": "black"
+	},
+	{
+		"id": "to-menu-btn",
+		"text": "To Menu",
+		"img": "",
+		"x": 390,
+		"y": 420,
+		"width": 150,
+		"height": 40,
+		"bg": "#994509d6",
+		"border": "#b76127",
+		"color": "#ff9e00"
+	},
+	{
+		"id": "impressum-btn",
+		"text": "Impressum",
+		"x": 610,
+		"y": 450,
+		"width": 120,
+		"height": 20,
+		"bg": "transparent",
+		"border": "transparent",
+		"color": "black"
+	},
+	{
+		"id": "volume-up-btn",
+		"text": "Vol +10",
+		"x": 10,
+		"y": 175,
+		"width": 85,
+		"height": 40,
+		"bg": "#994509d6",
+		"border": "#b76127",
+		"color": "#ff9e00"
+	},
+	{
+		"id": "volume-display-btn",
+		"text": "100",
+		"x": 10,
+		"y": 220,
+		"width": 85,
+		"height": 40,
+		"bg": "#994509d6",
+		"border": "#b76127",
+		"color": "#ff9e00"
+	},
+	{
+		"id": "volume-down-btn",
+		"text": "Vol -10",
+		"x": 10,
+		"y": 265,
+		"width": 85,
+		"height": 40,
+		"bg": "#994509d6",
+		"border": "#b76127",
+		"color": "#ff9e00"
+	}
+]

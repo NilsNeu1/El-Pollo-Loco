@@ -7,109 +7,9 @@ class GameStateUI extends DrawableObject {
     loseUi = ['img/9_intro_outro_screens/game_over/game over.png'];
     state = 'menu'; // 'none', 'win', 'lose', 'pause', 'menu'
     imageCache = [];
-    buttonSpecs = [
-        {
-            id: 'restart-btn',
-            text: 'Restart',
-            x: 180,
-            y: 420,
-            width: 150,
-            height: 40,
-            bg: '#994509d6',
-            border: '#b76127',
-            color: '#ff9e00'
-        },
-         {
-            id: 'load-level-btn',
-            text: 'Try Again',
-            x: 285,
-            y: 420,
-            width: 150,
-            height: 40,
-            bg: '#994509d6',
-            border: '#b76127',
-            color: '#ff9e00'
-        },
-        {
-            id: 'resume-btn',
-            text: 'Resume',
-            x: 390,
-            y: 420,
-            width: 150,
-            height: 40,
-            bg: '#994509d6',
-            border: '#b76127',
-            color: '#ff9e00'
-        },
-        {
-            id: 'fullscreen-btn',
-            text: '',
-            img: 'img/Assets/expand.png',
-            x: 685,
-            y: 10,
-            width: 20,
-            height: 20,
-            bg: '#994509d6',
-            border: '#b76127',
-            color: 'black'
-        },
-        {
-            id: 'to-menu-btn',
-            text: 'To Menu',
-            img: '',
-            x: 390,
-            y: 420,
-            width: 150,
-            height: 40,
-            bg: '#994509d6',
-            border: '#b76127',
-            color: '#ff9e00'
-        }
-        ,{
-            id: 'impressum-btn',
-            text: 'Impressum',
-            x: 610,
-            y: 450,
-            width: 120,
-            height: 20,
-            bg: 'transparent',
-            border: 'transparent',
-            color: 'black'
-        }
-        ,{
-            id: 'volume-up-btn',
-            text: 'Vol +10',
-            x: 10,
-            y: 175,
-            width: 85,
-            height: 40,
-            bg: '#994509d6',
-            border: '#b76127',
-            color: '#ff9e00'
-        }
-        ,{
-            id: 'volume-display-btn',
-            text: '100',
-            x: 10,
-            y: 220,
-            width: 85,
-            height: 40,
-            bg: '#994509d6',
-            border: '#b76127',
-            color: '#ff9e00'
-        }
-        ,{
-            id: 'volume-down-btn',
-            text: 'Vol -10',
-            x: 10,
-            y: 265,
-            width: 85,
-            height: 40,
-            bg: '#994509d6',
-            border: '#b76127',
-            color: '#ff9e00'
-        }
-    ];
+    buttonSpecs = [];
+    buttonSpecsLoaded = false;
+    loadButtonSpecsPromise = null;
     canvas = null;
     world = null;
     buttonImageCache = {};
@@ -121,9 +21,21 @@ class GameStateUI extends DrawableObject {
         this.loadImages(this.startUi);
         this.posX = 0;
         this.posY = 0;
-        this._clickHandler = null;
+        this.clickHandler = null;
+        this.loadButtonSpecs();
+    }
 
-        // Preload button images
+    setCanvasAndWorld(canvas, world) {
+        this.canvas = canvas;
+        this.world = world;
+        if (this.loadButtonSpecsPromise) {
+            this.loadButtonSpecsPromise.then(() => this.setupButtonClicks());
+        } else {
+            this.setupButtonClicks();
+        }
+    }
+
+    preloadButtonImages() {
         this.buttonSpecs.forEach(btn => {
             if (btn.img) {
                 const img = new Image();
@@ -133,10 +45,23 @@ class GameStateUI extends DrawableObject {
         });
     }
 
-    setCanvasAndWorld(canvas, world) {
-        this.canvas = canvas;
-        this.world = world;
-        this.setupButtonClicks();
+    loadButtonSpecs() {
+        if (this.loadButtonSpecsPromise) return this.loadButtonSpecsPromise;
+        this.loadButtonSpecsPromise = fetch('js/buttonSpecs.json')
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to load buttonSpecs.json');
+                return response.json();
+            })
+            .then(data => {
+                this.buttonSpecs = data || [];
+                this.preloadButtonImages();
+                this.buttonSpecsLoaded = true;
+            })
+            .catch(err => {
+                console.error('Error loading button specs:', err);
+            });
+
+        return this.loadButtonSpecsPromise;
     }
 
     setState(state) {
@@ -174,11 +99,13 @@ getButtonsToDraw() {
             buttonsToDraw = this.buttonSpecs.filter(btn =>
                 ['load-level-btn', 'fullscreen-btn', 'to-menu-btn'].includes(btn.id)
             );
-            Object.assign(loadLevelBtn, {
-                text: 'Try Again',
-                y: 420,
-                x: 180
-            });
+            if (loadLevelBtn) {
+                Object.assign(loadLevelBtn, {
+                    text: 'Try Again',
+                    y: 420,
+                    x: 180
+                });
+            }
             break;
 
         case 'pause':
@@ -186,7 +113,6 @@ getButtonsToDraw() {
             buttonsToDraw = this.buttonSpecs.filter(btn =>
                 ['resume-btn', 'restart-btn', 'fullscreen-btn', 'volume-up-btn', 'volume-display-btn', 'volume-down-btn'].includes(btn.id)
             );
-            // Update volume display button with current volume
             const volumeDisplayBtn = buttonsToDraw.find(btn => btn.id === 'volume-display-btn');
             if (volumeDisplayBtn && this.world && this.world.soundManager) {
                 volumeDisplayBtn.text = Math.round(this.world.soundManager.volume * 100);
@@ -195,11 +121,13 @@ getButtonsToDraw() {
 
         case 'menu':
             buttonsToDraw = this.buttonSpecs.filter(btn => ['load-level-btn','impressum-btn'].includes(btn.id));
-            Object.assign(loadLevelBtn, {
-                text: 'Play Demo',
-                y: 420,
-                x: 285
-            });
+            if (loadLevelBtn) {
+                Object.assign(loadLevelBtn, {
+                    text: 'Play Demo',
+                    y: 420,
+                    x: 285
+                });
+            }
             break;
     }
 
@@ -231,91 +159,108 @@ renderButtons(ctx, buttonsToDraw) {
 
 
     setupButtonClicks() {
-        if (!this.canvas) return;
+    if (!this.canvas) return;
+    this.removeClickHandler();
 
-        // Remove any previously attached handler to avoid duplicate listeners
-        if (this._clickHandler) {
-            this.canvas.removeEventListener('click', this._clickHandler);
-            this._clickHandler = null;
-        }
+    this.clickHandler = (e) => {
+        if (!['pause', 'win', 'lose', 'menu'].includes(this.state)) return;
 
-        this._clickHandler = (e) => {
-            if (!['pause', 'win', 'lose', 'menu'].includes(this.state)) return;
-            const rect = this.canvas.getBoundingClientRect();
-            const scaleX = this.canvas.width / rect.width;
-            const scaleY = this.canvas.height / rect.height;
-            const mouseX = (e.clientX - rect.left) * scaleX;
-            const mouseY = (e.clientY - rect.top) * scaleY;
+        const { mouseX, mouseY } = this.getMousePosition(e);
+        const visibleButtons = this.getVisibleButtons();
 
-            // Only check visible buttons
-            let visibleButtons;
-            if (this.state === 'win' || this.state === 'lose') {
-                visibleButtons = this.buttonSpecs.filter(btn =>
-                    ['load-level-btn', 'to-menu-btn', 'fullscreen-btn'].includes(btn.id)
-                );
-            } else if (this.state === 'menu') {
-                visibleButtons = this.buttonSpecs.filter(btn =>
-                    ['load-level-btn', 'impressum-btn'].includes(btn.id) // Play Demo + Impressum clickable
-                );
-            } else if (this.state === 'pause' || this.state === 'none') {
-                visibleButtons = this.buttonSpecs.filter(btn =>
-                    ['resume-btn', 'restart-btn', 'fullscreen-btn', 'volume-up-btn', 'volume-display-btn', 'volume-down-btn'].includes(btn.id)
-                );
-            }
+        this.handleButtonClick(mouseX, mouseY, visibleButtons);
+    };
 
-            // Handle only the first button that matches the click (prevents overlapping buttons firing multiple handlers)
-            for (const btn of visibleButtons) {
-                if (
-                    mouseX >= btn.x &&
-                    mouseX <= btn.x + btn.width &&
-                    mouseY >= btn.y &&
-                    mouseY <= btn.y + btn.height
-                ) {
-                    if (btn.id === 'restart-btn') {
-                        this.setState('none');
-                        this.world.restartGame();
-                        console.log('Restart');
-                    }
-                    if (btn.id === 'resume-btn') {
-                        this.world.togglePause();
-                        console.log('Resume');
-                    }
-                    if (btn.id === 'load-level-btn') {
-                        this.world.restartGame();
-                        console.log('Tried again');
-                    }
-                     if (btn.id === 'to-menu-btn') {
-                        this.world.level = createLevel1();
-                        this.world.clearAllIntervals();
-                        this.setState('menu');
-                    }
-                    if (btn.id === 'fullscreen-btn') {
-                        this.world.toggleFullscreen();
-                        console.log('Fullscreen Toggle');
-                    }
-                    if (btn.id === 'impressum-btn') {
-                        // Open a placeholder URL in a new tab
-                        window.open('https://example.com/impressum', '_blank');
-                        console.log('Impressum opened');
-                    }
-                    if (btn.id === 'volume-up-btn') {
-                        if (this.world && this.world.soundManager) {
-                            this.world.soundManager.setVolume(Math.min(1, this.world.soundManager.volume + 0.1));
-                            console.log('Volume +10');
-                        }
-                    }
-                    if (btn.id === 'volume-down-btn') {
-                        if (this.world && this.world.soundManager) {
-                            this.world.soundManager.setVolume(Math.max(0, this.world.soundManager.volume - 0.1));
-                            console.log('Volume -10');
-                        }
-                    }
+    this.canvas.addEventListener('click', this.clickHandler);
+}
 
-                    break; // stop after first matching button
-                }
-            }
-        };
-
-        this.canvas.addEventListener('click', this._clickHandler);
+removeClickHandler() {
+    if (this.clickHandler) {
+        this.canvas.removeEventListener('click', this.clickHandler);
+        this.clickHandler = null;
     }
+}
+
+getMousePosition(e) {
+    const rect = this.canvas.getBoundingClientRect();
+    const scaleX = this.canvas.width / rect.width;
+    const scaleY = this.canvas.height / rect.height;
+    return {
+        mouseX: (e.clientX - rect.left) * scaleX,
+        mouseY: (e.clientY - rect.top) * scaleY
+    };
+}
+
+getVisibleButtons() {
+    if (['win', 'lose'].includes(this.state)) {
+        return this.buttonSpecs.filter(btn =>
+            ['load-level-btn', 'to-menu-btn', 'fullscreen-btn'].includes(btn.id)
+        );
+    }
+    if (this.state === 'menu') {
+        return this.buttonSpecs.filter(btn =>
+            ['load-level-btn', 'impressum-btn'].includes(btn.id)
+        );
+    }
+    if (['pause', 'none'].includes(this.state)) {
+        return this.buttonSpecs.filter(btn =>
+            ['resume-btn', 'restart-btn', 'fullscreen-btn',
+             'volume-up-btn', 'volume-display-btn', 'volume-down-btn'].includes(btn.id)
+        );
+    }
+    return [];
+}
+
+handleButtonClick(mouseX, mouseY, visibleButtons) {
+    for (const btn of visibleButtons) {
+        if (
+            mouseX >= btn.x && mouseX <= btn.x + btn.width &&
+            mouseY >= btn.y && mouseY <= btn.y + btn.height
+        ) {
+            this.executeButtonAction(btn.id);
+            break;
+        }
+    }
+}
+
+executeButtonAction(id) {
+    switch (id) {
+        case 'restart-btn':
+            this.setState('none');
+            this.world.restartGame();
+            break;
+        case 'resume-btn':
+            this.world.togglePause();
+            break;
+        case 'load-level-btn':
+            this.world.restartGame();
+            break;
+        case 'to-menu-btn':
+            this.world.level = createLevel1();
+            this.world.clearAllIntervals();
+            this.setState('menu');
+            break;
+        case 'fullscreen-btn':
+            this.world.toggleFullscreen();
+            break;
+        case 'impressum-btn':
+            window.open('https://example.com/impressum', '_blank');
+            break;
+        case 'volume-up-btn':
+            if (this.world?.soundManager) {
+                this.world.soundManager.setVolume(
+                    Math.min(1, this.world.soundManager.volume + 0.1)
+                );
+            }
+            break;
+        case 'volume-down-btn':
+            if (this.world?.soundManager) {
+                this.world.soundManager.setVolume(
+                    Math.max(0, this.world.soundManager.volume - 0.1)
+                );
+            }
+            break;
+    }
+}
+
 }

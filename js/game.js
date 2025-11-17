@@ -5,7 +5,7 @@ let soundManager;
 
 function init() {
    canvas = document.getElementById('canvas');
-   world = new World(canvas, keyboard) // World ist ein Object
+   world = new World(canvas, keyboard);
    world.level = createLevel1();
    world.clearAllIntervals();
    world.gameStateUi.setState('menu');
@@ -21,19 +21,15 @@ function loadLevel(levelNumber) {
    switch (levelNumber) {
       case 0:
          world.level = level0;
-         console.log("Level 0 geladen");
          break;
       case 1:
          world.level = createLevel1();
-         world.resetStats(); // Reset character and stats when loading level 1
-         console.log("Level 1 geladen");
+         world.resetStats();
          break;
       case 2:
          world.level = level2;
-         console.log("Level 2 geladen");
          break;
       default:
-         console.log("Ungültige Levelnummer: " + levelNumber);
    }
 }
 
@@ -84,5 +80,3 @@ document.addEventListener('keydown', (event) => {
 document.addEventListener('contextmenu', event => event.preventDefault());
 document.addEventListener('dbclick', event => event.preventDefault());
 document.addEventListener('fullscreenchange', event => event.preventDefault());
-
-/// ctx.drawImage(character, 20, 20, 50, 150) // 20,20 = Coordinate 50 = Breite 150 = Höhe

@@ -139,7 +139,6 @@ setupButtonTouches() {
             if (dist <= this.width / 2) {
                 activeButton = btn.action;
                 this.handleButtonAction(activeButton, true); // Taste aktivieren
-                console.log('mobile ' + activeButton);
             }
         });
     });

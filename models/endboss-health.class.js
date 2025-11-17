@@ -24,7 +24,6 @@ class BossBar extends DrawableObject {
         this.percentage = percentage
         let path = this.IMAGES_HEALTH[this.resolveImageIndex()];
         this.img = this.imageCache[path];
-        console.log('Boss Health:', this.percentage);
     }
 
     resolveImageIndex(){

@@ -75,11 +75,11 @@ animate() {
         if (!this.world.gamePaused) {
             if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
+                this.posX -= 30;
 
             } else if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
                 this.world.bossDefeated = true;
-                console.log('boss dead');
 
             } else if (i < 16 && this.isAlerted()) {
                 this.playAnimation(this.IMAGES_ALERT);

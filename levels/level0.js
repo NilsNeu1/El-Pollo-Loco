@@ -6,5 +6,3 @@ const level0 = new Level(
     [], // Keine Gegner
     []  // Keine Game Ui
 );
-
-console.log("Level 0 loaded");

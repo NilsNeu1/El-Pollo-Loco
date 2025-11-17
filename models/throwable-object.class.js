@@ -41,7 +41,7 @@ class ThrowableObject extends MovableObject {
                     clearInterval(rotateInterval);
                     clearInterval(this.gravityInterval); // Beenden des Schwerkraft-Intervalls
                     this.splash(); // Aufruf von splash bei einer Kollision
-                    this.soundManager.playSound('brokenBottle');
+                    world.soundManager.playSound('brokenBottle');
                     enemy.hit();
                     
                 }

@@ -2,7 +2,7 @@ class Character extends MovableObject {
 
     height = 250;
     width = 250;
-    posY = 10; //180 base value
+    posY = 10;
     speed = 6;
         offset = {
         top: 80,
@@ -83,7 +83,7 @@ class Character extends MovableObject {
 
     animate() {
         this.customeInterval(() => {
-            if (!this.world.gamePaused) { // Prüfen, ob das Spiel pausiert ist
+            if (!this.world.gamePaused) {
                 if (this.world.keyboard.RIGHT && this.posX < this.world.level.level_end_X) {
                     this.otherDirection = false;
                     this.moveRight();
@@ -96,7 +96,7 @@ class Character extends MovableObject {
 
                 if (this.world.keyboard.UP && !this.isAboveGround()) {
                     this.jump();
-                    this.soundManager.playSound('jump');
+                    world.soundManager.playSound('jump');
                 }
 
                 this.world.camera_x = -this.posX + 100;
@@ -110,7 +110,7 @@ class Character extends MovableObject {
             if (!this.world.gamePaused) {
                 if (this.isHurt() && !this.isAboveGround()) {
                     this.playAnimation(this.IMAGES_HURT);
-                    this.soundManager.playSound('hit');
+                    world.soundManager.playSound('hit');
                 } else if (this.isDead()) {
                     this.playAnimation(this.IMAGES_DEAD);
                 } else if (this.fallsAsleep()) {
@@ -119,7 +119,6 @@ class Character extends MovableObject {
                     this.playAnimation(this.IMAGES_IDLE);
                 } else if (this.isAboveGround()) {
                     this.playAnimation(this.IMAGES_JUMP);
-                    // this.soundManager.playSound('jump');
                 } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
                     this.playAnimation(this.IMAGES_WALKING);
                 }

@@ -24,7 +24,7 @@ class DrawableObject{
     }
 
     loadImage(path) {
-        this.img = new Image(); // this.img = doc.get element by id "img"
+        this.img = new Image();
         this.img.src = path;
     }
     
@@ -41,7 +41,7 @@ class DrawableObject{
     
 
 drawHitbox(ctx) {
-    if (this instanceof Character || this instanceof Chicken || this instanceof Endboss || this instanceof Chick) {
+    if (this instanceof Character || this instanceof Chicken || this instanceof Endboss || this instanceof Chick || this instanceof CollectableBottle) {
         const x = this.posX + this.offset.left;
         const y = this.posY + this.offset.top;
         const width = this.width - this.offset.left - this.offset.right;

@@ -39,7 +39,6 @@ class SoundManager {
         let sound = this.sounds[soundName];
         if (!this.mute && sound) {
             if (now - this.lastSoundPlayed < 500) {
-                console.log(soundName,'played')
                 this.setVolume(this.volume);
                 sound.play();
                 return;
