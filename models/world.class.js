@@ -23,6 +23,7 @@ class World {
     bossAgro = false;
     bossAgroSoundPlayed = false;
     nextThrowAllowed = 0;
+    debugMode = false;
 
     // um die Variablen aus dieser datei nutzen zu können muss "this." davor gesetzt werden. 
 
@@ -67,7 +68,6 @@ class World {
         this.CollectedCoins = 0;
         this.coinBar.CollectedCoins = 0;
         this.camera_x = 0;
-        // reset boss agro sound flag so it can play again on a fresh start
         this.bossAgroSoundPlayed = false;
         this.bossAgro = false;
 
@@ -273,8 +273,9 @@ checkCollisions() {
             this.flipImage(MO);
         }
         MO.draw(this.ctx);
-        MO.drawHitbox(this.ctx);
-
+        if (this.debugMode === true) { 
+            MO.drawHitbox(this.ctx);
+        };
         if (MO.otherDirection) {
             this.flipImageBack(MO)
         }
