@@ -244,7 +244,7 @@ executeButtonAction(id) {
             this.world.toggleFullscreen();
             break;
         case 'impressum-btn':
-            window.open('https://example.com/impressum', '_blank');
+            window.open('impressum.html', '_blank');
             break;
         case 'volume-up-btn':
             if (this.world?.soundManager) {

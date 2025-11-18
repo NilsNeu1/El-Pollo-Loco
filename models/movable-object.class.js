@@ -51,6 +51,12 @@ class MovableObject extends DrawableObject {
     }
 
     playAnimation(images){
+        // Reset currentImage when switching to a new animation
+        if (this.currentAnimationImages !== images) {
+            this.currentImage = 0;
+            this.currentAnimationImages = images;
+        }
+        
         let i = this.currentImage % images.length;
         let path = images[i];
         this.img = this.imageCache[path];

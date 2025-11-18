@@ -84,7 +84,7 @@ class World {
             this.isGameWon();
             this.smallDisplayUi();
             this.gameStateUi.setupButtonClicks();
-        }, 200);
+        }, 1000 / 60); // Run at 60 FPS for consistent collision detection
         this.gamePaused = false;
         this.gameStateUi.setState('none');
     }
@@ -165,46 +165,39 @@ class World {
 
 checkCollisions() {
     const boss = this.level.enemies.find(e => e instanceof Endboss);
-    this.customeInterval(() => {
-        this.level.enemies.forEach((enemy, index) => {
-            if (this.character.isColliding(enemy)) {
-                if (enemy instanceof Chick || enemy instanceof Chicken || enemy instanceof Endboss) {
-                    if (this.character.isCollidingFromAbove(enemy)) {
-                        if (!(enemy instanceof Endboss)) {
-                            if (typeof enemy.hit === 'function') {
-                                enemy.hit();
-                            } else {
-                                enemy.health -= 5;
-                            }
-                            this.character.jump();
-                            // Give the Character a short i-Frame so they won't be hurt on the next collision
-                            this.character.lastHit = new Date().getTime();
-
-                            if (enemy.health <= 5) {
-                                enemy.playAnimation(enemy.IMAGES_DEAD);
-                                enemy.deadChicken();
-                            }
+    this.level.enemies.forEach((enemy, index) => {
+        if (this.character.isColliding(enemy)) {
+            if (enemy instanceof Chick || enemy instanceof Chicken || enemy instanceof Endboss) {
+                if (this.character.isCollidingFromAbove(enemy)) {
+                    if (!(enemy instanceof Endboss)) {
+                        if (typeof enemy.hit === 'function') {
+                            enemy.hit();
                         } else {
-                            // For the Endboss: just bounce the character but don't damage them
-                            //this.character.jump();
-                            this.character.lastHit = new Date().getTime();
+                            enemy.health -= 5;
+                        }
+                        this.character.jump();
+                        this.character.lastHit = new Date().getTime();
+
+                        if (enemy.health <= 5) {
+                            enemy.playAnimation(enemy.IMAGES_DEAD);
+                            enemy.deadChicken();
                         }
                     } else {
-                        // Charakter bekommt Schaden bei Berührung
-                        this.character.hit();
-                        this.healthBar.setPercentage(this.character.health);
-                        this.bossBar.setPercentage(boss.health);
-                        this.isGameLost();
+                        this.character.lastHit = new Date().getTime();
                     }
+                } else {
+                    this.character.hit();
+                    this.healthBar.setPercentage(this.character.health);
+                    this.bossBar.setPercentage(boss.health);
+                    this.isGameLost();
                 }
             }
+        }
 
-            // Entferne Gegner, wenn tot und außerhalb des Bildschirms
-            if (enemy.health <= 1 && enemy.posY > 500) {
-                this.level.enemies.splice(index, 1);
-            }
-        });
-    }, 1000 / 60); // Kollisionsprüfung alle 60 fps
+        if (enemy.health <= 1 && enemy.posY > 500) {
+            this.level.enemies.splice(index, 1);
+        }
+    });
 }
 
 

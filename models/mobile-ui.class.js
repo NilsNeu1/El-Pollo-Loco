@@ -164,7 +164,7 @@ handleButtonAction(action, isPressed) {
             this.world.keyboard.RIGHT = isPressed;
             break;
         case 'jump':
-            if (isPressed) this.world.character.jump();
+            this.world.keyboard.UP = isPressed;
             break;
         case 'attack':
             this.world.keyboard.THROW = isPressed;

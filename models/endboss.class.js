@@ -9,6 +9,12 @@ speed = 6.5;
 attacking = false
 alertSequencePlayed = false;
 soundManager = world.soundManager;
+offset = {
+    top: 50,
+    bottom: 50,
+    left: 20,
+    right: 20
+};
 
 shouldMoveLeft = false;
 
