@@ -251,7 +251,7 @@ input[type="range"]::-webkit-slider-thumb {
 
 @media only screen and (max-height: 600px) {
  canvas {
-     height: 100vh;
+     height: 98vh;
      width: fit-content;
  }
   #controllBox {

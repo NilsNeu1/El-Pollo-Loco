@@ -282,7 +282,7 @@ checkCollisions() {
         this.addToMap(this.coinBar);
         this.coinBar.drawCounter(this.ctx);
         this.addToMap(this.gameStateUi); // Always draw, but image depends on state
-        if (this.smallDisplayUi()) {
+        if (this.smallDisplayUi() && this.gameStateUi.state !== 'menu') {
             this.addToMap(this.mobileUi);
         }
         if (this.bossAgro === true && this.gameStateUi.state !== 'menu') {

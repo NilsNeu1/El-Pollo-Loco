@@ -2,13 +2,16 @@ class Character extends MovableObject {
 
     height = 250;
     width = 250;
+    // Independent scale for width and height. Adjust to taste.
+    scaleX = 0.7;
+    scaleY = 1;
     posY = 10;
     speed = 6;
         offset = {
         top: 80,
         bottom: 10,
         left: 70,
-        right: 85
+        right: 95
     };
     IMAGES_IDLE = [
         'img/2_character_pepe/1_idle/idle/I-1.png',
@@ -40,15 +43,16 @@ class Character extends MovableObject {
         'img/2_character_pepe/2_walk/W-25.png',
         'img/2_character_pepe/2_walk/W-26.png'];
     IMAGES_JUMP = [
-        'img/2_character_pepe/3_jump/J-31.png',
-        'img/2_character_pepe/3_jump/J-32.png',
+        // 'img/2_character_pepe/3_jump/J-31.png',
+        // 'img/2_character_pepe/3_jump/J-32.png',
         'img/2_character_pepe/3_jump/J-33.png',
         'img/2_character_pepe/3_jump/J-34.png',
         'img/2_character_pepe/3_jump/J-35.png',
         'img/2_character_pepe/3_jump/J-36.png',
         'img/2_character_pepe/3_jump/J-37.png',
-        'img/2_character_pepe/3_jump/J-38.png',
-        'img/2_character_pepe/3_jump/J-39.png'];
+        'img/2_character_pepe/3_jump/J-38.png'
+        // 'img/2_character_pepe/3_jump/J-39.png'
+        ];
     IMAGES_HURT = [
         'img/2_character_pepe/4_hurt/H-41.png',
         'img/2_character_pepe/4_hurt/H-42.png',
@@ -117,14 +121,18 @@ class Character extends MovableObject {
                     this.playAnimation(this.IMAGES_LONGIDLE);
                 } else if (this.isNotMoving()) {
                     this.playAnimation(this.IMAGES_IDLE);
-                } else if (this.isAboveGround()) {
-                    this.playAnimation(this.IMAGES_JUMP);
                 } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
                     this.playAnimation(this.IMAGES_WALKING);
                 }
             }
 
         }, 1000 / 12);
+
+        this.customeInterval(() => {
+            if (!this.world.gamePaused && this.isAboveGround()) {
+             this.playAnimation(this.IMAGES_JUMP);
+            }
+        }, 1000 / 6);
 
         this.customeInterval(() => {
             this.fallsAsleep()

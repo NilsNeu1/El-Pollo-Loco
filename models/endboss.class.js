@@ -81,7 +81,7 @@ animate() {
         if (!this.world.gamePaused) {
             if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
-                this.posX -= 30;
+                this.posX -= 50;
 
             } else if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);

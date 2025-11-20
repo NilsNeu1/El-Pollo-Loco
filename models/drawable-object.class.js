@@ -31,7 +31,18 @@ class DrawableObject{
     draw(ctx) {
         if (this.img) {
             try {
-                ctx.drawImage(this.img, this.posX, this.posY, this.width, this.height);
+                const scaleX = (this.scaleX !== undefined) ? this.scaleX : (this.scale !== undefined ? this.scale : 1);
+                const scaleY = (this.scaleY !== undefined) ? this.scaleY : (this.scale !== undefined ? this.scale : 1);
+
+                if (scaleX === 1 && scaleY === 1) {
+                    ctx.drawImage(this.img, this.posX, this.posY, this.width, this.height);
+                } else {
+                    const scaledWidth = this.width * scaleX;
+                    const scaledHeight = this.height * scaleY;
+                    const drawX = this.posX + (this.width - scaledWidth) / 2;
+                    const drawY = this.posY + (this.height - scaledHeight);
+                    ctx.drawImage(this.img, drawX, drawY, scaledWidth, scaledHeight);
+                }
             } catch (e) {
                 console.warn('Error drawing image:', e);
                 console.log('Failed to load', this.img.src);
