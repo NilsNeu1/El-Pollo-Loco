@@ -26,7 +26,7 @@ class World {
     debugMode = false;
 
     // um die Variablen aus dieser datei nutzen zu können muss "this." davor gesetzt werden. 
-
+    
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;

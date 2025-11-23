@@ -1,5 +1,15 @@
+/**
+ * Represents the player’s health bar in the game UI.
+ * Extends {@link DrawableObject} to display different health states
+ * based on the player’s remaining percentage of health.
+ */
 class HealthBar extends DrawableObject {
 
+    /**
+     * Image paths for different health states of the player.
+     * Ordered from empty (0%) to full (100%).
+     * @type {string[]}
+     */
     IMAGES_HEALTH = [
         'img/7_statusbars/1_statusbar/2_statusbar_health/orange/0.png',
         'img/7_statusbars/1_statusbar/2_statusbar_health/orange/20.png',
@@ -9,24 +19,46 @@ class HealthBar extends DrawableObject {
         'img/7_statusbars/1_statusbar/2_statusbar_health/green/100.png'
     ];
 
+    /** @type {number} Current health percentage of the player (0–100). */
     percentage = 100;
 
-    constructor(){
-        super(); // muss genutzt werden, um die methoden der Mutterklasse nutzen zu können.
+    /**
+     * Creates a new HealthBar instance.
+     * Loads health images, sets initial percentage to 100,
+     * and positions the bar on the canvas.
+     */
+    constructor() {
+        super(); // must call super to use methods from DrawableObject
         this.loadImages(this.IMAGES_HEALTH);
         this.setPercentage(100);
+
+        /** @type {number} X position of the health bar on the canvas */
         this.posX = 10;
+
+        /** @type {number} Y position of the health bar on the canvas */
         this.posY = 10;
+
+        /** @type {number} Width of the health bar */
         this.width = 220;
     }
 
-    setPercentage(percentage){
-        this.percentage = percentage
+    /**
+     * Updates the health bar to reflect the given health percentage.
+     * Selects the appropriate image based on the resolved index.
+     *
+     * @param {number} percentage - New health percentage (0–100).
+     */
+    setPercentage(percentage) {
+        this.percentage = percentage;
         let path = this.IMAGES_HEALTH[this.resolveImageIndex()];
         this.img = this.imageCache[path];
     }
 
-    resolveImageIndex(){
+    /**
+     * Resolves the correct image index based on the current health percentage.
+     * @returns {number} Index of the image in {@link IMAGES_HEALTH}.
+     */
+    resolveImageIndex() {
         if (this.percentage == 100) {
             return 5;
         } else if (this.percentage >= 80) {
@@ -35,12 +67,10 @@ class HealthBar extends DrawableObject {
             return 3;
         } else if (this.percentage >= 40) {
             return 2;
-        } else if (this.percentage >= 20){
+        } else if (this.percentage >= 20) {
             return 1;
-        } else if (this.percentage == 0){
+        } else if (this.percentage == 0) {
             return 0;
         }
     }
-
-    
 }

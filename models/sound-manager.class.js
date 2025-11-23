@@ -1,40 +1,61 @@
+/**
+ * Manages all sound effects and background music for the game.
+ * Provides functionality for playing, stopping, muting, and adjusting volume.
+ * Persists volume settings using localStorage and synchronizes with an HTML slider.
+ */
 class SoundManager {
 
+    /** @type {number} Current volume level (0.0 - 1.0) */
     volume = 0.5;
+
+    /** @type {number} Timestamp of the last sound played (used for cooldown) */
     lastSoundPlayed = 0;
 
+    /**
+     * Creates a new SoundManager instance.
+     * Initializes mute state, loads saved volume, sets up slider, and prepares sounds.
+     */
     constructor() {
+        /** @type {boolean} Whether sounds are muted */
         this.mute = false;
-        // load saved volume from localStorage (if present)
+
         this.loadSavedVolume();
         this.initSlider();
         this.initSounds();
-        // apply volume to any sounds that will be initialized
         this.setVolume(this.volume);
     }
 
+    /**
+     * Initializes all game sounds and background music.
+     * Stores them in the `sounds` object for easy access.
+     */
     initSounds() {
-            this.sounds = {
-            collectCoin: new Audio('audio/effects/coin-collect.wav'), // done
-            collectBottle: new Audio('audio/effects/bottle-collect.wav'), // done
-            brokenBottle: new Audio('audio/effects/bottle-break.mp3'), // done
-            throw: new Audio('audio/effects/throw.mp3'), // done
-            hit: new Audio('audio/effects/pepe-hit.wav'), // done
-            jump: new Audio('audio/effects/jump.mp3'), // done
+        this.sounds = {
+            collectCoin: new Audio('audio/effects/coin-collect.wav'),
+            collectBottle: new Audio('audio/effects/bottle-collect.wav'),
+            brokenBottle: new Audio('audio/effects/bottle-break.mp3'),
+            throw: new Audio('audio/effects/throw.mp3'),
+            hit: new Audio('audio/effects/pepe-hit.wav'),
+            jump: new Audio('audio/effects/jump.mp3'),
             pepeIdle: new Audio('audio/effects/idle.mp3'),
             chickenDead: new Audio(''),
             chickDead: new Audio('audio/effects/enemies/chicken/chick-sound.mp3'),
-            bossAgro: new Audio('audio/effects/enemies/boss/boss-entry.mp3'), // done
+            bossAgro: new Audio('audio/effects/enemies/boss/boss-entry.mp3'),
             bossChickenDead: new Audio(''),
-            backgroundMusic: new Audio('audio/songs/game-theme.mp3'), // done
+            backgroundMusic: new Audio('audio/songs/game-theme.mp3'),
             menuMusic: new Audio('audio/songs/menu-theme.mp3'),
-            gameOver: new Audio('audio/win&lose/level-lose.wav'), // done
-            gameWon: new Audio('audio/win&lose/level-win.wav'), // done
+            gameOver: new Audio('audio/win&lose/level-lose.wav'),
+            gameWon: new Audio('audio/win&lose/level-win.wav'),
         };
         this.sounds.backgroundMusic.loop = true;
     }
 
-    playSound(soundName){
+    /**
+     * Plays a sound by name if not muted.
+     * Prevents overlapping sounds by enforcing a short cooldown.
+     * @param {string} soundName - Key of the sound in `this.sounds`.
+     */
+    playSound(soundName) {
         const now = Date.now();
         let sound = this.sounds[soundName];
         if (!this.mute && sound) {
@@ -47,10 +68,13 @@ class SoundManager {
             sound.play();
             this.lastSoundPlayed = now;
         }
-
     }
 
-    stopSound(soundName){
+    /**
+     * Stops a sound by name and resets its playback position.
+     * @param {string} soundName - Key of the sound in `this.sounds`.
+     */
+    stopSound(soundName) {
         let sound = this.sounds[soundName];
         if (sound) {
             sound.pause();
@@ -58,34 +82,43 @@ class SoundManager {
         }
     }
 
+    /**
+     * Sets the global volume for all sounds.
+     * Persists the value to localStorage and updates the HTML slider if present.
+     * @param {number} volume - Volume level (0.0 - 1.0).
+     */
     setVolume(volume) {
         this.volume = volume;
         Object.values(this.sounds).forEach(audio => {
-            if (audio.src) { // Nur wenn Datei existiert
+            if (audio.src) {
                 audio.volume = volume;
             }
         });
-        // persist to localStorage so value survives page refresh
         this.saveVolume();
-        // keep HTML volume slider in sync (if present)
         try {
             const volumeSlider = document.getElementById('volume');
             if (volumeSlider) volumeSlider.value = Math.round(this.volume * 100);
         } catch (e) {}
     }
 
-    initSlider(){
+    /**
+     * Initializes the HTML volume slider and syncs it with the SoundManager.
+     * Updates volume in real-time when the slider is moved.
+     */
+    initSlider() {
         const volumeSlider = document.getElementById('volume');
         if (!volumeSlider) return;
-        // initialize slider position
         try { volumeSlider.value = Math.round(this.volume * 100); } catch (e) {}
         volumeSlider.addEventListener('input', ({target}) => {
-            const value = Number(target.value) / 100; // Wert als Zahl
+            const value = Number(target.value) / 100;
             this.setVolume(value);
             console.log('Volume set to', this.volume);
         });
     }
 
+    /**
+     * Loads saved volume from localStorage if available.
+     */
     loadSavedVolume() {
         try {
             const stored = localStorage.getItem('gameVolume');
@@ -98,6 +131,9 @@ class SoundManager {
         }
     }
 
+    /**
+     * Saves the current volume to localStorage.
+     */
     saveVolume() {
         try {
             localStorage.setItem('gameVolume', String(this.volume));
@@ -105,5 +141,4 @@ class SoundManager {
             // ignore
         }
     }
-
 }

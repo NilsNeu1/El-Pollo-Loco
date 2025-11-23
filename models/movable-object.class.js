@@ -1,25 +1,58 @@
+/**
+ * Represents a movable object in the game world.
+ * Extends {@link DrawableObject} to add movement, gravity, collision detection,
+ * health management, and animation capabilities.
+ */
 class MovableObject extends DrawableObject {
+    /** @type {number} Horizontal movement speed */
     speed = 0.05;
+
+    /** @type {number} Vertical speed (used for gravity and jumping) */
     speedY = 1;
+
+    /** @type {boolean} Indicates if the object is facing the opposite direction */
     otherDirection = false;
+
+    /** @type {number} Gravity acceleration applied to vertical speed */
     acceleration = 0.2;
+
+    /** @type {number} Current health points of the object */
     health = 100;
+
+    /** @type {number} Timestamp of the last hit received */
     lastHit = 0;
+
+    /** @type {number} Timer used to track idle state */
     idleTimer = new Date().getTime();
+
+    /** @type {number} Tracks how long the object has been asleep */
     asleep = 0;
+
+    /** @type {number[]} Stores active interval IDs for cleanup */
     intervalIDs = [];
 
-
+    /**
+     * Creates a custom interval and stores its ID for later cleanup.
+     * @param {Function} callback - Function to execute at each interval.
+     * @param {number} interval - Interval time in milliseconds.
+     */
     customeInterval(callback, interval) {
         let id = setInterval(callback, interval);
         this.intervalIDs.push(id);
     }
 
+    /**
+     * Clears all stored intervals to prevent memory leaks or unwanted behavior.
+     */
     clearAllIntervals() {
         this.intervalIDs.forEach(id => clearInterval(id));
-        this.intervalIDs = []; // Liste der gespeicherten Intervalle leeren
+        this.intervalIDs = [];
     }
 
+    /**
+     * Applies gravity to the object, pulling it down until it reaches the ground.
+     * @returns {number} Interval ID for gravity updates.
+     */
     applyGravity() {
         return setInterval(() => {
             if (this.isAboveGround() || this.speedY > 0) {
@@ -31,27 +64,34 @@ class MovableObject extends DrawableObject {
         }, 1000 / 144);
     }
 
-    isAboveGround(){
-
+    /**
+     * Checks if the object is above the ground.
+     * Throwable objects are always considered above ground.
+     * @returns {boolean} True if above ground, false otherwise.
+     */
+    isAboveGround() {
         if (this instanceof ThrowableObject) {
-          return true;
-        } 
-        else {
-          return this.posY < 180;
+            return true;
+        } else {
+            return this.posY < 180;
         }
     }
 
-
+    /** Moves the object to the right based on its speed. */
     moveRight() {
         this.posX += this.speed;
     }
 
-    moveLeft(){
+    /** Moves the object to the left based on its speed. */
+    moveLeft() {
         this.posX -= this.speed;
     }
 
-    playAnimation(images){
-        // Reset currentImage when switching to a new animation
+    /**
+     * Plays an animation by cycling through a set of images.
+     * @param {string[]} images - Array of image paths for the animation.
+     */
+    playAnimation(images) {
         if (this.currentAnimationImages !== images) {
             this.currentImage = 0;
             this.currentAnimationImages = images;
@@ -63,25 +103,33 @@ class MovableObject extends DrawableObject {
         this.currentImage++;
     }
 
-    jump(){
+    /** Makes the object jump by setting vertical speed upward. */
+    jump() {
         this.speedY = 8;
     }
 
+    /**
+     * Checks if this object is colliding with another movable object.
+     * @param {MovableObject} MO - Another movable object.
+     * @returns {boolean} True if colliding, false otherwise.
+     */
     isColliding(MO) {
-      
+        if (MO instanceof MovableObject) {
+            return (
+                this.posX + this.width - this.offset.right >= MO.posX + MO.offset.left &&
+                this.posX + this.offset.left < MO.posX + MO.width - MO.offset.right &&
+                this.posY + this.height - this.offset.bottom >= MO.posY + MO.offset.top &&
+                this.posY + this.offset.top < MO.posY + MO.height - MO.offset.bottom
+            );
+        }
+        return false;
+    }
 
-      if (MO instanceof MovableObject) {
-          return (
-              this.posX + this.width - this.offset.right >= MO.posX + MO.offset.left &&
-              this.posX + this.offset.left < MO.posX + MO.width - MO.offset.right &&
-              this.posY + this.height - this.offset.bottom >= MO.posY + MO.offset.top &&
-              this.posY + this.offset.top < MO.posY + MO.height - MO.offset.bottom
-          );
-      }
-      return false;
-      
-  }
-
+    /**
+     * Checks if this object is colliding with another object from above.
+     * @param {MovableObject} MO - Another movable object.
+     * @returns {boolean} True if colliding from above, false otherwise.
+     */
     isCollidingFromAbove(MO) {
         return (
             this.isColliding(MO) &&
@@ -90,39 +138,47 @@ class MovableObject extends DrawableObject {
         );
     }
 
-  
-
-     hit() {
-    if (!this.isHurt()) { // Prevent damage if already in i-frames
-        this.health -= 20;
-        if (this.health < 0) {
-            this.health = 0;
-        } else {
-            this.lastHit = new Date().getTime();
+    /**
+     * Applies damage to the object if not currently in invincibility frames.
+     */
+    hit() {
+        if (!this.isHurt()) {
+            this.health -= 20;
+            if (this.health < 0) {
+                this.health = 0;
+            } else {
+                this.lastHit = new Date().getTime();
+            }
         }
     }
-}
 
-
-      isHurt(){
+    /**
+     * Determines if the object is currently in invincibility frames (i-frames).
+     * @returns {boolean} True if hurt (in i-frames), false otherwise.
+     */
+    isHurt() {
         let timePassed = new Date().getTime() - this.lastHit;
         timePassed = timePassed / 1000;
-        return timePassed < 0.5; // <- i.Frame length in seconds
-      }
+        return timePassed < 0.5;
+    }
 
-      isDead(){
+    /**
+     * Checks if the object is dead (health = 0).
+     * @returns {boolean} True if dead, false otherwise.
+     */
+    isDead() {
         return this.health == 0;
-      }
+    }
 
-      isNotMoving() {
+    /**
+     * Determines if the object is idle (not moving and not above ground).
+     * @returns {boolean} True if not moving, false otherwise.
+     */
+    isNotMoving() {
         if (!this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.world.keyboard.UP && !this.isAboveGround()) {
-         
             return true;
         } else {
             return false;
         }
-      }
-    
-    
-
+    }
 }
