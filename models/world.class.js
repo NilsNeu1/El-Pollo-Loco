@@ -1,3 +1,23 @@
+/**
+ * The main game world containing the player, level and all game systems.
+ *
+ * Links to related classes used by the world:
+ * @see {@link Character} - `models/character.class.js`
+ * @see {@link Level} - `models/level.class.js`
+ * @see {@link ThrowableObject} - `models/throwable-object.class.js`
+ * @see {@link Endboss} - `models/endboss.class.js`
+ * @see {@link Chick} - `models/chick.class.js`
+ * @see {@link Chicken} - `models/chicken.class.js`
+ * @see {@link HealthBar} - `models/healthBar.class.js`
+ * @see {@link SalsaBar} - `models/salsaBar.class.js`
+ * @see {@link CoinBar} - `models/coinBar.class.js`
+ * @see {@link BossBar} - `models/endboss-health.class.js`
+ * @see {@link GameStateUI} - `models/gameStateUi.class.js`
+ * @see {@link MobileButtons} - `models/mobile-ui.class.js`
+ * @see {@link SoundManager} - `models/sound-manager.class.js`
+ *
+ * @class World
+ */
 class World {
 
     character = new Character();  // erstellt einen neuen charackter in der Welt // Character erbt variablen u eigenschaften von movable object
@@ -24,9 +44,15 @@ class World {
     bossAgroSoundPlayed = false;
     nextThrowAllowed = 0;
     debugMode = false;
+    enableSounds = false;
 
     // um die Variablen aus dieser datei nutzen zu können muss "this." davor gesetzt werden. 
     
+    /**
+     * Initialize the world with a rendering canvas and input handler.
+     * @param {HTMLCanvasElement} canvas - Canvas element used for rendering.
+     * @param {Keyboard} keyboard - Keyboard/mobile input handler.
+     */
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
@@ -39,6 +65,10 @@ class World {
         this.start();
     }
 
+    /**
+     * Attach this world instance to contained objects so they can reference it.
+     * @returns {void}
+     */
     setWorld() {
         this.character.world = this;
         this.level.enemies.forEach(enemy => enemy.world = this); // Setzt die World-Referenz für Gegner
@@ -46,18 +76,34 @@ class World {
     }
 
 
+    /**
+     * Wrapper for setInterval which tracks interval IDs so they can be cleared later.
+     * @param {Function} callback - Callback to run on each tick.
+     * @param {number} interval - Interval in milliseconds.
+     * @returns {number} The interval id returned by setInterval.
+     */
     customeInterval(callback, interval) {
         let id = setInterval(callback, interval);
         this.intervalIDs.push(id);
 
+        return id;
+
     }
 
+    /**
+     * Clear every interval created via {@link World#customeInterval} and pause the game.
+     * @returns {void}
+     */
     clearAllIntervals() {
         this.intervalIDs.forEach(id => clearInterval(id));
         this.intervalIDs = []; // Liste der gespeicherten Intervalle leeren
         this.gamePaused = true;
     }
 
+    /**
+     * Reset player and world statistics (health, position, UI counters, camera, etc.).
+     * @returns {void}
+     */
     resetStats() {
         this.character.health = 100;
         this.healthBar.setPercentage(this.character.health);
@@ -74,6 +120,10 @@ class World {
     }
 
 
+    /**
+     * Start the main update loop for periodic checks (collisions, collections, boss state).
+     * @returns {void}
+     */
     start() {
         this.initiatedGame = true;
         this.customeInterval(() => {
@@ -82,19 +132,27 @@ class World {
             this.checkCollections();
             this.checkBossAgro();
             this.isGameWon();
-            this.smallDisplayUi();
             this.gameStateUi.setupButtonClicks();
         }, 1000 / 60); // Run at 60 FPS for consistent collision detection
         this.gamePaused = false;
         this.gameStateUi.setState('none');
     }
 
+    /**
+     * Restart the game: reset stats and create the first level.
+     * @returns {void}
+     */
     restartGame() {
+        this.enableSounds = true;
         this.resetStats();
         createLevel1();
 
     }
 
+    /**
+     * Toggle the paused state of the game.
+     * @returns {void}
+     */
     togglePause() {
         if (!this.gamePaused) {
             this.clearAllIntervals();
@@ -105,6 +163,10 @@ class World {
         }
     }
 
+    /**
+     * Check if the player lost (health <= 0) and handle end-of-game actions.
+     * @returns {void}
+     */
     isGameLost() {
         if (this.character.health <= 0) {
             // Stop any background music when the game is lost
@@ -117,6 +179,10 @@ class World {
         }
     }
 
+    /**
+     * Check whether the boss has been defeated and handle win actions.
+     * @returns {void}
+     */
     isGameWon() {
         const boss = this.level.enemies.find(e => e instanceof Endboss);
         if (boss && boss.health <= 0) {
@@ -131,6 +197,10 @@ class World {
         }
     }
 
+    /**
+     * Update boss agro state depending on player proximity and play agro sound once.
+     * @returns {void}
+     */
     checkBossAgro() {
         const boss = this.level.enemies.find(e => e instanceof Endboss);
         if (!boss) return;
@@ -148,6 +218,10 @@ class World {
     }
 
 
+    /**
+     * Create and throw a bottle if input and cooldown allow.
+     * @returns {void}
+     */
     checkThrowObject() {
         // Only allow throwing if the THROW key is pressed, bottles are available
         // and the cooldown period has passed.
@@ -163,7 +237,11 @@ class World {
     }
 
 
-checkCollisions() {
+    /**
+     * Check for collisions between the character and enemies and handle consequences.
+     * @returns {void}
+     */
+    checkCollisions() {
     const boss = this.level.enemies.find(e => e instanceof Endboss);
     this.level.enemies.forEach((enemy, index) => {
         if (this.character.isColliding(enemy)) {
@@ -202,6 +280,10 @@ checkCollisions() {
 
 
 
+    /**
+     * Start periodic checks for collectable collisions; increments counters and plays sounds.
+     * @returns {void}
+     */
     checkCollections() {
         this.customeInterval(() => {
             this.level.collectableBottle.forEach((bottle, index) => {
@@ -226,6 +308,11 @@ checkCollisions() {
 
 
 
+    /**
+     * Main render loop: clears canvas, draws background, objects, character and UI.
+     * Uses requestAnimationFrame for smooth rendering.
+     * @returns {void}
+     */
     draw() { // wird so oft aufgerufen wie für die Grafikkarte möglich
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // cleared das Canvas bevor etwas neues gezeichent wird
 
@@ -255,12 +342,23 @@ checkCollisions() {
         });
     }
 
+    /**
+     * Draw multiple drawable objects by delegating to {@link World#addToMap}.
+     * @param {Array<DrawableObject>} objects - Array of drawable objects.
+     * @returns {void}
+     */
     addObjectToMap(objects) {
         objects.forEach(obj => {
             this.addToMap(obj);
         });
     }
 
+    /**
+     * Draw a single movable/drawable object and its hitbox (when debug mode enabled).
+     * Handles horizontal mirroring for objects that face the other direction.
+     * @param {DrawableObject} MO - The object to draw (must implement draw(ctx)).
+     * @returns {void}
+     */
     addToMap(MO) {
         if (MO.otherDirection) { //spiegelt das MO um in andere richtungen gehen zu können
             this.flipImage(MO);
@@ -275,6 +373,11 @@ checkCollisions() {
 
     }
 
+    /**
+     * Draw UI and other screen-space/static objects (drawn without camera translation).
+     * @param {CanvasRenderingContext2D} ctx - Canvas rendering context (kept for signature compatibility).
+     * @returns {void}
+     */
     staticObjects(ctx) {
         this.addToMap(this.healthBar);
         this.addToMap(this.salsaBar);
@@ -282,7 +385,7 @@ checkCollisions() {
         this.addToMap(this.coinBar);
         this.coinBar.drawCounter(this.ctx);
         this.addToMap(this.gameStateUi); // Always draw, but image depends on state
-        if (this.smallDisplayUi() && this.gameStateUi.state !== 'menu') {
+        if ((navigator.maxTouchPoints > 0) && this.gameStateUi.state !== 'menu') {
             this.addToMap(this.mobileUi);
         }
         if (this.bossAgro === true && this.gameStateUi.state !== 'menu') {
@@ -291,6 +394,11 @@ checkCollisions() {
     }
 
 
+    /**
+     * Flip the canvas horizontally to render a mirrored object and adjust its x position.
+     * @param {DrawableObject} MO - Object to flip; expected to have `width` and `posX`.
+     * @returns {void}
+     */
     flipImage(MO) {
         this.ctx.save();
         this.ctx.translate(MO.width, 0);
@@ -298,11 +406,20 @@ checkCollisions() {
         MO.posX = MO.posX * -1;
     }
 
+    /**
+     * Restore canvas state after a horizontal flip and revert the object's x adjustment.
+     * @param {DrawableObject} MO - Previously flipped object.
+     * @returns {void}
+     */
     flipImageBack(MO) {
         MO.posX = MO.posX * -1;
         this.ctx.restore();
     }
 
+    /**
+     * Decrease the available salsa bottles by one (if any) and return the remaining count.
+     * @returns {number} Remaining number of available bottles.
+     */
     decreaseAvailableBottles() {
         if (this.salsaBar.availableBottles > 0) {
             this.salsaBar.availableBottles--;
@@ -310,24 +427,16 @@ checkCollisions() {
         return this.salsaBar.availableBottles;
     }
 
-    debug() {
-        console.log('gamePaused:', this.gamePaused);
-        console.log('game state', this.gameStateUi.state);
-        console.log('Enemies in Level:', this.level.enemies);
-
-    }
-
+    /**
+     * Toggle browser fullscreen mode for the game canvas.
+     * @returns {void}
+     */
     toggleFullscreen() {
         if (!document.fullscreenElement) {
             this.canvas.requestFullscreen();
         } else {
             document.exitFullscreen();
         }
-    }
-
-    smallDisplayUi() {
-        return window.innerWidth < 1370
-    ;
     }
 
 }

@@ -58,7 +58,7 @@ class SoundManager {
     playSound(soundName) {
         const now = Date.now();
         let sound = this.sounds[soundName];
-        if (!this.mute && sound) {
+        if (!this.mute && sound && world.enableSounds == true) {
             if (now - this.lastSoundPlayed < 500) {
                 this.setVolume(this.volume);
                 sound.play();
@@ -112,7 +112,6 @@ class SoundManager {
         volumeSlider.addEventListener('input', ({target}) => {
             const value = Number(target.value) / 100;
             this.setVolume(value);
-            console.log('Volume set to', this.volume);
         });
     }
 

@@ -129,61 +129,88 @@ class Character extends MovableObject {
      * Starts animation loops for movement, idle states, jumping, and hurt/dead states.
      * Uses custom intervals to update character state and play animations.
      */
-    animate() {
-        // Movement and camera updates
-        this.customeInterval(() => {
-            if (!this.world.gamePaused) {
-                if (this.world.keyboard.RIGHT && this.posX < this.world.level.level_end_X) {
-                    this.otherDirection = false;
-                    this.moveRight();
-                }
+/**
+ * Starts all animation intervals for movement, state changes, jumps, and sleep checks.
+ */
+animate() {
+    this.startMovementAndCameraUpdates();
+    this.startStateAnimations();
+    this.startJumpAnimation();
+    this.startSleepCheck();
+}
 
-                if (this.world.keyboard.LEFT && this.posX > 100) {
-                    this.otherDirection = true;
-                    this.moveLeft();
-                }
-
-                if (this.world.keyboard.UP && !this.isAboveGround()) {
-                    this.jump();
-                    world.soundManager.playSound('jump');
-                }
-
-                this.world.camera_x = -this.posX + 100;
+/**
+ * Handles player movement and camera updates at 60 FPS.
+ * Updates position based on keyboard input and adjusts camera position.
+ */
+startMovementAndCameraUpdates() {
+    this.customeInterval(() => {
+        if (!this.world.gamePaused) {
+            if (this.world.keyboard.RIGHT && this.posX < this.world.level.level_end_X) {
+                this.otherDirection = false;
+                this.moveRight();
             }
-        }, 1000 / 60);
 
-        // Animation updates based on state
-        this.customeInterval(() => {
-            this.updateIdleTimer();
-
-            if (!this.world.gamePaused) {
-                if (this.isHurt() && !this.isAboveGround()) {
-                    this.playAnimation(this.IMAGES_HURT);
-                    world.soundManager.playSound('hit');
-                } else if (this.isDead()) {
-                    this.playAnimation(this.IMAGES_DEAD);
-                } else if (this.fallsAsleep()) {
-                    this.playAnimation(this.IMAGES_LONGIDLE);
-                } else if (this.isNotMoving()) {
-                    this.playAnimation(this.IMAGES_IDLE);
-                } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-                    this.playAnimation(this.IMAGES_WALKING);
-                }
+            if (this.world.keyboard.LEFT && this.posX > 100) {
+                this.otherDirection = true;
+                this.moveLeft();
             }
-        }, 1000 / 12);
 
-        // Jump animation
-        this.customeInterval(() => {
-            if (!this.world.gamePaused && this.isAboveGround()) {
-                this.playAnimation(this.IMAGES_JUMP);
+            if (this.world.keyboard.UP && !this.isAboveGround()) {
+                this.jump();
+                this.world.soundManager.playSound('jump');
             }
-        }, 1000 / 6);
 
-        // Sleep check
-        this.customeInterval(() => {
-            this.fallsAsleep();
-        }, 1000);
-    }
+            this.world.camera_x = -this.posX + 100;
+        }
+    }, 1000 / 60);
+}
+
+/**
+ * Updates character animations based on current state at 12 FPS.
+ * Plays idle, walking, hurt, dead, or sleep animations depending on conditions.
+ */
+startStateAnimations() {
+    this.customeInterval(() => {
+        this.updateIdleTimer();
+
+        if (!this.world.gamePaused) {
+            if (this.isHurt() && !this.isAboveGround()) {
+                this.playAnimation(this.IMAGES_HURT);
+                this.world.soundManager.playSound('hit');
+            } else if (this.isDead()) {
+                this.playAnimation(this.IMAGES_DEAD);
+            } else if (this.fallsAsleep()) {
+                this.playAnimation(this.IMAGES_LONGIDLE);
+            } else if (this.isNotMoving()) {
+                this.playAnimation(this.IMAGES_IDLE);
+            } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+                this.playAnimation(this.IMAGES_WALKING);
+            }
+        }
+    }, 1000 / 12);
+}
+
+/**
+ * Plays jump animation while character is above ground at 6 FPS.
+ */
+startJumpAnimation() {
+    this.customeInterval(() => {
+        if (!this.world.gamePaused && this.isAboveGround()) {
+            this.playAnimation(this.IMAGES_JUMP);
+        }
+    }, 1000 / 6);
+}
+
+/**
+ * Periodically checks if the character should fall asleep.
+ */
+startSleepCheck() {
+    this.customeInterval(() => {
+        this.fallsAsleep();
+    }, 1000);
+}
+
 
     /**
      * Determines if the character has fallen asleep due to inactivity.
