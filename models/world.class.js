@@ -129,7 +129,7 @@ class World {
         this.customeInterval(() => {
             this.checkCollisions();
             this.checkThrowObject();
-            this.checkCollections();
+            CollectableItem.checkCollections(this);
             this.checkBossAgro();
             this.isGameWon();
             this.gameStateUi.setupButtonClicks();
@@ -277,36 +277,6 @@ class World {
         }
     });
 }
-
-
-
-    /**
-     * Start periodic checks for collectable collisions; increments counters and plays sounds.
-     * @returns {void}
-     */
-    checkCollections() {
-        this.customeInterval(() => {
-            this.level.collectableBottle.forEach((bottle, index) => {
-                if (this.character.isColliding(bottle)) {
-                    this.salsaBar.availableBottles++;
-                    this.level.collectableBottle.splice(index, 1); // Remove the collided bottle from the array
-                    this.soundManager.playSound('collectBottle');
-                }
-            });
-
-            this.level.collectableCoin.forEach((coin, index) => {
-                if (this.character.isColliding(coin)) {
-                    this.coinBar.CollectedCoins++;
-                    this.level.collectableCoin.splice(index, 1); // Remove the collided bottle from the array
-                    this.soundManager.playSound('collectCoin');
-                }
-            });
-
-        }, 1000);
-    }
-
-
-
 
     /**
      * Main render loop: clears canvas, draws background, objects, character and UI.
