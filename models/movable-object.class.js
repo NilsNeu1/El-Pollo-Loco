@@ -181,4 +181,106 @@ class MovableObject extends DrawableObject {
             return false;
         }
     }
+
+/**
+ * Check for collisions between this movable object (usually the player) and all enemies
+ * in the level and handle collision consequences.
+ * @returns {void}
+ */
+checkCollisions() {
+    if (!this.world || !this.world.level) return;
+
+    const boss = this.getBossEnemy();
+
+    this.world.level.enemies.forEach((enemy, index) => {
+        if (this.isColliding(enemy)) {
+            this.handleCollision(enemy, boss);
+        }
+        this.removeDeadEnemy(enemy, index);
+    });
+}
+
+/**
+ * Find the boss enemy in the current level.
+ * @returns {Endboss | undefined}
+ */
+getBossEnemy() {
+    return this.world.level.enemies.find(e => e instanceof Endboss);
+}
+
+/**
+ * Handle collision logic depending on enemy type and collision direction.
+ * @param {Object} enemy - The enemy object collided with.
+ * @param {Endboss} boss - The boss enemy reference.
+ */
+handleCollision(enemy, boss) {
+    if (!(enemy instanceof Chick || enemy instanceof Chicken || enemy instanceof Endboss)) return;
+
+    if (this.isCollidingFromAbove(enemy)) {
+        this.handleCollisionFromAbove(enemy);
+    } else {
+        this.handlePlayerHit(enemy, boss);
+    }
+}
+
+/**
+ * Handle collision when player lands on an enemy from above.
+ * @param {Object} enemy - The enemy object collided with.
+ */
+handleCollisionFromAbove(enemy) {
+    if (!(enemy instanceof Endboss)) {
+        this.damageEnemy(enemy);
+        this.jump();
+        this.lastHit = Date.now();
+
+        if (enemy.health <= 5) {
+            enemy.playAnimation(enemy.IMAGES_DEAD);
+            enemy.deadChicken();
+        }
+    } else {
+        this.lastHit = Date.now();
+    }
+}
+
+/**
+ * Apply damage to an enemy.
+ * @param {Object} enemy - The enemy object to damage.
+ */
+damageEnemy(enemy) {
+    if (typeof enemy.hit === 'function') {
+        enemy.hit();
+    } else {
+        enemy.health -= 5;
+    }
+}
+
+/**
+ * Handle when the player gets hit by an enemy.
+ * @param {Object} enemy - The enemy object.
+ * @param {Endboss} boss - The boss enemy reference.
+ */
+handlePlayerHit(enemy, boss) {
+    if (typeof this.hit === 'function') this.hit();
+
+    if (this.world?.healthbars) {
+        this.world.healthbars.setPlayerPercentage(this.health);
+        if (boss) this.world.healthbars.setBossPercentage(boss.health);
+    }
+
+    if (typeof this.world?.isGameLost === 'function') {
+        this.world.isGameLost();
+    }
+}
+
+/**
+ * Remove enemy from level if dead and off-screen.
+ * @param {Object} enemy - The enemy object.
+ * @param {number} index - Index in enemies array.
+ */
+removeDeadEnemy(enemy, index) {
+    if (enemy.health <= 1 && enemy.posY > 500) {
+        this.world.level.enemies.splice(index, 1);
+    }
+}
+
 }

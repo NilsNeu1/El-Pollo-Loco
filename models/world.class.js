@@ -8,10 +8,10 @@
  * @see {@link Endboss} - `models/endboss.class.js`
  * @see {@link Chick} - `models/chick.class.js`
  * @see {@link Chicken} - `models/chicken.class.js`
- * @see {@link HealthBar} - `models/healthBar.class.js`
  * @see {@link SalsaBar} - `models/salsaBar.class.js`
  * @see {@link CoinBar} - `models/coinBar.class.js`
- * @see {@link BossBar} - `models/endboss-health.class.js`
+ * @see {@link HealthBar} - `models/healthbars.class.js`
+ * @see {@link BossBar} - `models/healthbars.class.js`
  * @see {@link GameStateUI} - `models/gameStateUi.class.js`
  * @see {@link MobileButtons} - `models/mobile-ui.class.js`
  * @see {@link SoundManager} - `models/sound-manager.class.js`
@@ -26,10 +26,9 @@ class World {
     ctx;
     keyboard;
     camera_x = 0;
-    healthBar = new HealthBar();
+    healthbars;
     salsaBar = new SalsaBar();
     coinBar = new CoinBar();
-    bossBar = new BossBar();
     gameStateUi = new GameStateUI();
     mobileUi = new MobileButtons();
     soundManager = new SoundManager();
@@ -57,6 +56,7 @@ class World {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
+        this.healthbars = new Healthbars(this);
         this.gameStateUi = new GameStateUI();
         this.setWorld();
         this.gameStateUi.setCanvasAndWorld(canvas, this); // This sets up button clicks once
@@ -73,6 +73,12 @@ class World {
         this.character.world = this;
         this.level.enemies.forEach(enemy => enemy.world = this); // Setzt die World-Referenz für Gegner
         this.salsaBar.world = this;
+        // attach world reference to healthbars manager and its children
+        if (this.healthbars) {
+            this.healthbars.world = this;
+            if (this.healthbars.playerBar) this.healthbars.playerBar.world = this;
+            if (this.healthbars.bossBar) this.healthbars.bossBar.world = this;
+        }
     }
 
 
@@ -106,8 +112,8 @@ class World {
      */
     resetStats() {
         this.character.health = 100;
-        this.healthBar.setPercentage(this.character.health);
-        this.bossBar.setPercentage(100);
+        this.healthbars.setPlayerPercentage(this.character.health);
+        this.healthbars.setBossPercentage(100);
         this.character.posX = 100;
         this.character.posY = 180;
         this.salsaBar.availableBottles = 5;
@@ -127,7 +133,7 @@ class World {
     start() {
         this.initiatedGame = true;
         this.customeInterval(() => {
-            this.checkCollisions();
+            if (typeof this.character.checkCollisions === 'function') this.character.checkCollisions();
             this.checkThrowObject();
             CollectableItem.checkCollections(this);
             this.checkBossAgro();
@@ -205,8 +211,8 @@ class World {
         const boss = this.level.enemies.find(e => e instanceof Endboss);
         if (!boss) return;
         let agroRange = Math.abs(this.character.posX - boss.posX);
-        if (this.initiatedGame === true && agroRange < 500) {
-            this.bossBar.setPercentage(boss.health);
+            if (this.initiatedGame === true && agroRange < 500) {
+            this.healthbars.setBossPercentage(boss.health);
             if (!this.bossAgro && !this.bossAgroSoundPlayed) {
                 this.soundManager.playSound('bossAgro');
                 this.bossAgroSoundPlayed = true;
@@ -236,81 +242,70 @@ class World {
         }
     }
 
-
     /**
-     * Check for collisions between the character and enemies and handle consequences.
-     * @returns {void}
+     * Main draw loop, called as often as the GPU allows.
      */
-    checkCollisions() {
-    const boss = this.level.enemies.find(e => e instanceof Endboss);
-    this.level.enemies.forEach((enemy, index) => {
-        if (this.character.isColliding(enemy)) {
-            if (enemy instanceof Chick || enemy instanceof Chicken || enemy instanceof Endboss) {
-                if (this.character.isCollidingFromAbove(enemy)) {
-                    if (!(enemy instanceof Endboss)) {
-                        if (typeof enemy.hit === 'function') {
-                            enemy.hit();
-                        } else {
-                            enemy.health -= 5;
-                        }
-                        this.character.jump();
-                        this.character.lastHit = new Date().getTime();
+    draw() {
+        this.clearCanvas();
 
-                        if (enemy.health <= 5) {
-                            enemy.playAnimation(enemy.IMAGES_DEAD);
-                            enemy.deadChicken();
-                        }
-                    } else {
-                        this.character.lastHit = new Date().getTime();
-                    }
-                } else {
-                    this.character.hit();
-                    this.healthBar.setPercentage(this.character.health);
-                    this.bossBar.setPercentage(boss.health);
-                    this.isGameLost();
-                }
-            }
+        if (this.level !== level0) {
+            this.renderDynamicScene();
+        } else {
+            this.renderBackgroundOnly();
         }
 
-        if (enemy.health <= 1 && enemy.posY > 500) {
-            this.level.enemies.splice(index, 1);
-        }
-    });
-}
-
-    /**
-     * Main render loop: clears canvas, draws background, objects, character and UI.
-     * Uses requestAnimationFrame for smooth rendering.
-     * @returns {void}
-     */
-    draw() { // wird so oft aufgerufen wie für die Grafikkarte möglich
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // cleared das Canvas bevor etwas neues gezeichent wird
-
-
-        if (this.level != level0) {
-            this.ctx.translate(this.camera_x, 0); // verschiebt die Kamera nach links
-
-            this.addObjectToMap(this.level.backgroundObjects);
-            this.addObjectToMap(this.level.clouds);
-            this.addObjectToMap(this.level.collectableBottle);
-            this.addObjectToMap(this.level.collectableCoin);
-            this.addObjectToMap(this.level.enemies);
-            this.addToMap(this.character);
-            this.addObjectToMap(this.trowable);
-
-            //--------------------fixierte objecte-------------------- //
-            this.ctx.translate(-this.camera_x, 0);
-            this.staticObjects(this.ctx);
-            this.ctx.translate(this.camera_x, 0);
-            //--------------------fixierte objecte-------------------- //
-            this.ctx.translate(-this.camera_x, 0); // macht das Translate wieder Rückgängig
-        } else { this.addObjectToMap(this.level.backgroundObjects); } // das einzige objekt, dass immer geladen werden muss0
-
-        let self = this; // function kennt "this" nicht mehr und muss daswegen ausßerhalb neu definiert werden.
-        requestAnimationFrame(function () { // == requestAnimationFrame(this.draw)
-            self.draw();
-        });
+        this.scheduleNextFrame();
     }
+
+    /**
+     * Clears the canvas before drawing.
+     */
+    clearCanvas() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    /**
+     * Render all moving and fixed objects with camera translation.
+     */
+    renderDynamicScene() {
+        this.ctx.translate(this.camera_x, 0);
+
+        this.addObjectToMap(this.level.backgroundObjects);
+        this.addObjectToMap(this.level.clouds);
+        this.addObjectToMap(this.level.collectableBottle);
+        this.addObjectToMap(this.level.collectableCoin);
+        this.addObjectToMap(this.level.enemies);
+        this.addToMap(this.character);
+        this.addObjectToMap(this.trowable);
+
+        this.renderStaticObjects();
+
+        this.ctx.translate(-this.camera_x, 0); // reset translation
+    }
+
+    /**
+     * Render static objects (UI, HUD, etc.).
+     */
+    renderStaticObjects() {
+        this.ctx.translate(-this.camera_x, 0);
+        this.staticObjects(this.ctx);
+        this.ctx.translate(this.camera_x, 0);
+    }
+
+    /**
+     * Render only background objects (used for level0).
+     */
+    renderBackgroundOnly() {
+        this.addObjectToMap(this.level.backgroundObjects);
+    }
+
+    /**
+     * Schedule the next frame using requestAnimationFrame.
+     */
+    scheduleNextFrame() {
+        requestAnimationFrame(() => this.draw());
+    }
+
 
     /**
      * Draw multiple drawable objects by delegating to {@link World#addToMap}.
@@ -349,7 +344,7 @@ class World {
      * @returns {void}
      */
     staticObjects(ctx) {
-        this.addToMap(this.healthBar);
+        this.addToMap(this.healthbars);
         this.addToMap(this.salsaBar);
         this.salsaBar.drawCounter(this.ctx);
         this.addToMap(this.coinBar);
@@ -358,9 +353,7 @@ class World {
         if ((navigator.maxTouchPoints > 0) && this.gameStateUi.state !== 'menu') {
             this.addToMap(this.mobileUi);
         }
-        if (this.bossAgro === true && this.gameStateUi.state !== 'menu') {
-            this.addToMap(this.bossBar);
-        }
+        // Boss bar drawing is handled inside the Healthbars manager (only drawn when bossAgro is true).
     }
 
 

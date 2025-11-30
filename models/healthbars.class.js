@@ -44,7 +44,7 @@ class HealthBar extends DrawableObject {
      * @param {"boss"|"player"} type - Type of health bar to create.
      * @param {number} [initialPercentage=100] - Starting health percentage.
      */
-    constructor(type, initialPercentage = 100) {
+    constructor(type = 'player', initialPercentage = 100) {
         super();
         const config = HealthBar.CONFIG[type];
         this.IMAGES_HEALTH = config.images;
@@ -57,6 +57,10 @@ class HealthBar extends DrawableObject {
         this.setPercentage(this.percentage);
     }
 
+    // Provide a factory-like alias for world-class compatibility.
+    // World currently constructs `new HealthBar()` and `new BossBar()`.
+    // `new HealthBar()` will default to a player health bar (as above),
+    // a BossBar subclass is defined after the class to simply preconfigure the type.
     /**
      * Updates the health bar to reflect the given health percentage.
      * @param {number} percentage - New health percentage (0–100).
@@ -80,3 +84,57 @@ class HealthBar extends DrawableObject {
         return 0;
     }
 }
+
+/**
+ * BossBar — specialized HealthBar using the boss images/position from CONFIG.
+ * World code uses `new BossBar()` directly, so we expose this class.
+ */
+class BossBar extends HealthBar {
+    constructor(initialPercentage = 100) {
+        super('boss', initialPercentage);
+        // Give boss bar a slightly different width to match its assets if desired.
+        this.width = 220;
+    }
+}
+
+/**
+ * Healthbars manager — holds both player and boss bars and decides what to draw.
+ * This class provides a single drawable object that the `World` can add to map.
+ */
+class Healthbars extends DrawableObject {
+    /**
+     * Create combined health bars manager.
+     * @param {World} world - Reference to the game world (used for checking bossAgro)
+     */
+    constructor(world) {
+        super();
+        this.world = world;
+        this.playerBar = new HealthBar('player');
+        this.bossBar = new BossBar();
+        this.width = 0;
+        this.height = 0;
+    }
+
+    setPlayerPercentage(percentage) {
+        this.playerBar.setPercentage(percentage);
+    }
+
+    setBossPercentage(percentage) {
+        this.bossBar.setPercentage(percentage);
+    }
+
+    // draw both bars — boss only when `world.bossAgro` is true
+    draw(ctx) {
+        this.playerBar.draw(ctx);
+        if (
+            this.world &&
+            this.world.bossAgro &&
+            (!this.world.gameStateUi || this.world.gameStateUi.state !== 'menu')
+        ) {
+            this.bossBar.draw(ctx);
+        }
+    }
+}
+
+// Export helper name used by previous code: default HealthBars manager for world.
+// Keep global class names for compatibility.
