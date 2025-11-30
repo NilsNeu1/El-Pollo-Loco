@@ -8,9 +8,8 @@
  * @see {@link Endboss} - `models/endboss.class.js`
  * @see {@link Chick} - `models/chick.class.js`
  * @see {@link Chicken} - `models/chicken.class.js`
- * @see {@link SalsaBar} - `models/salsaBar.class.js`
- * @see {@link CoinBar} - `models/coinBar.class.js`
- * @see {@link HealthBar} - `models/healthbars.class.js`
+ * @see {@link StatCounter} - `models/statCounter.class.js`
+ * @see {@link Healthbars} - `models/healthbars.class.js`
  * @see {@link BossBar} - `models/healthbars.class.js`
  * @see {@link GameStateUI} - `models/gameStateUi.class.js`
  * @see {@link MobileButtons} - `models/mobile-ui.class.js`
