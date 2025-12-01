@@ -67,7 +67,6 @@ class DrawableObject {
             try {
                 const scaleX = (this.scaleX !== undefined) ? this.scaleX : (this.scale !== undefined ? this.scale : 1);
                 const scaleY = (this.scaleY !== undefined) ? this.scaleY : (this.scale !== undefined ? this.scale : 1);
-
                 if (scaleX === 1 && scaleY === 1) {
                     ctx.drawImage(this.img, this.posX, this.posY, this.width, this.height);
                 } else {
@@ -101,7 +100,6 @@ class DrawableObject {
             const y = this.posY + this.offset.top;
             const width = this.width - this.offset.left - this.offset.right;
             const height = this.height - this.offset.top - this.offset.bottom;
-
             ctx.beginPath();
             ctx.lineWidth = "2";
             ctx.strokeStyle = "yellow";

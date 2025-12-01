@@ -78,11 +78,8 @@ class MobileButtons extends DrawableObject {
      */
     setupOrientationHandler() {
         this.checkOrientation();
-
-        // event listener for orientation changes
         this.orientationHandler = () => this.checkOrientation();
         window.addEventListener('resize', this.orientationHandler);
-        
         if (window.screen && window.screen.orientation) {
             window.screen.orientation.addEventListener('change', this.orientationHandler);
         }
@@ -128,165 +125,167 @@ class MobileButtons extends DrawableObject {
     draw(ctx) {
         this.buttonSpecs.forEach(btn => {
             ctx.save();
-
-            // Center of the button
             const centerX = btn.x + this.width / 2;
             const centerY = btn.y + this.height / 2;
-
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, this.width / 2, 0, 2 * Math.PI);
-            ctx.closePath();
-            ctx.fillStyle = '#fff';
-            ctx.globalAlpha = 0.7;
-            ctx.fill();
-            ctx.strokeStyle = '#b76127';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-            ctx.globalAlpha = 1.0;
-
-            const img = this.imageCache[btn.img];
-            if (img && img.complete) {
-                const rotation = btn.rotation || 0;
-
-                ctx.translate(centerX, centerY);
-                ctx.rotate(rotation);
-                ctx.drawImage(img, -this.width / 2, -this.height / 2, this.width, this.height);
-            }
-
+            this.drawButtonCircle(ctx, centerX, centerY);
+            this.drawButtonIcon(ctx, btn, centerX, centerY);
             ctx.restore();
         });
     }
 
-
-// --- Helpers ---
-
-/**
- * Calculates the touch position relative to the canvas coordinates.
- * Accounts for canvas scaling differences from display size.
- * @param {Touch} touch - The touch event object
- * @param {HTMLCanvasElement} canvas - The game canvas element
- * @returns {Object} Object with x and y coordinates relative to canvas
- */
-getTouchPos(touch, canvas) {
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    return {
-        x: (touch.clientX - rect.left) * scaleX,
-        y: (touch.clientY - rect.top) * scaleY
-    };
-}
-
-/**
- * Checks if a touch point is within the circular bounds of a button.
- * @param {number} x - The x coordinate of the touch
- * @param {number} y - The y coordinate of the touch
- * @param {Object} btn - The button object with x, y coordinates
- * @param {number} width - The button width (used to calculate radius)
- * @returns {boolean} True if touch is within button bounds
- */
-isTouchOnButton(x, y, btn, width) {
-    const centerX = btn.x + width / 2;
-    const centerY = btn.y + width / 2;
-    const dist = Math.hypot(x - centerX, y - centerY);
-    return dist <= width / 2;
-}
-
-/**
- * Finds the button at the given coordinates.
- * @param {number} x - The x coordinate to check
- * @param {number} y - The y coordinate to check
- * @param {Array<Object>} buttonSpecs - Array of button specifications
- * @param {number} width - The button width
- * @returns {Object|undefined} The button object if found, undefined otherwise
- */
-findButtonAt(x, y, buttonSpecs, width) {
-    return buttonSpecs.find(btn => this.isTouchOnButton(x, y, btn, width));
-}
-
-// --- Event Handlers ---
-
-/**
- * Handles the touchstart event on the canvas.
- * Identifies which button was touched and triggers the action.
- * @param {TouchEvent} e - The touch event
- * @param {HTMLCanvasElement} canvas - The game canvas element
- * @param {Array<Object>} buttonSpecs - Array of button specifications
- * @param {number} width - The button width
- * @param {Function} setActiveButton - Function to set the active button state
- * @param {Function} handleButtonAction - Function to handle button actions
- */
-handleTouchStart(e, canvas, buttonSpecs, width, setActiveButton, handleButtonAction) {
-    const { x, y } = this.getTouchPos(e.touches[0], canvas);
-    const btn = this.findButtonAt(x, y, buttonSpecs, width);
-    if (btn) {
-        setActiveButton(btn.action);
-        handleButtonAction(btn.action, true);
+    /**
+     * Draws the circular background for a button.
+     * @param {CanvasRenderingContext2D} ctx
+     * @param {number} centerX
+     * @param {number} centerY
+     */
+    drawButtonCircle(ctx, centerX, centerY) {
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, this.width / 2, 0, 2 * Math.PI);
+        ctx.closePath();
+        ctx.fillStyle = '#fff';
+        ctx.globalAlpha = 0.7;
+        ctx.fill();
+        ctx.strokeStyle = '#b76127';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.globalAlpha = 1.0;
     }
-}
 
-/**
- * Handles the touchend event on the canvas.
- * Releases the active button action (except for pause button).
- * @param {string|null} activeButton - The currently active button action
- * @param {Function} setActiveButton - Function to set the active button state
- * @param {Function} handleButtonAction - Function to handle button actions
- */
-handleTouchEnd(activeButton, setActiveButton, handleButtonAction) {
-    if (activeButton && activeButton !== 'pause') {
-        handleButtonAction(activeButton, false);
-        setActiveButton(null);
+    /**
+     * Draws the icon inside the button if available.
+     * @param {CanvasRenderingContext2D} ctx
+     * @param {Object} btn - Button spec containing img and rotation
+     * @param {number} centerX
+     * @param {number} centerY
+     */
+    drawButtonIcon(ctx, btn, centerX, centerY) {
+        const img = this.imageCache[btn.img];
+        if (img && img.complete) {
+            const rotation = btn.rotation || 0;
+            ctx.translate(centerX, centerY);
+            ctx.rotate(rotation);
+            ctx.drawImage(img, -this.width / 2, -this.height / 2, this.width, this.height);
+        }
     }
-}
-
-// --- Setup ---
-
-/**
- * Sets up touch event listeners for the canvas.
- * Enables touchstart and touchend handlers for button interaction.
- */
-setupButtonTouches() {
-    let activeButton = null;
-    const setActiveButton = (val) => { activeButton = val; };
-
-    this.canvas.addEventListener('touchstart', (e) =>
-        this.handleTouchStart(e, this.canvas, this.buttonSpecs, this.width, setActiveButton, this.handleButtonAction.bind(this))
-    );
-
-    this.canvas.addEventListener('touchend', () =>
-        this.handleTouchEnd(activeButton, setActiveButton, this.handleButtonAction.bind(this))
-    );
-}
 
 
-
-
-
-/**
- * Handles button actions by updating keyboard state or triggering special actions.
- * Maps button actions to keyboard inputs in the world's keyboard object.
- * @param {string} action - The button action (e.g., 'moveLeft', 'jump', 'attack', 'pause')
- * @param {boolean} isPressed - Whether the button is pressed (true) or released (false)
- */
-handleButtonAction(action, isPressed) {
-    if (!this.world || !this.world.keyboard) return;
-
-    switch (action) {
-        case 'moveLeft':
-            this.world.keyboard.LEFT = isPressed;
-            break;
-        case 'moveRight':
-            this.world.keyboard.RIGHT = isPressed;
-            break;
-        case 'jump':
-            this.world.keyboard.UP = isPressed;
-            break;
-        case 'attack':
-            this.world.keyboard.THROW = isPressed;
-            break;
-        case 'pause':
-            this.world.togglePause();
-            break;
+    /**
+     * Calculates the touch position relative to the canvas coordinates.
+     * Accounts for canvas scaling differences from display size.
+     * @param {Touch} touch - The touch event object
+     * @param {HTMLCanvasElement} canvas - The game canvas element
+     * @returns {Object} Object with x and y coordinates relative to canvas
+     */
+    getTouchPos(touch, canvas) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        return {
+            x: (touch.clientX - rect.left) * scaleX,
+            y: (touch.clientY - rect.top) * scaleY
+        };
     }
-}
+
+    /**
+     * Checks if a touch point is within the circular bounds of a button.
+     * @param {number} x - The x coordinate of the touch
+     * @param {number} y - The y coordinate of the touch
+     * @param {Object} btn - The button object with x, y coordinates
+     * @param {number} width - The button width (used to calculate radius)
+     * @returns {boolean} True if touch is within button bounds
+     */
+    isTouchOnButton(x, y, btn, width) {
+        const centerX = btn.x + width / 2;
+        const centerY = btn.y + width / 2;
+        const dist = Math.hypot(x - centerX, y - centerY);
+        return dist <= width / 2;
+    }
+
+    /**
+     * Finds the button at the given coordinates.
+     * @param {number} x - The x coordinate to check
+     * @param {number} y - The y coordinate to check
+     * @param {Array<Object>} buttonSpecs - Array of button specifications
+     * @param {number} width - The button width
+     * @returns {Object|undefined} The button object if found, undefined otherwise
+     */
+    findButtonAt(x, y, buttonSpecs, width) {
+        return buttonSpecs.find(btn => this.isTouchOnButton(x, y, btn, width));
+    }
+
+    /**
+     * Handles the touchstart event on the canvas.
+     * Identifies which button was touched and triggers the action.
+     * @param {TouchEvent} e - The touch event
+     * @param {HTMLCanvasElement} canvas - The game canvas element
+     * @param {Array<Object>} buttonSpecs - Array of button specifications
+     * @param {number} width - The button width
+     * @param {Function} setActiveButton - Function to set the active button state
+     * @param {Function} handleButtonAction - Function to handle button actions
+     */
+    handleTouchStart(e, canvas, buttonSpecs, width, setActiveButton, handleButtonAction) {
+        const { x, y } = this.getTouchPos(e.touches[0], canvas);
+        const btn = this.findButtonAt(x, y, buttonSpecs, width);
+        if (btn) {
+            setActiveButton(btn.action);
+            handleButtonAction(btn.action, true);
+        }
+    }
+
+    /**
+     * Handles the touchend event on the canvas.
+     * Releases the active button action (except for pause button).
+     * @param {string|null} activeButton - The currently active button action
+     * @param {Function} setActiveButton - Function to set the active button state
+     * @param {Function} handleButtonAction - Function to handle button actions
+     */
+    handleTouchEnd(activeButton, setActiveButton, handleButtonAction) {
+        if (activeButton && activeButton !== 'pause') {
+            handleButtonAction(activeButton, false);
+            setActiveButton(null);
+        }
+    }
+
+    /**
+     * Sets up touch event listeners for the canvas.
+     * Enables touchstart and touchend handlers for button interaction.
+     */
+    setupButtonTouches() {
+        let activeButton = null;
+        const setActiveButton = (val) => { activeButton = val; };
+        this.canvas.addEventListener('touchstart', (e) =>
+            this.handleTouchStart(e, this.canvas, this.buttonSpecs, this.width, setActiveButton, this.handleButtonAction.bind(this))
+        );
+        this.canvas.addEventListener('touchend', () =>
+            this.handleTouchEnd(activeButton, setActiveButton, this.handleButtonAction.bind(this))
+        );
+    }
+
+    /**
+     * Handles button actions by updating keyboard state or triggering special actions.
+     * Maps button actions to keyboard inputs in the world's keyboard object.
+     * @param {string} action - The button action (e.g., 'moveLeft', 'jump', 'attack', 'pause')
+     * @param {boolean} isPressed - Whether the button is pressed (true) or released (false)
+     */
+    handleButtonAction(action, isPressed) {
+        if (!this.world || !this.world.keyboard) return;
+        switch (action) {
+            case 'moveLeft':
+                this.world.keyboard.LEFT = isPressed;
+                break;
+            case 'moveRight':
+                this.world.keyboard.RIGHT = isPressed;
+                break;
+            case 'jump':
+                this.world.keyboard.UP = isPressed;
+                break;
+            case 'attack':
+                this.world.keyboard.THROW = isPressed;
+                break;
+            case 'pause':
+                this.world.togglePause();
+                break;
+        }
+    }
 }

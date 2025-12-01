@@ -16,8 +16,6 @@
 function createLevel1() {
 
     let level1 = new Level(
-
-        // Background objects (layered scenery repeated across segments)
         [
             new BackgroundObject('img/5_background/layers/air.png', 0),
             new BackgroundObject('img/5_background/layers/3_third_layer/1.png', 0),
@@ -49,8 +47,6 @@ function createLevel1() {
             new BackgroundObject('img/5_background/layers/2_second_layer/2.png', 719 * 5),
             new BackgroundObject('img/5_background/layers/1_first_layer/2.png', 719 * 5)
         ],
-
-        // Clouds
         [
             new Cloud('img/5_background/layers/4_clouds/1.png'),
             new Cloud('img/5_background/layers/4_clouds/1.png'),
@@ -58,24 +54,18 @@ function createLevel1() {
             new Cloud('img/5_background/layers/4_clouds/1.png'),
             new Cloud('img/5_background/layers/4_clouds/1.png'),
         ],
-
-        // Collectable bottles
         [
             new CollectableBottle(),
             new CollectableBottle(),
             new CollectableBottle(),
             new CollectableBottle(),
         ],
-
-        // Collectable coins
         [
             new CollectableCoin(),
             new CollectableCoin(),
             new CollectableCoin(),
             new CollectableCoin(),
         ],
-
-        // Enemies
         [
             new Chick(),
             new Chick(),
@@ -87,11 +77,9 @@ function createLevel1() {
         ]
     );
 
-    // Assign level to world and start game
     world.level = level1;
     world.setWorld();
     world.start();
     world.soundManager.playSound('backgroundMusic');
-
     return level1;
 }

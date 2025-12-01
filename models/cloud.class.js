@@ -19,13 +19,8 @@ class Cloud extends MovableObject {
      */
     constructor() {
         super().loadImage('img/5_background/layers/4_clouds/1.png');
-
-        /** @type {number} Randomized X position between 0 and 3595 */
         this.posX = 0 + Math.random() * 3595;
-
-        /** @type {number} Fixed Y position at the top of the canvas */
         this.posY = 0;
-
         this.animate();
     }
 

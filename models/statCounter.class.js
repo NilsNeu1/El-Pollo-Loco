@@ -36,21 +36,17 @@ class StatCounter extends DrawableObject {
 	 * @param {CanvasRenderingContext2D} ctx
 	 */
 	drawCounter(ctx) {
-		if (!this.counterText) return; // Nothing to draw by default
-
+		if (!this.counterText) return;
 		ctx.font = '25px Arial';
 		ctx.fillStyle = 'black';
 		ctx.strokeStyle = 'white';
 		ctx.textAlign = 'center';
-
 		const text = this.counterText;
 		const x = this.posX + this.width - 5;
 		const y = this.posY + this.height + this.counterFontSize - 15;
-
 		ctx.strokeText(text, x, y);
 		ctx.fillText(text, x, y);
 	}
-
 }
 
 /**
@@ -84,11 +80,9 @@ class CoinBar extends StatCounter {
 		ctx.fillStyle = 'black';
 		ctx.strokeStyle = 'white';
 		ctx.textAlign = 'center';
-
 		const text = this.CollectedCoins.toString() + '/' + this.AvailableCoins.toString();
 		const x = this.posX + this.width - 5;
 		const y = this.posY + this.height + this.counterFontSize - 15;
-
 		ctx.strokeText(text, x, y);
 		ctx.fillText(text, x, y);
 	}
@@ -119,81 +113,82 @@ class SalsaBar extends StatCounter {
 		this.width = 70;
 	}
 
-/**
- * Draws the entity with proper alpha handling.
- * @param {CanvasRenderingContext2D} ctx - The canvas context
- */
-draw(ctx) {
-    try {
-        const currentAlpha = ctx.globalAlpha;
-        const alpha = this.calculateAlpha();
+	/**
+	 * Draws the entity with proper alpha handling.
+	 * @param {CanvasRenderingContext2D} ctx - The canvas context
+	 */
+	draw(ctx) {
+		try {
+			const currentAlpha = ctx.globalAlpha;
+			const alpha = this.calculateAlpha();
 
-        this.applyAlpha(ctx, alpha);
-        this.safeDraw(ctx);
-        this.restoreAlpha(ctx, currentAlpha);
-    } catch (e) {
-        this.fallbackDraw(ctx);
-    }
-}
+			this.applyAlpha(ctx, alpha);
+			this.safeDraw(ctx);
+			this.restoreAlpha(ctx, currentAlpha);
+		} catch (e) {
+			this.fallbackDraw(ctx);
+		}
+	}
 
-/**
- * Calculates the alpha value based on cooldown state.
- * @returns {number} Alpha value (1 = fully opaque, 0.5 = semi-transparent)
- */
-calculateAlpha() {
-    if (this.world && this.world.nextThrowAllowed) {
-        if (Date.now() < this.world.nextThrowAllowed) {
-            return 0.5; // semi-transparent during cooldown
-        }
-    }
-    return 1;
-}
+	/**
+	 * Calculates the alpha value based on cooldown state.
+	 * @returns {number} Alpha value (1 = fully opaque, 0.5 = semi-transparent)
+	 */
+	calculateAlpha() {
+		if (this.world && this.world.nextThrowAllowed) {
+			if (Date.now() < this.world.nextThrowAllowed) {
+				return 0.5;
+			}
+		}
+		return 1;
+	}
 
-/**
- * Applies the given alpha to the canvas context.
- * @param {CanvasRenderingContext2D} ctx
- * @param {number} alpha
- */
-applyAlpha(ctx, alpha) {
-    ctx.globalAlpha = alpha;
-}
+	/**
+	 * Applies the given alpha to the canvas context.
+	 * @param {CanvasRenderingContext2D} ctx
+	 * @param {number} alpha
+	 */
+	applyAlpha(ctx, alpha) {
+		ctx.globalAlpha = alpha;
+	}
 
-/**
- * Performs the actual drawing using the parent class.
- * @param {CanvasRenderingContext2D} ctx
- */
-safeDraw(ctx) {
-    super.draw(ctx);
-}
+	/**
+	 * Performs the actual drawing using the parent class.
+	 * @param {CanvasRenderingContext2D} ctx
+	 */
+	safeDraw(ctx) {
+		super.draw(ctx);
+	}
 
-/**
- * Restores the previous alpha value.
- * @param {CanvasRenderingContext2D} ctx
- * @param {number} previousAlpha
- */
-restoreAlpha(ctx, previousAlpha) {
-    ctx.globalAlpha = previousAlpha;
-}
+	/**
+	 * Restores the previous alpha value.
+	 * @param {CanvasRenderingContext2D} ctx
+	 * @param {number} previousAlpha
+	 */
+	restoreAlpha(ctx, previousAlpha) {
+		ctx.globalAlpha = previousAlpha;
+	}
 
-/**
- * Fallback drawing if an error occurs.
- * @param {CanvasRenderingContext2D} ctx
- */
-fallbackDraw(ctx) {
-    super.draw(ctx);
-}
+	/**
+	 * Fallback drawing if an error occurs.
+	 * @param {CanvasRenderingContext2D} ctx
+	 */
+	fallbackDraw(ctx) {
+		super.draw(ctx);
+	}
 
-
+	/**
+	 * Draws the bottle counter next to the icon.
+	 * @param {CanvasRenderingContext2D} ctx
+	 */
 	drawCounter(ctx) {
 		ctx.font = '25px Arial';
 		ctx.fillStyle = 'black';
 		ctx.strokeStyle = 'white';
 		ctx.textAlign = 'center';
-
 		const text = this.availableBottles.toString();
 		const x = this.posX + this.width - 25;
 		const y = this.posY + this.height + this.counterFontSize - 15;
-
 		ctx.strokeText(text, x, y);
 		ctx.fillText(text, x, y);
 	}

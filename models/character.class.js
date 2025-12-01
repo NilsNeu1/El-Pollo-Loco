@@ -121,7 +121,6 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_DEAD);
         this.animate();
         this.applyGravity();
-        /** @type {SoundManager} Handles sound effects for the character */
         this.soundManager = new SoundManager();
     }
 
@@ -129,78 +128,78 @@ class Character extends MovableObject {
      * Starts animation loops for movement, idle states, jumping, and hurt/dead states.
      * Uses custom intervals to update character state and play animations.
      */
-/**
- * Starts all animation intervals for movement, state changes, jumps, and sleep checks.
- */
-animate() {
-    this.startMovementAndCameraUpdates();
-    this.startStateAnimations();
-    this.startJumpAnimation();
-    this.startSleepCheck();
-}
+    /**
+     * Starts all animation intervals for movement, state changes, jumps, and sleep checks.
+     */
+    animate() {
+        this.startMovementAndCameraUpdates();
+        this.startStateAnimations();
+        this.startJumpAnimation();
+        this.startSleepCheck();
+    }
 
-/**
- * Starts the main loop for player movement and camera updates.
- */
-startMovementAndCameraUpdates() {
-    this.customeInterval(() => {
-        if (!this.world.gamePaused) {
-            this.handleMovement();
-            this.handleJump();
-            this.updateCamera();
+    /**
+     * Starts the main loop for player movement and camera updates.
+     */
+    startMovementAndCameraUpdates() {
+        this.customeInterval(() => {
+            if (!this.world.gamePaused) {
+                this.handleMovement();
+                this.handleJump();
+                this.updateCamera();
+            }
+        }, 1000 / 60);
+    }
+
+    /**
+     * Handles horizontal movement based on keyboard input.
+     */
+    handleMovement() {
+        if (this.world.keyboard.RIGHT && this.posX < this.world.level.level_end_X) {
+            this.otherDirection = false;
+            this.moveRight();
         }
-    }, 1000 / 60);
-}
 
-/**
- * Handles horizontal movement based on keyboard input.
- */
-handleMovement() {
-    if (this.world.keyboard.RIGHT && this.posX < this.world.level.level_end_X) {
-        this.otherDirection = false;
-        this.moveRight();
-    }
-
-    if (this.world.keyboard.LEFT && this.posX > 100) {
-        this.otherDirection = true;
-        this.moveLeft();
-    }
-}
-
-/**
- * Handles jumping logic and sound.
- */
-handleJump() {
-    if (this.world.keyboard.UP && !this.isAboveGround()) {
-        this.jump();
-        this.world.soundManager.playSound('jump');
-    }
-}
-
-/**
- * Updates the camera position relative to the player.
- */
-updateCamera() {
-    this.world.camera_x = -this.posX + 100;
-}
-
-
-/**
- * Starts the main loop for character state animations.
- */
-startStateAnimations() {
-    this.customeInterval(() => {
-        this.updateIdleTimer();
-
-        if (!this.world.gamePaused) {
-            this.handleHurtAnimation();
-            this.handleDeathAnimation();
-            this.handleSleepAnimation();
-            this.handleIdleAnimation();
-            this.handleWalkingAnimation();
+        if (this.world.keyboard.LEFT && this.posX > 100) {
+            this.otherDirection = true;
+            this.moveLeft();
         }
-    }, 1000 / 12);
-}
+    }
+
+    /**
+     * Handles jumping logic and sound.
+     */
+    handleJump() {
+        if (this.world.keyboard.UP && !this.isAboveGround()) {
+            this.jump();
+            this.world.soundManager.playSound('jump');
+        }
+    }
+
+    /**
+     * Updates the camera position relative to the player.
+     */
+    updateCamera() {
+        this.world.camera_x = -this.posX + 100;
+    }
+
+
+    /**
+     * Starts the main loop for character state animations.
+     */
+    startStateAnimations() {
+        this.customeInterval(() => {
+            this.updateIdleTimer();
+
+            if (!this.world.gamePaused) {
+                this.handleHurtAnimation();
+                this.handleDeathAnimation();
+                this.handleSleepAnimation();
+                this.handleIdleAnimation();
+                this.handleWalkingAnimation();
+            }
+        }, 1000 / 12);
+    }
 
     /**
      * Plays hurt animation and sound when character is hurt.
@@ -212,7 +211,6 @@ startStateAnimations() {
         if (this.isHurt()) {
             this.playAnimation(this.IMAGES_HURT);
             const now = Date.now();
-            // Play 'hit' sound at most once every 500ms
             if (now - this.lastHurtSoundTime > 500) {
                 this.world.soundManager.playSound('hit');
                 this.lastHurtSoundTime = now;
@@ -220,65 +218,62 @@ startStateAnimations() {
         }
     }
 
-/**
- * Plays death animation if character is dead.
- */
+    /**
+     * Plays death animation if character is dead.
+     */
     handleDeathAnimation() {
-    if (this.isDead()) {
-        this.playAnimation(this.IMAGES_DEAD);
+        if (this.isDead()) {
+            this.playAnimation(this.IMAGES_DEAD);
+        }
     }
-}
 
-/**
- * Plays sleep animation if character falls asleep.
- */
+    /**
+     * Plays sleep animation if character falls asleep.
+     */
     handleSleepAnimation() {
-        // Only play sleep/long idle if not hurt or dead
         if (!this.isHurt() && !this.isDead() && this.fallsAsleep()) {
             this.playAnimation(this.IMAGES_LONGIDLE);
         }
     }
 
-/**
- * Plays idle animation if character is not moving.
- */
+    /**
+     * Plays idle animation if character is not moving.
+     */
     handleIdleAnimation() {
-        // Only play idle animation if not hurt, not dead and not falling asleep
         if (!this.isHurt() && !this.isDead() && this.isNotMoving()) {
             this.playAnimation(this.IMAGES_IDLE);
         }
     }
 
-/**
- * Plays walking animation if character moves left or right.
- */
+    /**
+     * Plays walking animation if character moves left or right.
+     */
     handleWalkingAnimation() {
-        // Only show walking animation if player is not hurt and not dead
         if (!this.isHurt() && !this.isDead() && (this.world.keyboard.RIGHT || this.world.keyboard.LEFT)) {
             this.playAnimation(this.IMAGES_WALKING);
         }
     }
 
 
-/**
- * Plays jump animation while character is above ground at 6 FPS.
- */
-startJumpAnimation() {
-    this.customeInterval(() => {
-        if (!this.world.gamePaused && this.isAboveGround() && !this.isHurt() && !this.isDead()) {
-            this.playAnimation(this.IMAGES_JUMP);
-        }
-    }, 1000 / 6);
-}
+    /**
+     * Plays jump animation while character is above ground at 6 FPS.
+     */
+    startJumpAnimation() {
+        this.customeInterval(() => {
+            if (!this.world.gamePaused && this.isAboveGround() && !this.isHurt() && !this.isDead()) {
+                this.playAnimation(this.IMAGES_JUMP);
+            }
+        }, 1000 / 6);
+    }
 
-/**
- * Periodically checks if the character should fall asleep.
- */
-startSleepCheck() {
-    this.customeInterval(() => {
-        this.fallsAsleep();
-    }, 1000);
-}
+    /**
+     * Periodically checks if the character should fall asleep.
+     */
+    startSleepCheck() {
+        this.customeInterval(() => {
+            this.fallsAsleep();
+        }, 1000);
+    }
 
 
     /**
@@ -288,7 +283,6 @@ startSleepCheck() {
     fallsAsleep() {
         const currentTime = Date.now();
         const asleepDuration = currentTime - this.idleTimer;
-
         return this.isNotMoving() && asleepDuration >= 4000;
     }
 

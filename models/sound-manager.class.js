@@ -18,7 +18,6 @@ class SoundManager {
     constructor() {
         /** @type {boolean} Whether sounds are muted */
         this.mute = false;
-
         this.loadSavedVolume();
         this.initSlider();
         this.initSounds();
@@ -98,7 +97,7 @@ class SoundManager {
         try {
             const volumeSlider = document.getElementById('volume');
             if (volumeSlider) volumeSlider.value = Math.round(this.volume * 100);
-        } catch (e) {}
+        } catch (e) { }
     }
 
     /**
@@ -108,8 +107,8 @@ class SoundManager {
     initSlider() {
         const volumeSlider = document.getElementById('volume');
         if (!volumeSlider) return;
-        try { volumeSlider.value = Math.round(this.volume * 100); } catch (e) {}
-        volumeSlider.addEventListener('input', ({target}) => {
+        try { volumeSlider.value = Math.round(this.volume * 100); } catch (e) { }
+        volumeSlider.addEventListener('input', ({ target }) => {
             const value = Number(target.value) / 100;
             this.setVolume(value);
         });
@@ -126,7 +125,7 @@ class SoundManager {
                 if (!isNaN(v)) this.volume = v;
             }
         } catch (e) {
-            // ignore if localStorage unavailable
+            console.error('LoadSavedVolume error:', e);
         }
     }
 
@@ -137,7 +136,7 @@ class SoundManager {
         try {
             localStorage.setItem('gameVolume', String(this.volume));
         } catch (e) {
-            // ignore
+            console.error('SaveVolume error:', e);
         }
     }
 }

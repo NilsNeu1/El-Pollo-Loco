@@ -46,15 +46,9 @@ class Chicken extends MovableObject {
         super().loadImage('img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_DEAD);
-
-        /** @type {number} Randomized X position between 600 and 3700 */
         this.posX = 600 + Math.random() * 3100;
-
         this.animate();
-
-        /** @type {number} Randomized movement speed between ~0.05 and ~0.3 */
         this.speed = 0.05 + Math.random() * 0.25;
-
         this.moveLeft();
         this.isCollidingFromAbove();
         this.isDead();
@@ -73,7 +67,7 @@ class Chicken extends MovableObject {
     /**
      * Handles the chicken’s movement to the left in a loop.
      */
-    handleMovementLoop(){
+    handleMovementLoop() {
         this.customeInterval(() => {
             if (!this.world.gamePaused) {
                 this.moveLeft();
@@ -84,7 +78,7 @@ class Chicken extends MovableObject {
     /**
      * Handles the chicken’s animation loop.
      */
-    handleAnimationLoop(){
+    handleAnimationLoop() {
         this.customeInterval(() => {
             if (!this.world.gamePaused) {
                 if (this.health > 4) {
@@ -95,7 +89,7 @@ class Chicken extends MovableObject {
             }
         }, 1000 / 6);
     }
-    
+
 
     /**
      * Handles the chicken’s death behavior.

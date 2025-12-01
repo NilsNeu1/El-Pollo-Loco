@@ -55,15 +55,9 @@ class Chick extends MovableObject {
         super().loadImage('img/3_enemies_chicken/chicken_small/2_dead/dead.png');
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_DEAD);
-
-        /** @type {number} Randomized X position between 600 and 3700 */
         this.posX = 600 + Math.random() * 3100;
-
         this.animate();
-
-        /** @type {number} Randomized movement speed between ~0.5 and ~0.75 */
         this.speed = 0.505 + Math.random() * 0.25;
-
         this.moveLeft();
         this.isCollidingFromAbove();
     }

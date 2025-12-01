@@ -61,8 +61,6 @@ function loadLevel(levelNumber) {
       case 2:
          world.level = level2;
          break;
-      default:
-         // No action for undefined levels
    }
 }
 
@@ -74,19 +72,19 @@ function loadLevel(levelNumber) {
  * @param {KeyboardEvent} event - The keydown event object.
  */
 document.addEventListener('keydown', (event) => {
-   if (event.keyCode == 39 || event.keyCode == 68) { // Arrow Right or D
+   if (event.keyCode == 39 || event.keyCode == 68) {
       keyboard.RIGHT = true;
    }
 
-   if (event.keyCode == 37 || event.keyCode == 65) { // Arrow Left or A
+   if (event.keyCode == 37 || event.keyCode == 65) {
       keyboard.LEFT = true;
    }
 
-   if (event.keyCode == 38 || event.keyCode == 87) { // Arrow Up or W
+   if (event.keyCode == 38 || event.keyCode == 87) {
       keyboard.UP = true;
    }
 
-   if (event.keyCode == 32 || event.keyCode == 13) { // Space or Enter
+   if (event.keyCode == 32 || event.keyCode == 13) {
       keyboard.THROW = true;
    }
 });
@@ -98,19 +96,19 @@ document.addEventListener('keydown', (event) => {
  * @param {KeyboardEvent} event - The keyup event object.
  */
 document.addEventListener('keyup', (event) => {
-   if (event.keyCode == 39 || event.keyCode == 68) { // Arrow Right or D
+   if (event.keyCode == 39 || event.keyCode == 68) {
       keyboard.RIGHT = false;
    }
 
-   if (event.keyCode == 37 || event.keyCode == 65) { // Arrow Left or A
+   if (event.keyCode == 37 || event.keyCode == 65) {
       keyboard.LEFT = false;
    }
 
-   if (event.keyCode == 38 || event.keyCode == 87) { // Arrow Up or W
+   if (event.keyCode == 38 || event.keyCode == 87) {
       keyboard.UP = false;
    }
 
-   if (event.keyCode == 32 || event.keyCode == 13) { // Space or Enter
+   if (event.keyCode == 32 || event.keyCode == 13) {
       keyboard.THROW = false;
    }
 });
@@ -122,9 +120,9 @@ document.addEventListener('keyup', (event) => {
  * @param {KeyboardEvent} event - The keydown event object.
  */
 document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-        world.togglePause();
-    }
+   if (event.key === 'Escape') {
+      world.togglePause();
+   }
 });
 
 /**

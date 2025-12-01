@@ -19,7 +19,7 @@
  */
 class World {
 
-    character = new Character();  // erstellt einen neuen charackter in der Welt // Character erbt variablen u eigenschaften von movable object
+    character = new Character();
     level = level0;
     canvas;
     ctx;
@@ -44,8 +44,8 @@ class World {
     debugMode = false;
     enableSounds = false;
 
-    // um die Variablen aus dieser datei nutzen zu können muss "this." davor gesetzt werden. 
-    
+
+
     /**
      * Initialize the world with a rendering canvas and input handler.
      * @param {HTMLCanvasElement} canvas - Canvas element used for rendering.
@@ -58,8 +58,8 @@ class World {
         this.healthbars = new Healthbars(this);
         this.gameStateUi = new GameStateUI();
         this.setWorld();
-        this.gameStateUi.setCanvasAndWorld(canvas, this); // This sets up button clicks once
-        this.mobileUi.setCanvasAndWorld(canvas, this); // This sets up button clicks once
+        this.gameStateUi.setCanvasAndWorld(canvas, this);
+        this.mobileUi.setCanvasAndWorld(canvas, this);
         this.draw();
         this.start();
     }
@@ -70,9 +70,11 @@ class World {
      */
     setWorld() {
         this.character.world = this;
-        this.level.enemies.forEach(enemy => enemy.world = this); // Setzt die World-Referenz für Gegner
+        this.level.enemies.forEach(enemy => enemy.world = this);
+        if (Array.isArray(this.trowable)) {
+            this.trowable.forEach(t => t.world = this);
+        }
         this.salsaBar.world = this;
-        // attach world reference to healthbars manager and its children
         if (this.healthbars) {
             this.healthbars.world = this;
             if (this.healthbars.playerBar) this.healthbars.playerBar.world = this;
@@ -101,7 +103,7 @@ class World {
      */
     clearAllIntervals() {
         this.intervalIDs.forEach(id => clearInterval(id));
-        this.intervalIDs = []; // Liste der gespeicherten Intervalle leeren
+        this.intervalIDs = [];
         this.gamePaused = true;
     }
 
@@ -138,7 +140,7 @@ class World {
             this.checkBossAgro();
             this.isGameWon();
             this.gameStateUi.setupButtonClicks();
-        }, 1000 / 60); // Run at 60 FPS for consistent collision detection
+        }, 1000 / 60);
         this.gamePaused = false;
         this.gameStateUi.setState('none');
     }
@@ -174,7 +176,6 @@ class World {
      */
     isGameLost() {
         if (this.character.health <= 0) {
-            // Stop any background music when the game is lost
             if (this.soundManager) {
                 this.soundManager.stopSound('backgroundMusic');
             }
@@ -192,7 +193,6 @@ class World {
         const boss = this.level.enemies.find(e => e instanceof Endboss);
         if (boss && boss.health <= 0) {
             this.bossDefeated = true;
-            // Stop any background music when the game is won
             if (this.soundManager) {
                 this.soundManager.stopSound('backgroundMusic');
             }
@@ -210,7 +210,7 @@ class World {
         const boss = this.level.enemies.find(e => e instanceof Endboss);
         if (!boss) return;
         let agroRange = Math.abs(this.character.posX - boss.posX);
-            if (this.initiatedGame === true && agroRange < 500) {
+        if (this.initiatedGame === true && agroRange < 500) {
             this.healthbars.setBossPercentage(boss.health);
             if (!this.bossAgro && !this.bossAgroSoundPlayed) {
                 this.soundManager.playSound('bossAgro');
@@ -228,15 +228,13 @@ class World {
      * @returns {void}
      */
     checkThrowObject() {
-        // Only allow throwing if the THROW key is pressed, bottles are available
-        // and the cooldown period has passed.
         const now = Date.now();
         if (this.keyboard.THROW && this.salsaBar.availableBottles > 0 && now >= this.nextThrowAllowed) {
             let bottle = new ThrowableObject(this.character.posX + 100, this.character.posY + 100, this.level);
+            bottle.world = this;
             this.trowable.push(bottle);
             this.decreaseAvailableBottles();
             this.soundManager.playSound('throw');
-            // set 1 second cooldown
             this.nextThrowAllowed = now + 1000;
         }
     }
@@ -279,7 +277,7 @@ class World {
 
         this.renderStaticObjects();
 
-        this.ctx.translate(-this.camera_x, 0); // reset translation
+        this.ctx.translate(-this.camera_x, 0);
     }
 
     /**
@@ -324,11 +322,11 @@ class World {
      * @returns {void}
      */
     addToMap(MO) {
-        if (MO.otherDirection) { //spiegelt das MO um in andere richtungen gehen zu können
+        if (MO.otherDirection) {
             this.flipImage(MO);
         }
         MO.draw(this.ctx);
-        if (this.debugMode === true) { 
+        if (this.debugMode === true) {
             MO.drawHitbox(this.ctx);
         };
         if (MO.otherDirection) {
@@ -348,11 +346,10 @@ class World {
         this.salsaBar.drawCounter(this.ctx);
         this.addToMap(this.coinBar);
         this.coinBar.drawCounter(this.ctx);
-        this.addToMap(this.gameStateUi); // Always draw, but image depends on state
+        this.addToMap(this.gameStateUi);
         if ((navigator.maxTouchPoints > 0) && this.gameStateUi.state !== 'menu') {
             this.addToMap(this.mobileUi);
         }
-        // Boss bar drawing is handled inside the Healthbars manager (only drawn when bossAgro is true).
     }
 
 

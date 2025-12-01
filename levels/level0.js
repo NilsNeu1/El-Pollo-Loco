@@ -5,10 +5,10 @@
  * should be rendered in this stage.
  */
 const level0 = new Level(
-    [], // keine Hintergrundobjekte (no background objects)
-    [], // keine Wolken im Hauptmenü (no clouds in main menu)
-    [], // keine sammelbaren Flaschen (no collectable bottles)
-    [], // keine sammelbaren Münzen (no collectable coins)
-    [], // keine Gegner (no enemies)
-    []  // keine Game UI (no UI elements)
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
 );

@@ -58,10 +58,13 @@ class ThrowableObject extends MovableObject {
         /** @type {Level} Reference to the current level */
         this.level = level;
 
+        /** @type {World} Reference to the global world (used for sounds & removal) */
+        this.world = world;
+
         this.throw();
 
         /** @type {SoundManager} Reference to the global sound manager */
-        this.soundManager = world.soundManager;
+        this.soundManager = this.world?.soundManager || world?.soundManager;
     }
 
     /**
@@ -70,38 +73,75 @@ class ThrowableObject extends MovableObject {
      * and checks for collisions with enemies.
      */
     throw() {
+        this.startGravity();
+        this.startMovement();
+        this.startRotation();
+    }
+
+    /**
+     * Applies gravity to the bottle.
+     */
+    startGravity() {
         this.speedY = 7;
-        this.gravityInterval = this.applyGravity(); // store gravity interval ID
+        this.gravityInterval = this.applyGravity();
+    }
 
-        let moveInterval = setInterval(() => {
+    /**
+     * Moves the bottle forward and checks for collisions.
+     */
+    startMovement() {
+        this.moveInterval = setInterval(() => {
             this.posX += 8;
-            this.level.enemies.forEach(enemy => {
-                if (this.isColliding(enemy)) {
-                    clearInterval(moveInterval);
-                    clearInterval(rotateInterval);
-                    clearInterval(this.gravityInterval); // stop gravity
-                    this.splash(); // trigger splash animation
-                    world.soundManager.playSound('brokenBottle');
-                    enemy.hit();
-                }
-            });
+            this.checkCollisions();
         }, 10);
+    }
 
-        let rotateInterval = setInterval(() => {
+    /**
+     * Rotates the bottle continuously.
+     */
+    startRotation() {
+        this.rotateInterval = setInterval(() => {
             this.playAnimation(this.IMAGES_ROTATE);
         }, 80);
     }
+
+    /**
+     * Checks for collisions with enemies.
+     * Clears intervals and triggers splash + sound if collision occurs.
+     */
+    checkCollisions() {
+        this.level.enemies.forEach(enemy => {
+            if (this.isColliding(enemy)) {
+                this.stopThrow();
+                this.splash();
+                this.world.soundManager.playSound('brokenBottle');
+                enemy.hit();
+            }
+        });
+    }
+
+    /**
+     * Stops all intervals related to the throw.
+     */
+    stopThrow() {
+        clearInterval(this.moveInterval);
+        clearInterval(this.rotateInterval);
+        clearInterval(this.gravityInterval);
+    }
+
 
     /**
      * Plays the splash animation when the bottle breaks.
      * Removes the bottle from the world once the animation finishes.
      */
     splash() {
-        let splashCount = 0; // track splash frames
+        let splashCount = 0;
         let splashInterval = setInterval(() => {
             if (splashCount >= this.IMAGES_SPLASH.length) {
-                clearInterval(splashInterval); // stop animation
-                world.trowable.splice(world.trowable.indexOf(this), 1); // remove bottle
+                clearInterval(splashInterval);
+                if (this.world && Array.isArray(this.world.trowable)) {
+                    this.world.trowable.splice(this.world.trowable.indexOf(this), 1);
+                }
             } else {
                 this.playAnimation([this.IMAGES_SPLASH[splashCount]]);
                 splashCount++;

@@ -13,49 +13,48 @@ class CollectableItem extends MovableObject {
         this.posY = posYFn();
     }
 
-/**
- * Start periodic checks for collectable collisions.
- * Implemented as a static helper that receives the world instance so `this` is the world.
- * @param {World} world - The World instance to use when checking/picking up collectables.
- * @returns {void}
- */
-static checkCollections(world) {
-    // Use the world's interval helper so we can track and clear intervals from the world
-    world.customeInterval(() => {
-        if (!world.gamePaused) {
-            this.checkBottleCollisions(world);
-            this.checkCoinCollisions(world);
-        }
-    }, 1000);
-}
+    /**
+     * Start periodic checks for collectable collisions.
+     * Implemented as a static helper that receives the world instance so `this` is the world.
+     * @param {World} world - The World instance to use when checking/picking up collectables.
+     * @returns {void}
+     */
+    static checkCollections(world) {
+        world.customeInterval(() => {
+            if (!world.gamePaused) {
+                this.checkBottleCollisions(world);
+                this.checkCoinCollisions(world);
+            }
+        }, 1000);
+    }
 
-/**
- * Handles bottle collision detection and collection.
- * @param {World} world
- */
-static checkBottleCollisions(world) {
-    world.level.collectableBottle.forEach((bottle, index) => {
-        if (world.character.isColliding(bottle)) {
-            world.salsaBar.availableBottles++;
-            world.level.collectableBottle.splice(index, 1); // remove bottle
-            world.soundManager.playSound('collectBottle');
-        }
-    });
-}
+    /**
+     * Handles bottle collision detection and collection.
+     * @param {World} world
+     */
+    static checkBottleCollisions(world) {
+        world.level.collectableBottle.forEach((bottle, index) => {
+            if (world.character.isColliding(bottle)) {
+                world.salsaBar.availableBottles++;
+                world.level.collectableBottle.splice(index, 1);
+                world.soundManager.playSound('collectBottle');
+            }
+        });
+    }
 
-/**
- * Handles coin collision detection and collection.
- * @param {World} world
- */
-static checkCoinCollisions(world) {
-    world.level.collectableCoin.forEach((coin, index) => {
-        if (world.character.isColliding(coin)) {
-            world.coinBar.CollectedCoins++;
-            world.level.collectableCoin.splice(index, 1); // remove coin
-            world.soundManager.playSound('collectCoin');
-        }
-    });
-}
+    /**
+     * Handles coin collision detection and collection.
+     * @param {World} world
+     */
+    static checkCoinCollisions(world) {
+        world.level.collectableCoin.forEach((coin, index) => {
+            if (world.character.isColliding(coin)) {
+                world.coinBar.CollectedCoins++;
+                world.level.collectableCoin.splice(index, 1);
+                world.soundManager.playSound('collectCoin');
+            }
+        });
+    }
 }
 
 /** Coin collectable */
@@ -85,12 +84,3 @@ class CollectableBottle extends CollectableItem {
         );
     }
 }
-
-/**
- * Start periodic checks for collectable collisions; increments counters and plays sounds.
- * Implemented as a static helper that receives the world instance so `this` is the world.
- * @param {World} world - The World instance to use when checking/picking up collectables.
- * @returns {void}
- */
-// (The static method is defined on CollectableItem class above, so we originally removed the duplicate declaration here.)
-

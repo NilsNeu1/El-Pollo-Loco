@@ -52,15 +52,10 @@ class HealthBar extends DrawableObject {
         this.posY = config.posY;
         this.width = 220;
         this.percentage = initialPercentage;
-
         this.loadImages(this.IMAGES_HEALTH);
         this.setPercentage(this.percentage);
     }
 
-    // Provide a factory-like alias for world-class compatibility.
-    // World currently constructs `new HealthBar()` and `new BossBar()`.
-    // `new HealthBar()` will default to a player health bar (as above),
-    // a BossBar subclass is defined after the class to simply preconfigure the type.
     /**
      * Updates the health bar to reflect the given health percentage.
      * @param {number} percentage - New health percentage (0–100).
@@ -92,7 +87,6 @@ class HealthBar extends DrawableObject {
 class BossBar extends HealthBar {
     constructor(initialPercentage = 100) {
         super('boss', initialPercentage);
-        // Give boss bar a slightly different width to match its assets if desired.
         this.width = 220;
     }
 }
@@ -123,7 +117,6 @@ class Healthbars extends DrawableObject {
         this.bossBar.setPercentage(percentage);
     }
 
-    // draw both bars — boss only when `world.bossAgro` is true
     draw(ctx) {
         this.playerBar.draw(ctx);
         if (
@@ -135,6 +128,3 @@ class Healthbars extends DrawableObject {
         }
     }
 }
-
-// Export helper name used by previous code: default HealthBars manager for world.
-// Keep global class names for compatibility.
