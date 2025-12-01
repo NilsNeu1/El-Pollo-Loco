@@ -119,27 +119,70 @@ class SalsaBar extends StatCounter {
 		this.width = 70;
 	}
 
-	draw(ctx) {
-		try {
-			const currentAlpha = ctx.globalAlpha;
-			let alpha = 1;
+/**
+ * Draws the entity with proper alpha handling.
+ * @param {CanvasRenderingContext2D} ctx - The canvas context
+ */
+draw(ctx) {
+    try {
+        const currentAlpha = ctx.globalAlpha;
+        const alpha = this.calculateAlpha();
 
-			if (this.world && this.world.nextThrowAllowed) {
-				if (Date.now() < this.world.nextThrowAllowed) {
-					alpha = 0.5; // semi-transparent during cooldown
-				}
-			}
+        this.applyAlpha(ctx, alpha);
+        this.safeDraw(ctx);
+        this.restoreAlpha(ctx, currentAlpha);
+    } catch (e) {
+        this.fallbackDraw(ctx);
+    }
+}
 
-			ctx.globalAlpha = alpha;
-			super.draw(ctx);
+/**
+ * Calculates the alpha value based on cooldown state.
+ * @returns {number} Alpha value (1 = fully opaque, 0.5 = semi-transparent)
+ */
+calculateAlpha() {
+    if (this.world && this.world.nextThrowAllowed) {
+        if (Date.now() < this.world.nextThrowAllowed) {
+            return 0.5; // semi-transparent during cooldown
+        }
+    }
+    return 1;
+}
 
-			// restore alpha
-			ctx.globalAlpha = currentAlpha;
-		} catch (e) {
-			// fallback to default drawing if anything goes wrong
-			super.draw(ctx);
-		}
-	}
+/**
+ * Applies the given alpha to the canvas context.
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {number} alpha
+ */
+applyAlpha(ctx, alpha) {
+    ctx.globalAlpha = alpha;
+}
+
+/**
+ * Performs the actual drawing using the parent class.
+ * @param {CanvasRenderingContext2D} ctx
+ */
+safeDraw(ctx) {
+    super.draw(ctx);
+}
+
+/**
+ * Restores the previous alpha value.
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {number} previousAlpha
+ */
+restoreAlpha(ctx, previousAlpha) {
+    ctx.globalAlpha = previousAlpha;
+}
+
+/**
+ * Fallback drawing if an error occurs.
+ * @param {CanvasRenderingContext2D} ctx
+ */
+fallbackDraw(ctx) {
+    super.draw(ctx);
+}
+
 
 	drawCounter(ctx) {
 		ctx.font = '25px Arial';

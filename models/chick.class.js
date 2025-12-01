@@ -70,21 +70,33 @@ class Chick extends MovableObject {
 
     /**
      * Starts the chick’s animation loop.
-     * Moves left continuously and switches between walking and dead animations
-     * depending on health.
      */
     animate() {
         this.customeInterval(() => {
             if (!this.world.gamePaused) {
-                this.moveLeft();
-                if (this.health > 10) {
-                    this.playAnimation(this.IMAGES_WALKING);
-                } else {
-                    this.playAnimation(this.IMAGES_DEAD);
-                    this.deadChicken();
-                }
+                this.handleMovement();
+                this.handleAnimationState();
             }
         }, 1000 / 6);
+    }
+
+    /**
+     * Handles continuous leftward movement.
+     */
+    handleMovement() {
+        this.moveLeft();
+    }
+
+    /**
+     * Chooses and plays the correct animation based on health.
+     */
+    handleAnimationState() {
+        if (this.health > 10) {
+            this.playAnimation(this.IMAGES_WALKING);
+        } else {
+            this.playAnimation(this.IMAGES_DEAD);
+            this.deadChicken();
+        }
     }
 
     /**

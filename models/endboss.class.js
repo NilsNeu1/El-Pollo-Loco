@@ -125,54 +125,91 @@ class Endboss extends MovableObject {
         this.isDead();
     }
 
-    /**
-     * Starts the boss’s animation loop.
-     * Handles transitions between hurt, dead, alert, attack, walking, and idle states.
-     */
-    animate() {
-        let i = 0;
-        let w = 4;
+/**
+ * Starts the boss’s animation loop.
+ * Orchestrates state transitions at 8 FPS.
+ */
+animate() {
+    let i = 0;
+    let w = 4;
 
-        this.customeInterval(() => {
-            if (!this.world.gamePaused) {
-                if (this.isHurt()) {
-                    this.playAnimation(this.IMAGES_HURT);
-                    this.posX -= 50;
-
-                } else if (this.isDead()) {
-                    this.playAnimation(this.IMAGES_DEAD);
-                    this.world.bossDefeated = true;
-
-                } else if (i < 16 && this.isAlerted()) {
-                    this.playAnimation(this.IMAGES_ALERT);
-                    i++;
-
-                } else if (i >= 16 && w < 4) {
-                    this.playAnimation(this.IMAGES_ATTACK);
-
-                } else if (w >= 4 && this.isAlerted()) {
-                    this.moveLeft();
-                    this.playAnimation(this.IMAGES_WALKING);
-
-                } else {
-                    this.playAnimation(this.IMAGES_IDLE);
-                }
+    this.customeInterval(() => {
+        if (!this.world.gamePaused) {
+            if (this.isHurt()) {
+                this.handleHurtState();
+            } else if (this.isDead()) {
+                this.handleDeadState();
+            } else if (i < 16 && this.isAlerted()) {
+                this.handleAlertState(i);
+                i++;
+            } else if (i >= 16 && w < 4) {
+                this.handleAttackState();
+            } else if (w >= 4 && this.isAlerted()) {
+                this.handleWalkingState();
+            } else {
+                this.handleIdleState();
             }
-        }, 1000 / 8);
-    }
-
-    /**
-     * Determines if the boss is alerted (aggressive state).
-     * Sets attacking flag accordingly.
-     * @returns {boolean} True if boss is alerted, false otherwise.
-     */
-    isAlerted() {
-        if (this.world.bossAgro === true) {
-            this.attacking = true;
-            return true;
-        } else {
-            this.attacking = false;
-            return false;
         }
-    }
+    }, 1000 / 8);
 }
+
+/**
+ * Handles boss hurt state.
+ */
+handleHurtState() {
+    this.playAnimation(this.IMAGES_HURT);
+    this.posX -= 50;
+}
+
+/**
+ * Handles boss death state.
+ */
+handleDeadState() {
+    this.playAnimation(this.IMAGES_DEAD);
+    this.world.bossDefeated = true;
+}
+
+/**
+ * Handles boss alert state.
+ * @param {number} i - Counter for alert frames.
+ */
+handleAlertState(i) {
+    this.playAnimation(this.IMAGES_ALERT);
+}
+
+/**
+ * Handles boss attack state.
+ */
+handleAttackState() {
+    this.playAnimation(this.IMAGES_ATTACK);
+}
+
+/**
+ * Handles boss walking state.
+ */
+handleWalkingState() {
+    this.moveLeft();
+    this.playAnimation(this.IMAGES_WALKING);
+}
+
+/**
+ * Handles boss idle state.
+ */
+handleIdleState() {
+    this.playAnimation(this.IMAGES_IDLE);
+}
+
+/**
+ * Determines if the boss is alerted (aggressive state).
+ * Sets attacking flag accordingly.
+ * @returns {boolean} True if boss is alerted, false otherwise.
+ */
+isAlerted() {
+    if (this.world.bossAgro === true) {
+        this.attacking = true;
+        return true;
+    } else {
+        this.attacking = false;
+        return false;
+    }
+}}

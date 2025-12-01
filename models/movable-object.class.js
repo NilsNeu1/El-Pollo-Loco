@@ -227,20 +227,22 @@ handleCollision(enemy, boss) {
  * Handle collision when player lands on an enemy from above.
  * @param {Object} enemy - The enemy object collided with.
  */
-handleCollisionFromAbove(enemy) {
-    if (!(enemy instanceof Endboss)) {
-        this.damageEnemy(enemy);
-        this.jump();
-        this.lastHit = Date.now();
+    handleCollisionFromAbove(enemy) {
+        // When player jumps on an enemy, this should not cause the player to be hurt
+        // or enter invincibility frames — only the enemy should take damage.
+        if (!(enemy instanceof Endboss)) {
+            this.damageEnemy(enemy);
+            this.jump();
 
-        if (enemy.health <= 5) {
-            enemy.playAnimation(enemy.IMAGES_DEAD);
-            enemy.deadChicken();
+            if (enemy.health <= 5) {
+                enemy.playAnimation(enemy.IMAGES_DEAD);
+                enemy.deadChicken();
+            }
+        } else {
+            // If colliding with the boss from above, do not set player lastHit either
+            // (player shouldn't get hurt when jumping on the boss in this logic).
         }
-    } else {
-        this.lastHit = Date.now();
     }
-}
 
 /**
  * Apply damage to an enemy.

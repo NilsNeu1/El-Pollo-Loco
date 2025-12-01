@@ -66,25 +66,36 @@ class Chicken extends MovableObject {
      * depending on health.
      */
     animate() {
-        // Movement loop
+        this.handleMovementLoop();
+        this.handleAnimationLoop();
+    }
+
+    /**
+     * Handles the chicken’s movement to the left in a loop.
+     */
+    handleMovementLoop(){
         this.customeInterval(() => {
             if (!this.world.gamePaused) {
                 this.moveLeft();
             }
         }, 1000 / 144);
+    }
 
-        // Animation loop
+    /**
+     * Handles the chicken’s animation loop.
+     */
+    handleAnimationLoop(){
         this.customeInterval(() => {
             if (!this.world.gamePaused) {
                 if (this.health > 4) {
                     this.playAnimation(this.IMAGES_WALKING);
                 } else {
-                    this.playAnimation(this.IMAGES_DEAD);
                     this.deadChicken();
                 }
             }
         }, 1000 / 6);
     }
+    
 
     /**
      * Handles the chicken’s death behavior.
@@ -93,6 +104,7 @@ class Chicken extends MovableObject {
     deadChicken() {
         this.speed = 0;
 
+        this.playAnimation(this.IMAGES_DEAD);
         this.customeInterval(() => {
             this.posY += 3;
         }, 20);
